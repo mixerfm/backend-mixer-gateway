@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres/alpine
+    ports:
+      - "15430:5432"
+    environment:
+      - POSTGRES_USER=mixer-gateway
+      - POSTGRES_PASSWORD=mixer-gateway
+      - POSTGRES_DB=mixer-gateway
+
+  redis:
+    image: openzipkin/redis
+    ports:
+      - "6379:6379"
