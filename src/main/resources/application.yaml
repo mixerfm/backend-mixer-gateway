@@ -3,8 +3,16 @@ server:
 
 spring:
   application.name: mixer-gateway
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 mixer-gateway:
+  circuitbreaker:
+    timelimiter.timeout-duration: 1m
+    ignore-exceptions:
+      - feign.FeignException.FeignClientException
   integration:
     feign:
       TestApi.url: ${USER_SERVICE_URL:http://localhost:8001}
