@@ -1,0 +1,20 @@
+{{=<% %>=}}
+package <%package%>;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+
+@FeignClient(
+    name="${mixer-gateway.integration.feign.<%classname%>.name:<%classname%>}"
+    , url="${mixer-gateway.integration.feign.<%classname%>.url:<%basePath%>}"
+    , configuration=fm.mixer.gateway.config.feign.<%#clientConfig%><%clientConfig%><%/clientConfig%><%^clientConfig%>Lambda<%/clientConfig%>ClientConfig.class
+    , fallbackFactory=<%classname%>Client.<%classname%>ClientFallbackFactory.class
+)
+public interface <%classname%>Client extends <%classname%> {
+
+    @Component
+    public class <%classname%>ClientFallbackFactory extends fm.mixer.gateway.config.feign.<%#fallbackFactory%><%fallbackFactory%><%/fallbackFactory%><%^fallbackFactory%>Lambda<%/fallbackFactory%>ClientFallbackFactory<<%classname%>Client> {
+    }
+}
+
+
