@@ -3,3 +3,8 @@ server:
 
 spring:
   application.name: mixer-gateway
+
+mixer-gateway:
+  integration:
+    feign:
+      TestApi.url: ${USER_SERVICE_URL:http://localhost:8001}
