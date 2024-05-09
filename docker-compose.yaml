@@ -1,16 +1,47 @@
-version: "3.8"
-
 services:
+  proxy:
+    image: nginx
+    volumes:
+      - ./build/nginx-proxy-minimal.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+    links:
+      - "mixer-gateway"
+    restart: always
+    depends_on:
+      - mixer-gateway
+    networks:
+        - default
+  mixer-gateway:
+    build: "."
+    ports:
+      - "8000:80"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8000/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+    restart: on-failure
+    networks:
+        - default
   database:
-    image: postgres/alpine
+    image:  postgres:14-alpine
     ports:
       - "15430:5432"
     environment:
       - POSTGRES_USER=mixer-gateway
       - POSTGRES_PASSWORD=mixer-gateway
       - POSTGRES_DB=mixer-gateway
+    networks:
+        - default
 
   redis:
-    image: openzipkin/redis
+    image: redis:7.2.4-alpine
     ports:
       - "6379:6379"
+    networks:
+        - default
+
+networks:
+    default: 
+        driver: bridge
