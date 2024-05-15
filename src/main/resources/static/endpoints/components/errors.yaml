@@ -1,0 +1,50 @@
+components:
+  responses:
+    ErrorResponse:
+      description: Unexpected error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      description: Error model which holds information about an error.
+      required:
+        - identifier
+        - type
+        - description
+      properties:
+        identifier:
+          type: string
+          format: uuid
+          description: Error code used for reporting purposes.
+        type:
+          $ref: '#/components/schemas/ErrorType'
+        description:
+          type: string
+          description: Human readable description of the error which should be used only for debug purposes.
+
+    ErrorType:
+      type: string
+      description: Error code which can be used to show end user error message on his/her local language.
+      enum:
+        # Server errors
+        - EXTERNAL_SERVICE_ERROR
+        - EXTERNAL_SERVICE_UNAVAILABLE
+        - INTERNAL_SERVER_ERROR
+        # Client errors
+        - BAD_REQUEST
+        - ILLEGAL_ARGUMENT
+        - MEDIA_TYPE_NOT_ACCEPTABLE
+        - MEDIA_TYPE_NOT_SUPPORTED
+        - METHOD_ARGUMENT_CONSTRAINT_VIOLATION
+        - METHOD_ARGUMENT_NOT_VALID
+        - METHOD_ARGUMENT_TYPE_MISMATCH
+        - MISSING_REQUEST_HEADER
+        - MISSING_REQUEST_PARAMETER
+        - MISSING_REQUEST_PATH_VARIABLE
+        - TOO_MANY_REQUESTS
+        - RESOURCE_NOT_FOUND
+        - REQUEST_METHOD_NOT_SUPPORTED

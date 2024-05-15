@@ -1,0 +1,18 @@
+openapi: 3.0.3
+
+info:
+  title: Common API error responses
+  description: This specifications is just holder for common error response structures.
+  version: 1.0.0
+
+paths:
+  # There are no error endpoints
+
+components:
+  responses:
+    ErrorResponse:
+      description: Unexpected error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: './components/errors.yaml#/components/schemas/Error'
