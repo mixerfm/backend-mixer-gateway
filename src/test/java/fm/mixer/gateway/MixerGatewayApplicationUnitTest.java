@@ -1,16 +1,16 @@
 package fm.mixer.gateway;
 
+import fm.mixer.gateway.test.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-@SpringBootTest
-class MixerGatewayApplicationTests {
+@UnitTest
+class MixerGatewayApplicationUnitTest {
 
     @Test
     void shouldRunMixerGatewayApplication() {
