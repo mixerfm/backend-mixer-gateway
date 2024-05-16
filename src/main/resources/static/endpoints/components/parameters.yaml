@@ -1,0 +1,60 @@
+components:
+  parameters:
+    Username:
+      name: username
+      in: path
+      description: The unique user identifier used for fetching specific set of information.
+      required: true
+      example: 'V1StGXR8z5'
+      schema:
+        type: string
+    Sort:
+      name: sort
+      in: query
+      description: |
+        List of fields which define how to sort the list of results. Each field can contain two parts separated with colon.
+        First field is the name of sort variable which is required, and the second one is sort order which can be asc or desc.
+        Example: "https://www.example.com/list?sort=popularity&sort=date:desc&sort=name:asc"
+        
+        Possible values are:
+          * date - sort by date of action (e.g. when mix was uploaded, or user started following someone, etc.)
+          * name - sort by name of a resource (e.g. user display name, mix name, etc.)
+          * popularity - sort by popularity (e.g. popular uploaded mixes, most listened from liked mixes, popular artists etc.)
+          * trend - sort by items which are gaining more attention (e.g. tags which becoming popular etc.)
+        
+        Default sorting order of values, if not specified otherwise are:
+          * date - desc (which means newest items are on top)
+          * name - asc (0 -> 9 -> A -> Z, sort is case insensitive)
+          * popularity - desc (more popular items are by default on top)
+          * trend - desc (more trending items are by default on top)
+      required: false
+      schema:
+        type: array
+        default: [ 'date:desc' ]
+        items:
+          type: string
+          pattern: '^(date|name|popularity|trend)(:(asc|desc))?$'
+        example: [ 'date:desc', 'name' ]
+    Limit:
+      name: limit
+      in: query
+      description: Defines how many items from list should be fetched.
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+        example: 10
+    Page:
+      name: page
+      in: query
+      description: |
+        Define sub-items of result will be fetched. If limit is 10, than page = 1 will fetch results from 0 to 10, and
+        if page = 2, then fetched results will be from 10 to 20. 
+        If there are no items in requested page, response will be an error - resource not found.
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+        example: 1

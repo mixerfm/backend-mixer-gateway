@@ -1,0 +1,34 @@
+components:
+  parameters:
+    X-Idempotency-Key:
+      name: X-Idempotency-Key
+      in: header
+      description: |
+        The HTTP X-Idempotency-Key request header field can be used to carry
+        idempotency key in order to make non-idempotent HTTP methods such as
+        POST or PATCH fault-tolerant.
+      required: true
+      example: '3c6dcd15-8aa2-4e1e-8d11-44e611edc9ad'
+      schema:
+        type: string
+        format: uuid
+    X-Accept-Version:
+      name: X-Accept-Version
+      in: header
+      description: |
+        The HTTP X-Accept-Version request header field allows API consumers to call 
+        the intended version of the API. If header is not present, it implies that the
+        oldest supported version of the entity should be retrieved.
+        Supported version is defined by number of clients which consume old endpoint.
+        In resolving entity version, in consideration are taken non-breaking versions, e.g.:
+        current | requested | provided
+        1.5     | v1        | 1.5
+        1.5     | null      | 1.5
+        2.1     | v1        | 1.8 (max non breaking supported version)
+        2.1     | null      | 1.8 (max non breaking supported version)
+        2.1     | v2        | 2.1
+      required: false
+      schema:
+        type: string
+        pattern: '^v\d+$'
+        example: 'v1'
