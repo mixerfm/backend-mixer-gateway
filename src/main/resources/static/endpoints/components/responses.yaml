@@ -1,0 +1,40 @@
+components:
+  schemas:
+    PaginationMetadata:
+      type: object
+      description: Information about the subset of the entire collection returned in the payload.
+      properties:
+        currentPage:
+          type: integer
+          description: |
+            Current page (group of items) retrieved from entire collection that matches request parameters.
+            If there are no items, this value will be 0, otherwise it will be number greater than 0 (at least 1).
+          minimum: 0
+          example: 5
+        nextPage:
+          type: integer
+          description: |
+            Next page (group of items) available to retrieve from collection that matches request parameters. 
+            If there are no next group of items, this value will be omitted.
+          minimum: 2
+          example: 6
+        previousPage:
+          type: integer
+          description: |
+            Previous page (group of items) available to retrieve from collection that matches request parameters. 
+            If there are no previous group of items (client is on first page), this value will be omitted.
+          minimum: 1
+          example: 4
+        totalItems:
+          type: integer
+          format: int64
+          description: Total number of all items in the collection that matches request parameters.
+          minimum: 0
+          example: 100
+        totalPages:
+          type: integer
+          description: |
+            Total number of all pages (group of items) in entire collection that matches request parameters.
+            If there are no items, this value will be 0, otherwise it will be number greater than 0 (at least 1).
+          minimum: 0
+          example: 10
