@@ -1,13 +1,15 @@
 package fm.mixer.gateway.error;
 
-import fm.mixer.gateway.model.Error;
-import fm.mixer.gateway.model.ErrorType;
 import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.error.exception.ExternalServiceException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.error.exception.ServiceUnavailableException;
 import fm.mixer.gateway.error.exception.TooManyRequestsException;
 import fm.mixer.gateway.error.mapper.ErrorMapper;
+import fm.mixer.gateway.model.Error;
+import fm.mixer.gateway.model.ErrorType;
+import fm.mixer.gateway.validation.exception.OpenApiRequestValidationException;
+import fm.mixer.gateway.validation.exception.OpenApiResponseValidationException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +45,14 @@ public class ErrorControllerAdvice {
     // *********** Server errors ***********
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Error> onException(Exception ex) {
+    public ResponseEntity<Error> onException(final Exception ex) {
         log.error(ex.getMessage(), ex);
 
         return createError(ErrorType.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({ExternalServiceException.class, ServiceUnavailableException.class})
-    public ResponseEntity<Error> onExternalServiceException(ExternalServiceException ex) {
+    public ResponseEntity<Error> onExternalServiceException(final ExternalServiceException ex) {
         return createError(
             ex instanceof ServiceUnavailableException ? ErrorType.EXTERNAL_SERVICE_UNAVAILABLE : ErrorType.EXTERNAL_SERVICE_ERROR
         );
@@ -86,28 +88,37 @@ public class ErrorControllerAdvice {
     // *** Client bad requests ***
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Error> onMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<Error> onMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException ex) {
         final var simpleName = Optional.ofNullable(ex.getRequiredType()).map(Class::getSimpleName).orElse(null);
 
         return createError(ErrorType.METHOD_ARGUMENT_TYPE_MISMATCH, new Object[]{ex.getName(), simpleName});
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Error> onMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Error> onMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
         return createError(ErrorType.METHOD_ARGUMENT_NOT_VALID, new Object[]{ex.getParameter().getParameterName()});
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Error> onConstraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<Error> onConstraintViolationException(final ConstraintViolationException ex) {
         final var parameters = new Object[]{ex.getConstraintViolations().stream()
-            .map(violation -> String.format("{%s: %s}", violation.getPropertyPath().toString(), violation.getMessage()))
+            .map(violation -> String.format("'%s': %s", violation.getPropertyPath().toString(), violation.getMessage()))
+            .collect(Collectors.joining(", "))};
+
+        return createError(ErrorType.METHOD_ARGUMENT_CONSTRAINT_VIOLATION, parameters);
+    }
+
+    @ExceptionHandler(OpenApiRequestValidationException.class)
+    public ResponseEntity<Error> onOpenApiRequestValidationException(final OpenApiRequestValidationException ex) {
+        final var parameters = new Object[]{ex.getOpenApiFieldValidations().stream()
+            .map(violation -> String.format("'%s': %s", violation.path(), violation.message()))
             .collect(Collectors.joining(", "))};
 
         return createError(ErrorType.METHOD_ARGUMENT_CONSTRAINT_VIOLATION, parameters);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Error> onMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+    public ResponseEntity<Error> onMissingServletRequestParameterException(final MissingServletRequestParameterException ex) {
         return createError(ErrorType.MISSING_REQUEST_PARAMETER, new Object[]{ex.getParameterName()});
     }
 
@@ -122,30 +133,39 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler(MissingPathVariableException.class)
-    public ResponseEntity<Error> onMissingPathVariableException(MissingPathVariableException ex) {
+    public ResponseEntity<Error> onMissingPathVariableException(final MissingPathVariableException ex) {
         return createError(ErrorType.MISSING_REQUEST_PATH_VARIABLE, new Object[]{ex.getVariableName()});
     }
 
+    @ExceptionHandler(OpenApiResponseValidationException.class)
+    public ResponseEntity<Error> onOpenApiResponseValidationException(OpenApiResponseValidationException ex) {
+        final var parameters = new Object[]{ex.getOpenApiFieldValidations().stream()
+            .map(violation -> String.format("'%s': %s", violation.path(), violation.message()))
+            .collect(Collectors.joining(", "))};
+
+        return createError(ErrorType.UNPROCESSABLE_ENTITY, parameters);
+    }
+
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Error> onBadRequestException(BadRequestException ex) {
+    public ResponseEntity<Error> onBadRequestException(final BadRequestException ex) {
         final var parameters = new Object[]{getErrorMessage(ex.getMessageCode(), null)};
 
         return createError(ErrorType.BAD_REQUEST, parameters);
     }
 
 
-    private ResponseEntity<Error> createError(ErrorType type) {
+    private ResponseEntity<Error> createError(final ErrorType type) {
         return createError(type, null);
     }
 
-    private ResponseEntity<Error> createError(ErrorType type, @Nullable Object[] parameters) {
+    private ResponseEntity<Error> createError(final ErrorType type, @Nullable final Object[] parameters) {
         final var messageCode = String.join(".", ErrorType.class.getName(), type.name());
         final var message = getErrorMessage(messageCode, parameters);
 
         return ResponseEntity.status(errorMapper.mapToHttpStatus(type)).body(errorMapper.mapToError(type, message));
     }
 
-    private String getErrorMessage(String messageName, @Nullable Object[] parameters) {
+    private String getErrorMessage(final String messageName, @Nullable final Object[] parameters) {
         try {
             return messageSource.getMessage(messageName, parameters, LocaleContextHolder.getLocale());
         } catch (NoSuchMessageException ignored) {
