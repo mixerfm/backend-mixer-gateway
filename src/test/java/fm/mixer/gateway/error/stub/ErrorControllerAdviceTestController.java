@@ -5,6 +5,9 @@ import fm.mixer.gateway.error.exception.ExternalServiceException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.error.exception.ServiceUnavailableException;
 import fm.mixer.gateway.error.exception.TooManyRequestsException;
+import fm.mixer.gateway.validation.exception.OpenApiRequestValidationException;
+import fm.mixer.gateway.validation.exception.OpenApiResponseValidationException;
+import fm.mixer.gateway.validation.exception.model.OpenApiFieldValidation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -111,6 +115,11 @@ public class ErrorControllerAdviceTestController {
         throw new ConstraintViolationException(IRRELEVANT_DATA, validator.validateValue(InvalidArgumentsTestStub.class, TEST_PATH, -1));
     }
 
+    @GetMapping("onOpenApiRequestValidationException")
+    public void onOpenApiRequestValidationException() {
+        throw new OpenApiRequestValidationException(List.of(new OpenApiFieldValidation(TEST_PATH, IRRELEVANT_DATA)));
+    }
+
     @GetMapping("onMissingServletRequestParameterException")
     public void onMissingServletRequestParameterException() throws MissingServletRequestParameterException {
         throw new MissingServletRequestParameterException(TEST_PATH, TEST_TYPE);
@@ -134,6 +143,11 @@ public class ErrorControllerAdviceTestController {
     @GetMapping("onMissingPathVariableException")
     public void onMissingPathVariableException() throws MissingPathVariableException, NoSuchMethodException {
         throw new MissingPathVariableException(TEST_PATH, getMethodParameter());
+    }
+
+    @GetMapping("onOpenApiResponseValidationException")
+    public void onOpenApiResponseValidationException() {
+        throw new OpenApiResponseValidationException(List.of(new OpenApiFieldValidation(TEST_PATH, IRRELEVANT_DATA)));
     }
 
     @GetMapping("onBadRequestException")

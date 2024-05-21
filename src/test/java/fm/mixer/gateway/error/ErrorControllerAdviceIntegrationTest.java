@@ -40,11 +40,13 @@ class ErrorControllerAdviceIntegrationTest {
         "onMethodArgumentTypeMismatchExceptionWithNullRequiredType, METHOD_ARGUMENT_TYPE_MISMATCH, 400",
         "onMethodArgumentNotValidException, METHOD_ARGUMENT_NOT_VALID, 400",
         "onConstraintViolationException, METHOD_ARGUMENT_CONSTRAINT_VIOLATION, 400",
+        "onOpenApiRequestValidationException, METHOD_ARGUMENT_CONSTRAINT_VIOLATION, 400",
         "onMissingServletRequestParameterException, MISSING_REQUEST_PARAMETER, 400",
         "onHttpMessageNotReadableException, ILLEGAL_ARGUMENT, 400",
         "onIllegalArgumentException, ILLEGAL_ARGUMENT, 400",
         "onMissingRequestHeaderException, MISSING_REQUEST_HEADER, 400",
         "onMissingPathVariableException, MISSING_REQUEST_PATH_VARIABLE, 400",
+        "onOpenApiResponseValidationException, UNPROCESSABLE_ENTITY, 422",
         "onBadRequestException, BAD_REQUEST, 400"
     })
     void shouldHandleSpecificException(String url, String type, int status) throws Exception {

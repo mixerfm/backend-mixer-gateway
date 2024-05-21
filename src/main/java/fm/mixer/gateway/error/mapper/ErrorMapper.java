@@ -15,6 +15,7 @@ public interface ErrorMapper {
     @ValueMapping(target = "INTERNAL_SERVER_ERROR", source = "INTERNAL_SERVER_ERROR")
     @ValueMapping(target = "INTERNAL_SERVER_ERROR", source = "EXTERNAL_SERVICE_ERROR")
     @ValueMapping(target = "SERVICE_UNAVAILABLE", source = "EXTERNAL_SERVICE_UNAVAILABLE")
+    @ValueMapping(target = "UNPROCESSABLE_ENTITY", source = "UNPROCESSABLE_ENTITY")
     @ValueMapping(target = "METHOD_NOT_ALLOWED", source = "REQUEST_METHOD_NOT_SUPPORTED")
     @ValueMapping(target = "NOT_ACCEPTABLE", source = "MEDIA_TYPE_NOT_ACCEPTABLE")
     @ValueMapping(target = "UNSUPPORTED_MEDIA_TYPE", source = "MEDIA_TYPE_NOT_SUPPORTED")
