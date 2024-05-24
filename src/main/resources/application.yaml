@@ -7,6 +7,16 @@ spring:
     openfeign:
       circuitbreaker:
         enabled: true
+  liquibase:
+    change-log: database/changelogs.xml
+    enabled: true
+  jpa.open-in-view: false
+  thymeleaf.check-template-location: false
+  jackson.default-property-inclusion: non_null
+  datasource:
+    url: ${SERVICE_DATABASE_URL:jdbc:postgresql://localhost:15430/mixer-gateway}
+    username: ${SERVICE_DATABASE_USERNAME:mixer-gateway}
+    password: ${SERVICE_DATABASE_PASSWORD:mixer-gateway}
 
 mixer-gateway:
   circuitbreaker:
