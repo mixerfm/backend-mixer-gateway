@@ -90,7 +90,7 @@ public class ErrorControllerAdviceTestController {
 
     @GetMapping("onResourceNotFoundException")
     public void onResourceNotFoundException() {
-        throw new ResourceNotFoundException(IRRELEVANT_DATA);
+        throw new ResourceNotFoundException();
     }
 
     // Client bad requests
