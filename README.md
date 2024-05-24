@@ -43,6 +43,6 @@ Start Mixer Gateway with provided Maven wrapper:
 
 Testing of exposed endpoints can be done using [Bruno client](https://www.usebruno.com).
 
-Open Bruno collection located in `support/bruno-collection` directory.
+Open Bruno collection located in separated [GitHub repository](https://github.com/mixerfm/backend-api-definition), directory `mixer-gateway`.
 
 Before sending a request make sure to fill all of required variables in `Vars` or `Body` tab.

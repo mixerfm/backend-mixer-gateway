@@ -21,25 +21,21 @@ public class LambdaClientFallbackFactory<T> implements FallbackFactory<T> {
     public T create(Throwable cause) {
         log.error(cause.getMessage(), cause);
 
-        var exception = cause;
-        if (cause instanceof ExecutionException) {
-            // FeignException is wrapped in ExecutionException
-            exception = cause.getCause();
-        }
+        // FeignException is wrapped in ExecutionException
+        final var exception = cause instanceof ExecutionException ? cause.getCause() : cause;
 
         if (retryableExceptions.stream().anyMatch(e -> e.equals(cause.getClass()))) {
             if (cause.getCause() instanceof FeignException.TooManyRequests) {
-                throw new TooManyRequestsException(this.getClass().getSimpleName());
+                throw new TooManyRequestsException();
             }
-            else {
-                throw new ServiceUnavailableException(this.getClass().getSimpleName());
-            }
+
+            throw new ServiceUnavailableException();
         }
 
         if (exception instanceof FeignException.NotFound) {
-            throw new ResourceNotFoundException("default.not_found");
+            throw new ResourceNotFoundException();
         }
 
-        throw new ExternalServiceException(this.getClass().getSimpleName());
+        throw new ExternalServiceException();
     }
 }

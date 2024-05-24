@@ -1,0 +1,123 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-02-add-collection-tables">
+        <comment>Create Mix table</comment>
+        <createTable tableName="mix" remarks="Mix is a group of tracks">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique identifier used for fetching">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar" remarks="Name of the mix">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar" remarks="Mix description"/>
+            <column name="avatar" type="varchar" remarks="URI of cover art of the mix"/>
+            <column name="user_id" type="bigint" remarks="Author of the mix">
+                <constraints nullable="false" foreignKeyName="mix_user_foreign_key" references="user(id)"/>
+            </column>
+            <column name="visibility" type="smallint" remarks="Define mix visibility, e.g. private, public, premium-only">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="mix" indexName="mix_fetch_by_identifier_key">
+            <column name="identifier"/>
+        </createIndex>
+        <createIndex tableName="mix" indexName="mix_fetch_by_user_key">
+            <column name="user_id"/>
+        </createIndex>
+
+        <comment>Create Collection table</comment>
+        <createTable tableName="mix_collection" remarks="Collection of mixes">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique identifier used for fetching">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar" remarks="Name of the collection">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar" remarks="Description of the collection"/>
+            <column name="avatar" type="varchar" remarks="URI of cover art of the collection"/>
+            <column name="user_id" type="bigint" remarks="Author of the collection">
+                <constraints nullable="false" foreignKeyName="mix_collection_user_id_foreign_key" references="user(id)"/>
+            </column>
+            <column name="visibility" type="smallint" remarks="Define collection visibility, e.g. private, public, premium-only">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="mix_collection" indexName="mix_collection_fetch_by_identifier_key">
+            <column name="identifier"/>
+        </createIndex>
+        <createIndex tableName="mix_collection" indexName="mix_collection_fetch_by_user_key">
+            <column name="user_id"/>
+        </createIndex>
+
+        <comment>Create Collection-Mix relation</comment>
+        <createTable tableName="mix_collection_relation" remarks="Define which mix is in which collection">
+            <column name="collection_id" type="bigint" remarks="Reference to mix_collection table">
+                <constraints foreignKeyName="mix_collection_relation_collection_foreign_key" references="mix_collection(id)"/>
+            </column>
+            <column name="mix_id" type="bigint" remarks="Reference to mix table">
+                <constraints foreignKeyName="mix_collection_relation_mix_foreign_key" references="mix(id)"/>
+            </column>
+            <column name="position" type="smallint" remarks="Position of the mix in the collection">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="mix_collection_relation" columnNames="collection_id,mix_id"/>
+
+        <comment>Create Track table</comment>
+        <createTable tableName="mix_track">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique identifier used for fetching">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar" remarks="Name of the track">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="bigint" remarks="Duration of the track">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stream_url" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <comment>Create Mix-Track relation table</comment>
+        <createTable tableName="mix_track_relation" remarks="Define which track is in which mix">
+            <column name="mix_id" type="bigint" remarks="Reference to mix table">
+                <constraints foreignKeyName="mix_track_relation_mix_foreign_key" references="mix(id)"/>
+            </column>
+            <column name="track_id" type="bigint" remarks="Reference to mix_track table">
+                <constraints foreignKeyName="mix_track_relation_track_foreign_key" references="mix_track(id)"/>
+            </column>
+            <column name="position" type="smallint" remarks="Position of the track in the mix"/>
+        </createTable>
+        <addPrimaryKey tableName="mix_track_relation" columnNames="mix_id,track_id"/>
+    </changeSet>
+</databaseChangeLog>
