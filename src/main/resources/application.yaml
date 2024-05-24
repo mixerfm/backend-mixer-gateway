@@ -26,3 +26,9 @@ mixer-gateway:
   integration:
     feign:
       TestApi.url: ${USER_SERVICE_URL:http://localhost:8001}
+  openapi:
+    validation:
+      specifications:
+        - name: mix-v1
+          paths:
+            - /mixes/**

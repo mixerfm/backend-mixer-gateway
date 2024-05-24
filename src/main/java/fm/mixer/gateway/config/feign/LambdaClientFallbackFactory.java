@@ -33,7 +33,7 @@ public class LambdaClientFallbackFactory<T> implements FallbackFactory<T> {
         }
 
         if (exception instanceof FeignException.NotFound) {
-            throw new ResourceNotFoundException("default.not_found");
+            throw new ResourceNotFoundException();
         }
 
         throw new ExternalServiceException();

@@ -220,6 +220,7 @@
                     <templateDirectory>./openapi/templates/spring</templateDirectory>
                     <generateSupportingFiles>false</generateSupportingFiles>
                     <skipValidateSpec>true</skipValidateSpec>
+                    <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
                     <configOptions>
                         <useTags>true</useTags>
                         <serializableModel>true</serializableModel>
@@ -241,14 +242,14 @@
                     </execution>
                     <!-- Generate Controllers -->
                     <execution>
-                        <id>Generate Test endpoints</id>
+                        <id>Generate Mix endpoints</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/test-v1.yaml</inputSpec>
-                            <apiPackage>fm.mixer.gateway.api.v1</apiPackage>
-                            <modelPackage>fm.mixer.gateway.api.v1.model</modelPackage>
+                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/mix-v1.yaml</inputSpec>
+                            <apiPackage>fm.mixer.gateway.module.mix.api.v1</apiPackage>
+                            <modelPackage>fm.mixer.gateway.module.mix.api.v1.model</modelPackage>
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>
