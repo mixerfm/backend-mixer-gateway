@@ -1,0 +1,311 @@
+openapi: 3.0.3
+
+info:
+  title: Mixes API
+  description: |
+    This API allows you to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
+    For registered user, this API allows him/her to create new or update/delete existing mix.
+    Mix contain a group of tracks which can be played using Play API.
+  version: 0.1.0
+  x-release-notes:
+    - 0.1.0 Expose get endpoints for single mix; uploaded, listened and played mixes for specific user.
+
+tags:
+  - name: Mixes
+    description: Available actions for a mix fetch and management.
+
+paths:
+  /mixes/{mixId}:
+    get:
+      summary: Retrieve specific mix.
+      description: For specific mix retrieve information such as name, avatar, duration etc.
+      operationId: getSingleMix
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/MixIdentifier'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSingleMixResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+
+  /mixes/{username}/uploaded:
+    get:
+      summary: Retrieve user uploaded list of mixes.
+      description: For specific user retrieve list of uploaded mixes with information such as upload date, name, avatar, duration etc.
+      operationId: getUserUploadedMixes
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserUploadedMixesResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /mixes/{username}/liked:
+    get:
+      summary: Retrieve user liked list of mixes.
+      description: For specific user retrieve list of liked mixes with information such as time when user liked it and other mix related data.
+      operationId: getUserLikedMixes
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserLikedMixesResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /mixes/{username}/listened:
+    get:
+      summary: Retrieve user list of listened mixes.
+      description: For specific user retrieve list of mixes which he/she listened. Items contain time of listening and other mix related data.
+      operationId: getUserMixesHistory
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserListenedMixesResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+components:
+  parameters:
+    MixIdentifier:
+      name: mixId
+      in: path
+      description: The unique mix identifier used for fetching specific set of information.
+      required: true
+      example: 'V1StGXR8z5'
+      schema:
+        type: string
+
+  responses:
+    GetSingleMixResponse:
+      description: Get single mix response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SingleMix'
+
+    GetUserUploadedMixesResponse:
+      description: List of user uploaded mixes.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserUploadedMixes'
+
+    GetUserLikedMixesResponse:
+      description: List of user liked mixes.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserLikedMixes'
+
+    GetUserListenedMixesResponse:
+      description: List of user listened mixes.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserListenedMixes'
+
+  schemas:
+    SingleMix:
+      description: Get single mix data. To actually play the mix use Player endpoint with mix identifier.
+      allOf:
+        - $ref: '#/components/schemas/Mix'
+        - type: object
+          properties:
+            description:
+              type: string
+              description: Mix description. If mix does not have description, this field will not be returned.
+              example: 'My cool mix'
+
+    UserUploadedMixes:
+      type: object
+      description: List of user uploaded mixes.
+      required:
+        - mixes
+        - metadata
+      properties:
+        mixes:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Mix'
+              - type: object
+                required:
+                  - uploadedDateTime
+                properties:
+                  uploadedDateTime:
+                    type: string
+                    format: date-time
+                    description: Date and time when mix was uploaded.
+                    example: '9999-01-01T12:00:00Z'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    UserLikedMixes:
+      type: object
+      description: List of user liked mixes.
+      required:
+        - mixes
+        - metadata
+      properties:
+        mixes:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Mix'
+              - type: object
+                required:
+                  - likedDateTime
+                properties:
+                  likedDateTime:
+                    type: string
+                    format: date-time
+                    description: Date and time when mix was liked.
+                    example: '9999-01-01T12:00:00Z'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    UserListenedMixes:
+      type: object
+      description: List of user listened mixes.
+      required:
+        - mixes
+        - metadata
+      properties:
+        mixes:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/Mix'
+              - type: object
+                required:
+                  - listenedDateTime
+                properties:
+                  listenedDateTime:
+                    type: string
+                    format: date-time
+                    description: Date and time when mix was uploaded.
+                    example: '9999-01-01T12:00:00Z'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    Mix:
+      type: object
+      description: Object holding all relevant data for specific mix.
+      required:
+        - identifier
+        - name
+        - author
+        - numberOfPlays
+        - numberOfLikes
+        - numberOfTracks
+        - duration
+        - visibility
+        - tags
+      properties:
+        identifier:
+          type: string
+          description: The unique mix identifier used for fetching specific set of information.
+          example: 'V1StGXR8z5'
+        name:
+          description: Name of the mix.
+          type: string
+          maxLength: 255
+        avatarUrl:
+          type: string
+          description: Cover art of the mix. If author did not set mix cover art, it will not be present in response.
+          example: 'https://example.com/logo.png'
+        author:
+          $ref: '#/components/schemas/Author'
+        numberOfPlays:
+          type: integer
+          description: Total number of mix plays.
+          minimum: 0
+        numberOfLikes:
+          type: integer
+          description: Total number of mix likes.
+          minimum: 0
+        numberOfTracks:
+          type: integer
+          description: Total number of tracks.
+          example: 13
+        duration:
+          type: string
+          format: ISO 8601 duration
+          description: Total duration of the mix. If there is no tracks in list PT0S is returned
+          example: 'PT1H25M14S'
+        visibility:
+          $ref: '#/components/schemas/Visibility'
+        tags:
+          type: array
+          default: []
+          items:
+            $ref: '#/components/schemas/Tag'
+
+    Visibility:
+      type: string
+      description: Define mix visibility which can be private, public (visible) or visible only to premium users.
+      enum:
+        - PRIVATE
+        - PUBLIC
+        - PREMIUM
+
+    Tag:
+      type: string
+      description: Tag can be anything attached to mix, from music genre to the mood.
+      example: 'Rock'
+
+    Author:
+      type: object
+      description: The author of the mix.
+      required:
+        - username
+        - displayName
+      properties:
+        username:
+          type: string
+          description: The unique user identifier used for fetching specific set of information.
+          example: 'V1StGXR8z5'
+        displayName:
+          type: string
+          description: Human friendly user defined name.
+          example: 'Name Surname'
+        avatarUrl:
+          type: string
+          description: Profile picture. If user did not set profile picture, this field will not be present in response.
+          example: 'https://example.com/logo.png'
