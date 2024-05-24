@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "mix_track")
-public class Track {
+public class MixTrack {
 
     @Id
     @GeneratedValue
@@ -34,6 +34,9 @@ public class Track {
 
     @Column(nullable = false)
     private String streamUrl;
+
+    @Column(nullable = false)
+    private Integer playCount;
 
     @CreationTimestamp
     @Column(nullable = false)

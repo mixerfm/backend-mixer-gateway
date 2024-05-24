@@ -44,4 +44,25 @@ public class MixController implements MixesApiDelegate {
     public ResponseEntity<UserUploadedMixes> getUserUploadedMixes(String username, List<@Pattern(regexp = "^(date|name|popularity|trend)(,(asc|desc))?$") String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserUploadedMixes(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
+
+    @Override
+    public ResponseEntity<Void> likeMix(String mixId) {
+        service.setLikeFlag(mixId, true);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> dislikeMix(String mixId) {
+        service.setLikeFlag(mixId, false);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> reportMix(String mixId) {
+        service.reportMix(mixId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

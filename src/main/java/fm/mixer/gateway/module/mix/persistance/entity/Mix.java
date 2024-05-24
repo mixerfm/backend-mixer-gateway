@@ -4,13 +4,13 @@ import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,6 +41,11 @@ public class Mix {
 
     private String avatar;
 
+    private Integer playCount;
+
+    @OneToMany(mappedBy = "mix")
+    private Set<MixLike> likes;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -56,12 +61,20 @@ public class Mix {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
         name = "mix_track_relation",
-        joinColumns = { @JoinColumn(name = "mix_id") },
-        inverseJoinColumns = { @JoinColumn(name = "track_id") }
+        joinColumns = {@JoinColumn(name = "mix_id")},
+        inverseJoinColumns = {@JoinColumn(name = "track_id")}
     )
     @OrderColumn(name = "position")
-    private List<Track> tracks;
+    private Set<MixTrack> tracks;
+
+    @ManyToMany
+    @JoinTable(
+        name = "mix_tag_relation",
+        joinColumns = {@JoinColumn(name = "mix_id")},
+        inverseJoinColumns = {@JoinColumn(name = "tag_id")}
+    )
+    private Set<MixTag> tags;
 }
