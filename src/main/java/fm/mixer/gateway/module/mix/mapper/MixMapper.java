@@ -4,6 +4,8 @@ import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.module.mix.api.v1.model.Author;
+import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
+import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixesMixesInner;
@@ -107,4 +109,12 @@ public interface MixMapper {
     @MixCommonMapping
     @Mapping(target = "listenedDateTime", ignore = true)
     UserListenedMixesMixesInner toUserListenedMixesMixesInner(Mix mix);
+
+    @PaginatedMapping
+    @Mapping(target = "collections", source = "items.content")
+    CollectionList mapToCollectionList(Page<MixCollection> items, PaginationRequest paginationRequest);
+
+    @MixCollectionCommon
+    @Mapping(target = "mixes", source = "mixes", qualifiedByName = "toMix")
+    SingleCollection mapToSingleCollection(MixCollection collection);
 }
