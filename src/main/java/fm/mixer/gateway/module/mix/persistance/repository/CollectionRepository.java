@@ -15,7 +15,7 @@ import java.util.Set;
 public interface CollectionRepository extends JpaRepository<MixCollection, Long> {
 
     // TODO remove this entity graph if mixCount = 0, and rewrite MixMapper mapping for mixes
-    @EntityGraph(attributePaths = {"mixes", "user", "tags"})
+    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes"})
     Page<MixCollection> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes"})
