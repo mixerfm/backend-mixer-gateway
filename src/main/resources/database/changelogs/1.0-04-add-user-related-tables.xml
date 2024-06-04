@@ -1,0 +1,120 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-04-add-user-related-tables">
+        <comment>Changes on existing tables</comment>
+        <addColumn tableName="user">
+            <column name="email" type="varchar" remarks="User email">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </addColumn>
+
+        <comment>Create User follower table</comment>
+        <createTable tableName="user_follower" remarks="Information about user followers">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User that follow other user">
+                <constraints nullable="false" foreignKeyName="user_follower_user_id_foreign_key" references="user(id)"/>
+            </column>
+            <column name="follows_user_id" type="bigint" remarks="Other user that is followed by user">
+                <constraints nullable="false" foreignKeyName="user_follower_follows_user_id_foreign_key"
+                             references="user(id)"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="user_follower" indexName="user_follower_fetch_by_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <comment>Create User likes related tables</comment>
+        <createTable tableName="mix_like" remarks="Information about which mix user has liked">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User who liked">
+                <constraints nullable="false" foreignKeyName="mix_like_user_id_foreign_key" references="user(id)"/>
+            </column>
+            <column name="mix_id" type="bigint" remarks="Reference to mix table">
+                <constraints nullable="false" foreignKeyName="mix_like_mix_foreign_key" references="mix(id)"/>
+            </column>
+            <column name="liked" type="boolean"
+                    remarks="Has user liked or disliked. If not present user has no interactions with the mix"/>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="mix_like" indexName="mix_like_fetch_by_user_id_key">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createTable tableName="mix_collection_like" remarks="Information about which mixCollection user has liked">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User who liked">
+                <constraints nullable="false" foreignKeyName="mix_collection_like_user_id_foreign_key"
+                             references="user(id)"/>
+            </column>
+            <column name="mix_collection_id" type="bigint" remarks="Reference to mix_collection table">
+                <constraints nullable="false" foreignKeyName="mix_collection_like_mix_collection_foreign_key"
+                             references="mix_collection(id)"/>
+            </column>
+            <column name="liked" type="boolean"
+                    remarks="Has user liked or disliked. If not present user has no interactions with the mixCollection"/>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="mix_collection_like" indexName="mix_collection_like_fetch_by_user_id_key">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createTable tableName="mix_track_like" remarks="Information about which track user has liked">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User who liked">
+                <constraints nullable="false" foreignKeyName="mix_track_like_user_id_foreign_key"
+                             references="user(id)"/>
+            </column>
+            <column name="mix_track_id" type="bigint" remarks="Reference to mix_track table">
+                <constraints nullable="false" foreignKeyName="mix_track_like_mix_track_foreign_key"
+                             references="mix_track(id)"/>
+            </column>
+            <column name="liked" type="boolean"
+                    remarks="Has user liked or disliked. If not present user has no interactions with the track"/>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="mix_track_like" indexName="mix_track_like_fetch_by_user_id_key">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createTable tableName="mix_tag_like" remarks="Information about which tag user has liked">
+            <column name="id" type="bigint" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User who liked">
+                <constraints nullable="false" foreignKeyName="mix_tag_like_user_id_foreign_key"
+                             references="user(id)"/>
+            </column>
+            <column name="mix_tag_id" type="bigint" remarks="Reference to mix_track table">
+                <constraints nullable="false" foreignKeyName="mix_tag_like_mix_tag_foreign_key"
+                             references="mix_tag(id)"/>
+            </column>
+            <column name="liked" type="boolean"
+                    remarks="Has user liked or disliked. If not present user has no interactions with the tag"/>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="mix_tag_like" indexName="mix_tag_like_fetch_by_user_id_key">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
