@@ -46,6 +46,7 @@ public class MixController implements MixesApiDelegate {
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Void> likeMix(String mixId) {
         service.setLikeFlag(mixId, true);
 
@@ -53,6 +54,7 @@ public class MixController implements MixesApiDelegate {
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Void> dislikeMix(String mixId) {
         service.setLikeFlag(mixId, false);
 
@@ -60,6 +62,7 @@ public class MixController implements MixesApiDelegate {
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Void> reportMix(String mixId) {
         service.reportMix(mixId);
 
