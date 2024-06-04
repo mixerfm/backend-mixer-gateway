@@ -1,0 +1,33 @@
+services:
+  proxy:
+    image: nginx
+    volumes:
+      - ./build-assets/nginx-proxy-minimal.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+    links:
+      - "mixer-gateway"
+    restart: always
+    depends_on:
+      - mixer-gateway
+    networks:
+        - default
+  mixer-gateway:
+    build: "."
+    ports:
+      - "8000:80"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8000/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+    restart: on-failure
+    networks:
+        - default
+    environment:
+        - SERVICE_DATABASE_USERNAME
+        - SERVICE_DATABASE_PASSWORD
+        - SERVICE_DATABASE_URL
+networks:
+    default:
+        driver: bridge
