@@ -18,13 +18,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "mix_collection")
-public class Collection {
+public class MixCollection {
 
     @Id
     @GeneratedValue
@@ -62,5 +62,13 @@ public class Collection {
         inverseJoinColumns = { @JoinColumn(name = "mix_id") }
     )
     @OrderColumn(name = "position")
-    private List<Mix> mixes;
+    private Set<Mix> mixes;
+
+    @ManyToMany
+    @JoinTable(
+        name = "mix_collection_tag_relation",
+        joinColumns = {@JoinColumn(name = "collection_id")},
+        inverseJoinColumns = {@JoinColumn(name = "tag_id")}
+    )
+    private Set<MixTag> tags;
 }

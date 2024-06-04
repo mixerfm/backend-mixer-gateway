@@ -6,15 +6,123 @@ info:
     This API allows you to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
     For registered user, this API allows him/her to create new or update/delete existing mix.
     Mix contain a group of tracks which can be played using Play API.
-  version: 0.1.0
+  version: 0.2.0
   x-release-notes:
-    - 0.1.0 Expose get endpoints for single mix; uploaded, listened and played mixes for specific user.
+    - 0.2.0 Expose get endpoints for specific and list of collections. Add like/dislike endpoints for mix and collections.
+    - 0.1.0 Expose get endpoints for specific mix; uploaded, listened and played mixes for specific user.
 
 tags:
+  - name: Collections
+    description: Available actions for a collection fetch and management.
   - name: Mixes
     description: Available actions for a mix fetch and management.
 
 paths:
+  /collections:
+    get:
+      summary: Retrieve list of collections.
+      description: |
+        Retrieve list of collections with data such as name, avatar, tags etc. 
+        Client can also fetch list of mixes inside collections with additional attributes.
+      operationId: getCollectionList
+      tags:
+        - Collections
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: '#/components/parameters/MixCount'
+        - $ref: '#/components/parameters/MixSort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetCollectionListResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /collections/{collectionId}:
+    get:
+      summary: Retrieve specific collection.
+      description: |
+        For specific collection, retrieve whole list of mixes and information such as name, avatar etc.
+        Client can sort mixes using sort parameter and filter them using filter parameter.
+        Sort and filter parameters are applied to mixes not collection itself.
+      operationId: getSingleCollection
+      tags:
+        - Collections
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/CollectionIdentifier'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Filter'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSingleCollectionResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /collections/{collectionId}/like:
+    post:
+      summary: Like specific collection.
+      description: |
+        Current active user can like specific collection.
+      operationId: likeCollection
+      tags:
+        - Collections
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/CollectionIdentifier'
+      responses:
+        '204':
+          description: User successfully liked the collection.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /collections/{collectionId}/dislike:
+    post:
+      summary: Dislike specific collection.
+      description: |
+        Current active user can dislike specific collection.
+      operationId: dislikeCollection
+      tags:
+        - Collections
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/CollectionIdentifier'
+      responses:
+        '204':
+          description: User successfully disliked the collection.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /collections/{collectionId}/report:
+    post:
+      summary: Report specific collection.
+      description: |
+        Current active user can report specific collection.
+      operationId: reportCollection
+      tags:
+        - Collections
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/CollectionIdentifier'
+      responses:
+        '204':
+          description: User successfully reported the collection.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
   /mixes/{mixId}:
     get:
       summary: Retrieve specific mix.
@@ -33,6 +141,62 @@ paths:
         default:
           $ref: './components/errors.yaml#/components/responses/ErrorResponse'
 
+  /mixes/{mixId}/like:
+    post:
+      summary: Like specific mix.
+      description: |
+        Current active user can like specific mix.
+      operationId: likeMix
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/MixIdentifier'
+      responses:
+        '204':
+          description: User successfully liked the mix.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /mixes/{mixId}/dislike:
+    post:
+      summary: Dislike specific mix.
+      description: |
+        Current active user can dislike specific mix.
+      operationId: dislikeMix
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/MixIdentifier'
+      responses:
+        '204':
+          description: User successfully disliked the mix.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /mixes/{mixId}/report:
+    post:
+      summary: Report specific mix.
+      description: |
+        Current active user can report specific mix.
+      operationId: reportMix
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/MixIdentifier'
+      responses:
+        '204':
+          description: User successfully reported the mix.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
 
   /mixes/{username}/uploaded:
     get:
@@ -102,6 +266,36 @@ paths:
 
 components:
   parameters:
+    MixCount:
+      name: mixCount
+      in: query
+      description: |
+        Attribute that defines if response should contain mixes, and if yes, how many from each collection.
+        Not sending this attribute or putting it to value 0 indicates that this endpoint only return list of collections.
+      required: false
+      example: 10
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+
+    MixSort:
+      name: mixSort
+      in: query
+      description: Attribute that defines how mixes are ordered. This attribute will be ignored if mixCount is not greater than 0.
+      required: false
+      schema:
+        $ref: './components/parameters.yaml#/components/schemas/SortSchema'
+
+    CollectionIdentifier:
+      name: collectionId
+      in: path
+      description: The unique collection identifier used for fetching specific set of information.
+      required: true
+      example: 'V1StGXR8z5'
+      schema:
+        type: string
+
     MixIdentifier:
       name: mixId
       in: path
@@ -112,6 +306,20 @@ components:
         type: string
 
   responses:
+    GetCollectionListResponse:
+      description: List of collections.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionList'
+
+    GetSingleCollectionResponse:
+      description: Get single collection response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SingleCollection'
+
     GetSingleMixResponse:
       description: Get single mix response.
       content:
@@ -141,6 +349,31 @@ components:
             $ref: '#/components/schemas/UserListenedMixes'
 
   schemas:
+    CollectionList:
+      type: object
+      description: List of collections.
+      required:
+        - collections
+        - metadata
+      properties:
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    SingleCollection:
+      description: Get information for specific collection.
+      allOf:
+        - $ref: '#/components/schemas/Collection'
+        - type: object
+          properties:
+            description:
+              type: string
+              description: Collection description. If collection does not have description, this field will not be returned.
+              example: 'My cool collection'
+
     SingleMix:
       description: Get single mix data. To actually play the mix use Player endpoint with mix identifier.
       allOf:
@@ -224,6 +457,50 @@ components:
         metadata:
           $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
 
+    Collection:
+      type: object
+      description: Object holding all relevant data for specific collection.
+      required:
+        - identifier
+        - name
+        - author
+        - visibility
+        - liked
+        - tags
+      properties:
+        identifier:
+          type: string
+          description: The unique collection identifier used for fetching specific set of information.
+          example: 'V1StGXR8z5'
+        name:
+          type: string
+          description: Name of the collection.
+          maxLength: 255
+        avatarUrl:
+          type: string
+          description: Cover art or icon of the collection. If author did not set collection cover art, it will not be present in response.
+          example: 'https://example.com/logo.png'
+        author:
+          $ref: '#/components/schemas/Author'
+        visibility:
+          $ref: '#/components/schemas/Visibility'
+        liked:
+          type: boolean
+          description: Flag that indicates whether current user likes the collection. If there is no active user session, this attribute will be false.
+          example: true
+        tags:
+          type: array
+          description: List of collection tags.
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/Tag'
+        mixes:
+          type: array
+          description: List of mixes is present only if mixCount variable is set and greater than 0 or client requested specific mix.
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/Mix'
+
     Mix:
       type: object
       description: Object holding all relevant data for specific mix.
@@ -236,6 +513,7 @@ components:
         - numberOfTracks
         - duration
         - visibility
+        - liked
         - tags
       properties:
         identifier:
@@ -243,8 +521,8 @@ components:
           description: The unique mix identifier used for fetching specific set of information.
           example: 'V1StGXR8z5'
         name:
-          description: Name of the mix.
           type: string
+          description: Name of the mix.
           maxLength: 255
         avatarUrl:
           type: string
@@ -264,6 +542,7 @@ components:
           type: integer
           description: Total number of tracks.
           example: 13
+          minimum: 0
         duration:
           type: string
           format: ISO 8601 duration
@@ -271,9 +550,14 @@ components:
           example: 'PT1H25M14S'
         visibility:
           $ref: '#/components/schemas/Visibility'
+        liked:
+          type: boolean
+          description: Flag that indicates whether current user likes the mix. If there is no active user session, this attribute will be false.
+          example: true
         tags:
           type: array
-          default: []
+          description: List of mix tags.
+          default: [ ]
           items:
             $ref: '#/components/schemas/Tag'
 

@@ -123,7 +123,9 @@ public class ErrorControllerAdvice {
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, IllegalArgumentException.class})
-    public ResponseEntity<Error> onIllegalArgumentException() {
+    public ResponseEntity<Error> onIllegalArgumentException(Exception e) {
+        log.error(e.getMessage(), e);
+
         return createError(ErrorType.ILLEGAL_ARGUMENT);
     }
 
