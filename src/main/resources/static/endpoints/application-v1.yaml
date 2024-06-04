@@ -1,0 +1,125 @@
+openapi: 3.0.3
+
+info:
+  title: Application API
+  description: |
+    This API allows you to fetch all information regarding current application state, like API and client
+    minimal supported versions.
+  version: 0.1.0
+  x-release-notes:
+    - 0.1.0 Expose get versions endpoint
+
+tags:
+  - name: Application
+    description: All actions related to the application state.
+
+paths:
+  /versions:
+    get:
+      summary: Retrieve version list.
+      description: Retrieve versions of each used client and API.
+      operationId: getVersionList
+      tags:
+        - Application
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetVersionListResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+components:
+  responses:
+    GetVersionListResponse:
+      description: Get version list response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VersionList'
+
+  schemas:
+    VersionList:
+      type: object
+      description: |
+        Object that holds list of versions for each component. Pagination is not supported as number of items is predefined and small.
+      properties:
+        clients:
+          type: array
+          description: List of clients and their current and minimum supported versions.
+          items:
+            $ref: '#/components/schemas/ClientVersion'
+        apis:
+          type: array
+          description: List of API-s and their current and minimum supported versions.
+          items:
+            $ref: '#/components/schemas/ServerVersion'
+
+    ClientVersion:
+      type: object
+      description: Object that holds information of current and minimum supported version of the client.
+      allOf:
+        - $ref: '#/components/schemas/Version'
+        - type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/ClientType'
+
+    ClientType:
+      type: string
+      description: Type of the client.
+      example: 'ANDROID_CLIENT'
+      enum:
+        - ANDROID_CLIENT
+        - IOS_CLIENT
+
+    ServerVersion:
+      type: object
+      description: Object that holds information of current and minimum supported API version.
+      allOf:
+        - $ref: '#/components/schemas/Version'
+        - type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/ServerApiType'
+
+    ServerApiType:
+      type: string
+      description: API group.
+      example: 'MIX_API'
+      enum:
+        - APPLICATION_API
+        - AUTH_API
+        - COMMUNITY_API
+        - EXPLORE_API
+        - MIX_API
+        - PLAY_API
+        - USER_API
+
+    Version:
+      type: object
+      description: Object that holds information of current and minimum supported version of the resource.
+      required:
+        - minVersion
+        - currentVersion
+      properties:
+        minVersion:
+          $ref: '#/components/schemas/VersionValue'
+        currentVersion:
+          $ref: '#/components/schemas/VersionValue'
+        deprecationDate:
+          type: string
+          description: Date when resource will be deprecated. Client should consult documentation for upgrade details.
+          format: date
+          example: '9999-01-01'
+        notice:
+          type: string
+          description: Human readable notice for deprecation of the resource.
+          example: 'Application API has required breaking change in version 2, and version 1 is not used by major clients.'
+
+    VersionValue:
+      type: string
+      description: Version of the item.
+      pattern: '^\d+\.\d+$'
+      example: '1.2'

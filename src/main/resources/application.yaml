@@ -35,3 +35,34 @@ mixer-gateway:
         - name: mix-v1
           paths:
             - /mixes/**
+  versions:
+    clients:
+      ANDROID_CLIENT:
+        minVersion: 1.0
+        currentVersion: 1.0
+      IOS_CLIENT:
+        minVersion: 1.0
+        currentVersion: 1.0
+    apis:
+      APPLICATION_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+      AUTH_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+      COMMUNITY_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+      EXPLORE_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+      MIX_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+      PLAY_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+      USER_API:
+        minVersion: 1.0
+        currentVersion: 1.0
+
