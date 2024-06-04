@@ -3,10 +3,11 @@ openapi: 3.0.3
 info:
   title: Application API
   description: |
-    This API allows you to fetch all information regarding current application state, like API and client
+    This API allows client to fetch all information regarding current application state, like API and client
     minimal supported versions.
   version: 0.1.0
   x-release-notes:
+    - 0.1.1 Expand version value to support patch versions
     - 0.1.0 Expose get versions endpoint
 
 tags:
@@ -121,5 +122,5 @@ components:
     VersionValue:
       type: string
       description: Version of the item.
-      pattern: '^\d+\.\d+$'
-      example: '1.2'
+      pattern: '^\d+\.\d+.\d+$'
+      example: '1.2.1'

@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: Mixes API
   description: |
-    This API allows you to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
+    This API allows client to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
     For registered user, this API allows him/her to create new or update/delete existing mix.
     Mix contain a group of tracks which can be played using Play API.
   version: 0.2.0
