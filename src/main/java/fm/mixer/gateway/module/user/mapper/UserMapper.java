@@ -57,6 +57,9 @@ public interface UserMapper {
     @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "userCommon")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void toUserUpdate(@MappingTarget User user, UserCommon userCommon, String avatar, String identifier);
 
     @AfterMapping

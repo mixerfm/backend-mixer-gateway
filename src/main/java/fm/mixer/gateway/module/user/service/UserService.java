@@ -99,6 +99,7 @@ public class UserService {
         user.setActive(false);
 
         repository.save(user);
+        followerRepository.deleteUser(user);
     }
 
     private Optional<String> uploadAvatar(AvatarContent avatarContent) {
