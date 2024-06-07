@@ -12,11 +12,13 @@ info:
     old user -> Auth API (login) -> receive JWT -> User API.
   version: 0.1.0
   x-release-notes:
-    0.1.0
+    - 0.1.0 Expose user management (get, create, update and delete user) and user community (follow/unfollow/report and fetch followers/following) endpoints
 
 tags:
   - name: User
     description: Operations for user management.
+  - name: UserCommunity
+    description: Operations related to user interactions.
 
 paths:
   /users:
@@ -98,6 +100,122 @@ paths:
         default:
           $ref: './components/errors.yaml#/components/responses/ErrorResponse'
 
+  /users/{username}/followers:
+    get:
+      summary: Get user follower list.
+      description: Get the list of user followers.
+      operationId: getFollowerList
+      tags:
+        - UserCommunity
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserFollowerListResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /users/{username}/following:
+    get:
+      summary: Get user following list.
+      description: Get the list of users that he/she is following.
+      operationId: getFollowingList
+      tags:
+        - UserCommunity
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserFollowingListResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /users/{username}/follow:
+    post:
+      summary: Follow specific user.
+      description: Current active user can follow specific user provided with username.
+      operationId: follow
+      tags:
+        - UserCommunity
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      responses:
+        '204':
+          description: Current active user is now successfully following the user.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /users/{username}/unfollow:
+    post:
+      summary: Unfollow specific user.
+      description: Current active user can unfollow specific user provided with username.
+      operationId: unfollow
+      tags:
+        - UserCommunity
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      responses:
+        '204':
+          description: Current active user is now successfully unfollowed the user.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /users/{username}/remove-follower:
+    post:
+      summary: Remove specific user from the followers list.
+      description: Current active user can remove specific user from his/her followers list.
+      operationId: removeFollower
+      tags:
+        - UserCommunity
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      responses:
+        '204':
+          description: Current active user successfully removed the follower.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /users/{username}/report:
+    post:
+      summary: Report specific user.
+      description: Current active user can report specific user.
+      operationId: reportUser
+      tags:
+        - UserCommunity
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      responses:
+        '204':
+          description: Current active user successfully reported the user.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
 components:
   requestBodies:
     CreateUserRequest:
@@ -124,6 +242,20 @@ components:
           schema:
             $ref: '#/components/schemas/GetUser'
 
+    GetUserFollowerListResponse:
+      description: Get user follower list response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetUserList'
+
+    GetUserFollowingListResponse:
+      description: Get user following list response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetUserList'
+
   schemas:
     GetUser:
       type: object
@@ -137,9 +269,15 @@ components:
             username:
               $ref: '#/components/schemas/Username'
             avatarUrl:
-              type: string
-              description: Profile picture. If user did not set profile picture, this field will not be present in response.
-              example: 'https://example.com/logo.png'
+              $ref: '#/components/schemas/AvatarUrl'
+            numberOfFollowers:
+              type: integer
+              description: Number of users who follows this user.
+              example: 143
+            numberOfFollowing:
+              type: integer
+              description: Number of users which this user follows.
+              example: 256
             relation:
               type: string
               description: |
@@ -186,10 +324,7 @@ components:
         - email
       properties:
         displayName:
-          type: string
-          description: Human friendly user defined name.
-          maxLength: 100
-          example: 'Name Surname'
+          $ref: '#/components/schemas/DisplayName'
         biography:
           type: string
           description: User personal biography.
@@ -281,10 +416,46 @@ components:
           type: number
           example: 14.540282331495733
 
+    GetUserList:
+      type: object
+      description: List of users.
+      required:
+        - users
+        - metadata
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompactUser'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    CompactUser:
+      type: object
+      description: Object that holds only required user information.
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        displayName:
+          $ref: '#/components/schemas/DisplayName'
+        avatarUrl:
+          $ref: '#/components/schemas/AvatarUrl'
+
     Username:
       type: string
       description: The unique user identifier used for fetching specific set of information.
       example: 'V1StGXR8z5'
+
+    DisplayName:
+      type: string
+      description: Human friendly user defined name.
+      maxLength: 100
+      example: 'Name Surname'
+
+    AvatarUrl:
+      type: string
+      description: Profile picture. If user did not set profile picture, this field will not be present in response.
+      example: 'https://example.com/logo.png'
 
     AvatarContent:
       type: object
