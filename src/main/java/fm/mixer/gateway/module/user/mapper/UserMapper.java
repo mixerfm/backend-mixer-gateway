@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.user.mapper;
 import fm.mixer.gateway.module.user.api.v1.model.Address;
 import fm.mixer.gateway.module.user.api.v1.model.GetUser;
 import fm.mixer.gateway.module.user.api.v1.model.SocialMediaType;
+import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
 import fm.mixer.gateway.module.user.api.v1.model.UserCommon;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserLocation;
@@ -53,14 +54,16 @@ public interface UserMapper {
     @Mapping(target = ".", source = "userCommon")
     User toUserCreate(UserCommon userCommon, String avatar, String identifier);
 
-    @Mapping(target = "name", source = "userCommon.displayName")
-    @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
+    @Mapping(target = "name", source = "updateUser.displayName")
+    @Mapping(target = "socialNetworks", source = "updateUser.socialMedia")
+    @Mapping(target = "identifier", source = "updateUser.username")
+    @Mapping(target = "avatar", source = "avatar")
     @Mapping(target = "active", constant = "true")
-    @Mapping(target = ".", source = "userCommon")
+    @Mapping(target = ".", source = "updateUser")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void toUserUpdate(@MappingTarget User user, UserCommon userCommon, String avatar, String identifier);
+    void toUserUpdate(@MappingTarget User user, UpdateUser updateUser, String avatar);
 
     @AfterMapping
     default void toUser(@MappingTarget User user) {

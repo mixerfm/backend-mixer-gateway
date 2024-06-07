@@ -35,6 +35,11 @@ public class UserCommunityService {
     public void follow(String username) {
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
+        // User already follow this user
+        if (repository.findByUserAndFollowsUser(getCurrentUser(), user). isPresent()) {
+            return;
+        }
+
         repository.save(mapper.toUserFollower(getCurrentUser(), user));
     }
 

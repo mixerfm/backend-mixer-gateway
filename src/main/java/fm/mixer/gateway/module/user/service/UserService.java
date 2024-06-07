@@ -13,6 +13,7 @@ import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import fm.mixer.gateway.util.RandomIdentifierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -83,23 +84,24 @@ public class UserService {
             .orElse(user.getAvatar());
 
         // Update fields and save
-        mapper.toUserUpdate(user, updateUserRequest, avatar, username);
+        mapper.toUserUpdate(user, updateUserRequest, avatar);
         repository.save(user);
 
         return mapper.toGetUser(user, GetUser.RelationEnum.SELF);
     }
 
+    @Transactional
     public void deleteUser(String username) {
         final var user = repository.findByActiveIsTrueAndIdentifier(username).orElseThrow(ResourceNotFoundException::new);
 
         validation.validateUserCanDelete(user);
 
-        user.setSocialNetworks(Set.of());
+        followerRepository.deleteUser(user);
+
+        Optional.ofNullable(user.getSocialNetworks()).ifPresent(Set::clear);
         user.setAddress(null);
         user.setActive(false);
-
         repository.save(user);
-        followerRepository.deleteUser(user);
     }
 
     private Optional<String> uploadAvatar(AvatarContent avatarContent) {
