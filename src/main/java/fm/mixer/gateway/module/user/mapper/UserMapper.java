@@ -1,0 +1,68 @@
+package fm.mixer.gateway.module.user.mapper;
+
+import fm.mixer.gateway.module.user.api.v1.model.Address;
+import fm.mixer.gateway.module.user.api.v1.model.GetUser;
+import fm.mixer.gateway.module.user.api.v1.model.SocialMediaType;
+import fm.mixer.gateway.module.user.api.v1.model.UserCommon;
+import fm.mixer.gateway.module.user.persistance.entity.User;
+import fm.mixer.gateway.module.user.persistance.entity.UserLocation;
+import fm.mixer.gateway.module.user.persistance.entity.model.SocialNetworkType;
+import fm.mixer.gateway.module.user.persistance.entity.model.UserGender;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.ValueMapping;
+
+import java.util.Optional;
+
+@Mapper
+public interface UserMapper {
+
+    @Mapping(target = "displayName", source = "user.name")
+    @Mapping(target = "socialMedia", source = "user.socialNetworks")
+    @Mapping(target = "username", source = "user.identifier")
+    @Mapping(target = "avatarUrl", source = "user.avatar")
+    @Mapping(target = "relation", source = "relation")
+    @Mapping(target = ".", source = "user")
+    GetUser toGetUser(User user, GetUser.RelationEnum relation);
+
+    @Mapping(target = "location", source = ".")
+    Address toAddress(UserLocation address);
+
+    @Mapping(target = "latitude", source = "location.latitude")
+    @Mapping(target = "longitude", source = "location.longitude")
+    void toUserLocation(@MappingTarget UserLocation userLocation, Address address);
+
+    @ValueMapping(target = "FACEBOOK", source = "FACEBOOK")
+    @ValueMapping(target = "X", source = "X")
+    @ValueMapping(target = "INSTAGRAM", source = "INSTAGRAM")
+    @InheritInverseConfiguration
+    SocialMediaType toSocialMedia(SocialNetworkType type);
+
+    @ValueMapping(target = "MALE", source = "MALE")
+    @ValueMapping(target = "FEMALE", source = "FEMALE")
+    @ValueMapping(target = "OTHER", source = "OTHER")
+    @InheritInverseConfiguration
+    UserCommon.GenderEnum toGenderEnum(UserGender gender);
+
+    @Mapping(target = "name", source = "userCommon.displayName")
+    @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
+    @Mapping(target = "active", constant = "true")
+    @Mapping(target = ".", source = "userCommon")
+    User toUserCreate(UserCommon userCommon, String avatar, String identifier);
+
+    @Mapping(target = "name", source = "userCommon.displayName")
+    @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
+    @Mapping(target = "active", constant = "true")
+    @Mapping(target = ".", source = "userCommon")
+    void toUserUpdate(@MappingTarget User user, UserCommon userCommon, String avatar, String identifier);
+
+    @AfterMapping
+    default void toUser(@MappingTarget User user) {
+        Optional.ofNullable(user.getAddress()).ifPresent(userLocation -> userLocation.setUser(user));
+        Optional.ofNullable(user.getSocialNetworks())
+            .ifPresent(socialNetworks -> socialNetworks.forEach(socialNetwork -> socialNetwork.setUser(user)));
+    }
+}

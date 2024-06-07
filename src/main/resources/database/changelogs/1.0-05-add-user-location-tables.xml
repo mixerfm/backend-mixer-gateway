@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-05-add-user-location-tables">
+        <comment>Update existing user table</comment>
+        <createIndex tableName="user" indexName="user_fetch_by_email">
+            <column name="email"/>
+        </createIndex>
+        <addColumn tableName="user">
+            <column name="phone_number" type="varchar" remarks="User phone number"/>
+        </addColumn>
+        <addColumn tableName="user">
+            <column name="gender" type="char" remarks="User gender"/>
+        </addColumn>
+        <addColumn tableName="user">
+            <column name="active" type="bool" defaultValueBoolean="true" remarks="Is user active">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <comment>Create location table</comment>
+        <createTable tableName="user_location" remarks="User location">
+            <column name="user_id" type="bigint" remarks="User who lives here">
+                <constraints primaryKey="true" foreignKeyName=""/>
+            </column>
+            <column name="country_code" type="varchar" remarks="User country"/>
+            <column name="city" type="varchar" remarks="User city"/>
+            <column name="longitude" type="decimal" remarks="Map longitude"/>
+            <column name="latitude" type="decimal" remarks="Map latitude"/>
+        </createTable>
+
+        <comment>Create social media table</comment>
+        <createTable tableName="user_social_network">
+            <column name="id" type="int" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User">
+                <constraints nullable="false" foreignKeyName="user_follower_user_id_foreign_key" references="user(id)"/>
+            </column>
+            <column name="type" type="varchar" remarks="Type of social media platform, e.g. FACEBOOK">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="varchar" remarks="URL path to social media profile">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

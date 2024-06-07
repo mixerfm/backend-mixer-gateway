@@ -31,21 +31,21 @@ public class MixService {
     }
 
     public UserLikedMixes getUserLikedMixes(String username, PaginationRequest pagination) {
-        final var user = userRepository.findByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
         final var likedMixes = likeRepository.findByUserAndLikedIsTrue(user, pagination.pageable());
 
         return mapper.toUserLikedMixes(likedMixes, pagination);
     }
 
     public UserListenedMixes getUserMixesHistory(String username, PaginationRequest pagination) {
-        final var user = userRepository.findByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
         final var listenedMixes = historyRepository.findByUser(user, pagination.pageable());
 
         return mapper.toUserListenedMixes(listenedMixes, pagination);
     }
 
     public UserUploadedMixes getUserUploadedMixes(String username, PaginationRequest pagination) {
-        final var user = userRepository.findByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
         return mapper.toUserUploadedMixes(repository.findAllByUser(user, pagination.pageable()), pagination);
     }

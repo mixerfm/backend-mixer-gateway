@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-06-optimize-primary-keys">
+        <addAutoIncrement tableName="user" columnName="id"/>
+        <addAutoIncrement tableName="user" columnName="id"/>
+        <addAutoIncrement tableName="mix" columnName="id"/>
+        <addAutoIncrement tableName="mix_collection" columnName="id"/>
+        <addAutoIncrement tableName="mix_track" columnName="id"/>
+        <addAutoIncrement tableName="play_session_history" columnName="id"/>
+        <addAutoIncrement tableName="mix_tag" columnName="id"/>
+        <addAutoIncrement tableName="user_follower" columnName="id"/>
+        <addAutoIncrement tableName="mix_like" columnName="id"/>
+        <addAutoIncrement tableName="mix_collection_like" columnName="id"/>
+        <addAutoIncrement tableName="mix_track_like" columnName="id"/>
+        <addAutoIncrement tableName="mix_tag_like" columnName="id"/>
+        <addAutoIncrement tableName="user_social_network" columnName="id"/>
+    </changeSet>
+</databaseChangeLog>

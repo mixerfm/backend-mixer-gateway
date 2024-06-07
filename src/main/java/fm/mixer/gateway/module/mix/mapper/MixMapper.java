@@ -1,5 +1,6 @@
 package fm.mixer.gateway.module.mix.mapper;
 
+import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
@@ -44,9 +45,12 @@ public interface MixMapper {
 
     @Named("toLiked")
     default boolean toLiked(Mix mix) {
-        // TODO change mix.getUser().getId() with SecurityContextHolder id
-        return mix.getLikes().stream()
-            .anyMatch(like -> like.getUser().getId().equals(mix.getUser().getId()) && Boolean.TRUE.equals(like.getLiked()));
+        final var currentActiveUser = UserPrincipalUtil.getCurrentActiveUser();
+
+        return currentActiveUser.filter(user -> mix.getLikes().stream()
+                .anyMatch(like -> user.getId().equals(like.getUser().getId()) && Boolean.TRUE.equals(like.getLiked()))
+            )
+            .isPresent();
     }
 
     default List<String> toTagList(Set<MixTag> tags) {
@@ -56,7 +60,7 @@ public interface MixMapper {
     @MixCommonMapping
     SingleMix toSingleMix(Mix mix);
 
-    default String toDuration(Set<MixTrack> tracks){
+    default String toDuration(Set<MixTrack> tracks) {
         return tracks.stream()
             .map(MixTrack::getDuration)
             .reduce(Duration::plus)
@@ -114,7 +118,7 @@ public interface MixMapper {
     @Mapping(target = "collections", source = "items.content")
     CollectionList mapToCollectionList(Page<MixCollection> items, PaginationRequest paginationRequest);
 
-    @MixCollectionCommon
+    @MixCollectionCommonMapping
     @Mapping(target = "mixes", source = "mixes", qualifiedByName = "toMix")
     SingleCollection mapToSingleCollection(MixCollection collection);
 }
