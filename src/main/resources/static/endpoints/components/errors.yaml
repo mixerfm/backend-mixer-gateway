@@ -35,6 +35,7 @@ components:
         - EXTERNAL_SERVICE_UNAVAILABLE
         - INTERNAL_SERVER_ERROR
         # Client errors
+        - ACCESS_FORBIDDEN
         - BAD_REQUEST
         - ILLEGAL_ARGUMENT
         - MEDIA_TYPE_NOT_ACCEPTABLE
@@ -48,4 +49,5 @@ components:
         - TOO_MANY_REQUESTS
         - RESOURCE_NOT_FOUND
         - REQUEST_METHOD_NOT_SUPPORTED
+        - UNAUTHORIZED_ACCESS
         - UNPROCESSABLE_ENTITY

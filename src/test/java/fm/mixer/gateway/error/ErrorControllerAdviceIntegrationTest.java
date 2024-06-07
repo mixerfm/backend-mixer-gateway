@@ -1,6 +1,7 @@
 package fm.mixer.gateway.error;
 
 import fm.mixer.gateway.test.IntegrationTest;
+import fm.mixer.gateway.test.container.ContainerTestBase;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @SuppressWarnings("SpringBootApplicationProperties")
 @SpringBootTest(properties = "wiremock.server.port=8080")
-class ErrorControllerAdviceIntegrationTest {
+class ErrorControllerAdviceIntegrationTest extends ContainerTestBase {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,6 +31,7 @@ class ErrorControllerAdviceIntegrationTest {
         "onExternalServiceException, EXTERNAL_SERVICE_ERROR, 500",
         "onServiceUnavailableException, EXTERNAL_SERVICE_UNAVAILABLE, 503",
 
+        "onAccessForbiddenException, ACCESS_FORBIDDEN, 403",
         "onHttpRequestMethodNotSupportedException, REQUEST_METHOD_NOT_SUPPORTED, 405",
         "onHttpMediaTypeNotAcceptableException, MEDIA_TYPE_NOT_ACCEPTABLE, 406",
         "onHttpMediaTypeNotSupportedException, MEDIA_TYPE_NOT_SUPPORTED, 415",

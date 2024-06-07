@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 
 paths:
-  # There are no error endpoints
+# There are no error endpoints
 
 components:
   responses:
@@ -16,3 +16,10 @@ components:
         application/json:
           schema:
             $ref: './components/errors.yaml#/components/schemas/Error'
+
+    PaginationMetadataResponse:
+      description: Pagination metadata common response.
+      content:
+        application/json:
+          schema:
+            $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'

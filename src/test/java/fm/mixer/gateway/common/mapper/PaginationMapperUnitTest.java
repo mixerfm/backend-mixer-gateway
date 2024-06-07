@@ -3,7 +3,7 @@ package fm.mixer.gateway.common.mapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.common.model.SortField;
 import fm.mixer.gateway.error.exception.BadRequestException;
-import fm.mixer.gateway.module.mix.api.v1.model.PaginationMetadata;
+import fm.mixer.gateway.model.PaginationMetadata;
 import fm.mixer.gateway.test.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -76,7 +76,7 @@ class PaginationMapperUnitTest {
 
         // Then
         assertThat(exception).isInstanceOf(BadRequestException.class);
-        assertThat(((BadRequestException )exception).getMessageCode()).isEqualTo("sort.field.duplicated.error");
+        assertThat(((BadRequestException) exception).getMessageCode()).isEqualTo("sort.field.duplicated.error");
     }
 
     @Test

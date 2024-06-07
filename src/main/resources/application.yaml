@@ -2,6 +2,12 @@ server:
   port: 80
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+          issuer-uri: https://securetoken.google.com/musicmixerai
   jpa:
     show-sql: true
 
@@ -22,6 +28,7 @@ spring:
     password: ${SERVICE_DATABASE_PASSWORD:mixer-gateway}
 
 mixer-gateway:
+  security.enabled: true
   circuitbreaker:
     timelimiter.timeout-duration: 1m
     ignore-exceptions:
@@ -38,31 +45,31 @@ mixer-gateway:
   versions:
     clients:
       ANDROID_CLIENT:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       IOS_CLIENT:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
     apis:
       APPLICATION_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       AUTH_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       COMMUNITY_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       EXPLORE_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       MIX_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       PLAY_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
       USER_API:
-        minVersion: 1.0
-        currentVersion: 1.0
+        minVersion: 1.0.0
+        currentVersion: 1.0.0
 

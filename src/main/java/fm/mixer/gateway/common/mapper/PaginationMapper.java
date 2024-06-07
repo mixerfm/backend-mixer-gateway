@@ -3,7 +3,7 @@ package fm.mixer.gateway.common.mapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.common.model.SortField;
 import fm.mixer.gateway.error.exception.BadRequestException;
-import fm.mixer.gateway.module.mix.api.v1.model.PaginationMetadata;
+import fm.mixer.gateway.model.PaginationMetadata;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ public abstract class PaginationMapper {
     public static Map<SortField, Sort.Direction> toSortDirections(List<String> sortList) {
         final var sortDirections = new HashMap<SortField, Sort.Direction>();
 
-        for (final var sort: sortList) {
+        for (final var sort : sortList) {
             final var request = sort.toUpperCase().split(":");
 
             final var field = SortField.valueOf(request[0]);

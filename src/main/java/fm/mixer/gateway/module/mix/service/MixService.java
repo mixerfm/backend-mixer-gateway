@@ -1,5 +1,7 @@
 package fm.mixer.gateway.module.mix.service;
 
+import fm.mixer.gateway.auth.exception.AccessForbiddenException;
+import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
@@ -31,27 +33,36 @@ public class MixService {
     }
 
     public UserLikedMixes getUserLikedMixes(String username, PaginationRequest pagination) {
-        final var user = userRepository.findByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
         final var likedMixes = likeRepository.findByUserAndLikedIsTrue(user, pagination.pageable());
 
         return mapper.toUserLikedMixes(likedMixes, pagination);
     }
 
     public UserListenedMixes getUserMixesHistory(String username, PaginationRequest pagination) {
-        final var user = userRepository.findByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
         final var listenedMixes = historyRepository.findByUser(user, pagination.pageable());
 
         return mapper.toUserListenedMixes(listenedMixes, pagination);
     }
 
     public UserUploadedMixes getUserUploadedMixes(String username, PaginationRequest pagination) {
-        final var user = userRepository.findByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
         return mapper.toUserUploadedMixes(repository.findAllByUser(user, pagination.pageable()), pagination);
     }
 
-    public void setLikeFlag(String mixId, boolean like) {
-        // TODO implement
+    public void setLikeFlag(final String mixId, final boolean like) {
+        final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
+        final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
+
+        // Find old record and change "liked" flag. If there is no old record create new object with mapper and store it.
+        likeRepository.save(
+            likeRepository.findByUserAndMix(user, mix).map(likeRecord -> {
+                likeRecord.setLiked(like);
+                return likeRecord;
+            }).orElse(mapper.toMixLike(user, mix, like))
+        );
     }
 
     public void reportMix(String mixId) {

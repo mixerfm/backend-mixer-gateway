@@ -31,6 +31,7 @@
         <openapi4j.version>1.0.7</openapi4j.version>
 
         <!-- Test -->
+        <testcontainers.version>1.19.8</testcontainers.version>
         <wiremock.version>3.0.1</wiremock.version>
 
         <!-- Plugins -->
@@ -157,6 +158,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
             <version>${wiremock.version}</version>
@@ -253,6 +266,9 @@
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <implicitHeaders>true</implicitHeaders>
@@ -272,6 +288,31 @@
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
+                            <configOptions>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <implicitHeaders>true</implicitHeaders>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Generate User endpoints</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/user-v1.yaml</inputSpec>
+                            <apiPackage>fm.mixer.gateway.module.user.api.v1</apiPackage>
+                            <modelPackage>fm.mixer.gateway.module.user.api.v1.model</modelPackage>
+                            <globalProperties>
+                                <supportingFiles>ApiUtil.java</supportingFiles>
+                            </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <implicitHeaders>true</implicitHeaders>

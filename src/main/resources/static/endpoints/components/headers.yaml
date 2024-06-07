@@ -32,3 +32,14 @@ components:
         type: string
         pattern: '^v\d+$'
         example: 'v1'
+    Authorization:
+      name: Authorization
+      in: header
+      description: |
+        The HTTP Authorization request header can be used to provide credentials that authenticate
+        a user agent with a server, allowing access to a protected resource.
+      required: true
+      example: 'Bearer dG9rZW4='
+      schema:
+        type: string
+        pattern: '^Bearer .*$'
