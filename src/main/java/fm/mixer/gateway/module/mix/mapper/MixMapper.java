@@ -121,4 +121,12 @@ public interface MixMapper {
     @MixCollectionCommonMapping
     @Mapping(target = "mixes", source = "mixes", qualifiedByName = "toMix")
     SingleCollection mapToSingleCollection(MixCollection collection);
+
+    // MapStruct wrongly set variables if all are not stated (Bug in library)
+    @Mapping(target = "user", source = "user")
+    @Mapping(target = "mix", source = "mix")
+    @Mapping(target = "liked", source = "liked")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    MixLike toMixLike(User user, Mix mix, Boolean liked);
 }
