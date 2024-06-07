@@ -33,6 +33,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
       requestBody:
         $ref: '#/components/requestBodies/CreateUserRequest'
       responses:
@@ -73,6 +74,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
       requestBody:
@@ -92,6 +94,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
       responses:
@@ -154,6 +157,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
       responses:
@@ -172,6 +176,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
       responses:
@@ -190,6 +195,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
       responses:
@@ -208,6 +214,7 @@ paths:
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
       responses:

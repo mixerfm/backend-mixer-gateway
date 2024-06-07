@@ -47,8 +47,13 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain configure(HttpSecurity http) throws Exception {
             http.authorizeHttpRequests(authorize -> {
-                authorize.requestMatchers(antPathRequestMatchers("/actuator/**")).permitAll();
-                authorize.anyRequest().authenticated();
+                authorize.requestMatchers(antPathRequestMatchers(
+                    "/collections/*/like", "/collections/*/dislike", "/collections/*/report",
+                    "/mixes/*/like", "/mixes/*/dislike", "/mixes/*/report",
+                    "/users", "PUT /users/*", "DELETE /users/*",
+                    "/users/*/follow", "/users/*/unfollow", "/users/*/remove-follower", "/users/*/report"
+                )).authenticated();
+                authorize.anyRequest().permitAll();
             });
 
             http.oauth2ResourceServer(oauth -> oauth
@@ -64,7 +69,15 @@ public class SecurityConfig {
         }
 
         private static RequestMatcher[] antPathRequestMatchers(String... patterns) {
-            return Stream.of(patterns).map(AntPathRequestMatcher::new).toArray(AntPathRequestMatcher[]::new);
+            return Stream.of(patterns).map(p -> {
+                // Developer can define HTTP method in pattern, e.g.: "GET /endpoint"
+                // => using hardcoded array positions so errors can easily be detected on first run
+                final var pattern = p.split(" ");
+                if (pattern.length == 1) {
+                    return new AntPathRequestMatcher(p);
+                }
+                return new AntPathRequestMatcher(pattern[1], pattern[0]);
+            }).toArray(AntPathRequestMatcher[]::new);
         }
     }
 }
