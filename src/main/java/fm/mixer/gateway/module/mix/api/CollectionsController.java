@@ -25,7 +25,7 @@ public class CollectionsController implements CollectionsApiDelegate {
         final var collectionPagination = PaginationMapper.toPaginationRequest(limit, page, sort);
         //TODO final var mixPagination = PaginationMapper.toPaginationRequest(mixCount, 1, mixSort); -- check if 0
 
-        return ResponseEntity.ok(service.getCollectionList(collectionPagination));
+        return ResponseEntity.ok(service.getCollectionList(collectionPagination, mixCount));
     }
 
     @Override
