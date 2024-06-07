@@ -16,3 +16,10 @@ components:
         application/json:
           schema:
             $ref: './components/errors.yaml#/components/schemas/Error'
+
+    PaginationMetadataResponse:
+      description: Pagination metadata common response.
+      content:
+        application/json:
+          schema:
+            $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'

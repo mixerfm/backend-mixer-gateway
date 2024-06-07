@@ -266,6 +266,9 @@
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <implicitHeaders>true</implicitHeaders>
@@ -285,6 +288,9 @@
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <implicitHeaders>true</implicitHeaders>
@@ -304,6 +310,9 @@
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <implicitHeaders>true</implicitHeaders>

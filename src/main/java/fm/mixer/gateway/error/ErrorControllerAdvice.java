@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,7 +82,7 @@ public class ErrorControllerAdvice {
         return service.createError(ErrorType.TOO_MANY_REQUESTS);
     }
 
-    @ExceptionHandler({NoHandlerFoundException.class, ResourceNotFoundException.class})
+    @ExceptionHandler({NoHandlerFoundException.class, ResourceNotFoundException.class, NoResourceFoundException.class})
     public ResponseEntity<Error> onResourceNotFoundException() {
         return service.createError(ErrorType.RESOURCE_NOT_FOUND);
     }
