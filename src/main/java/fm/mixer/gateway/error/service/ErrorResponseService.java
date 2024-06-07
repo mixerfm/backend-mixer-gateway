@@ -1,8 +1,9 @@
 package fm.mixer.gateway.error.service;
 
 import fm.mixer.gateway.error.mapper.ErrorMapper;
-import lombok.RequiredArgsConstructor;
 import fm.mixer.gateway.model.Error;
+import fm.mixer.gateway.model.ErrorType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,12 +18,12 @@ public class ErrorResponseService {
     private final ErrorMapper errorMapper;
     private final MessageSource messageSource;
 
-    public ResponseEntity<Error> createError(final fm.mixer.gateway.model.ErrorType type) {
+    public ResponseEntity<Error> createError(final ErrorType type) {
         return createError(type, null);
     }
 
-    public ResponseEntity<Error> createError(final fm.mixer.gateway.model.ErrorType type, @Nullable final Object[] parameters) {
-        final var messageCode = String.join(".", fm.mixer.gateway.model.ErrorType.class.getName(), type.name());
+    public ResponseEntity<Error> createError(final ErrorType type, @Nullable final Object[] parameters) {
+        final var messageCode = String.join(".", ErrorType.class.getName(), type.name());
         final var message = getErrorMessage(messageCode, parameters);
 
         return ResponseEntity.status(errorMapper.mapToHttpStatus(type)).body(errorMapper.mapToError(type, message));
@@ -31,7 +32,8 @@ public class ErrorResponseService {
     public String getErrorMessage(final String messageName, @Nullable final Object[] parameters) {
         try {
             return messageSource.getMessage(messageName, parameters, LocaleContextHolder.getLocale());
-        } catch (NoSuchMessageException ignored) {
+        }
+        catch (NoSuchMessageException ignored) {
             return messageName;
         }
     }

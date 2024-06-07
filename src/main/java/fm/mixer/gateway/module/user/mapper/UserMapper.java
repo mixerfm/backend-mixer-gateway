@@ -32,6 +32,7 @@ public interface UserMapper {
     @Mapping(target = "location", source = ".")
     Address toAddress(UserLocation address);
 
+    // UserLocation is defined as mapping target so MapStruct can reuse entity reference
     @Mapping(target = "latitude", source = "location.latitude")
     @Mapping(target = "longitude", source = "location.longitude")
     void toUserLocation(@MappingTarget UserLocation userLocation, Address address);

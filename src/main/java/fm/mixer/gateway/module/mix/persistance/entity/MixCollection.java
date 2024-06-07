@@ -59,8 +59,8 @@ public class MixCollection {
     @ManyToMany
     @JoinTable(
         name = "mix_collection_relation",
-        joinColumns = { @JoinColumn(name = "collection_id") },
-        inverseJoinColumns = { @JoinColumn(name = "mix_id") }
+        joinColumns = {@JoinColumn(name = "collection_id")},
+        inverseJoinColumns = {@JoinColumn(name = "mix_id")}
     )
     @OrderColumn(name = "position")
     private Set<Mix> mixes;

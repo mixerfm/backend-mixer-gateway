@@ -4,7 +4,6 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
     <changeSet author="skurelic" id="1.0-06-optimize-primary-keys">
         <addAutoIncrement tableName="user" columnName="id"/>
-        <addAutoIncrement tableName="user" columnName="id"/>
         <addAutoIncrement tableName="mix" columnName="id"/>
         <addAutoIncrement tableName="mix_collection" columnName="id"/>
         <addAutoIncrement tableName="mix_track" columnName="id"/>

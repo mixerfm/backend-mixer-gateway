@@ -36,7 +36,7 @@ public class UserCommunityService {
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
         // User already follow this user
-        if (repository.findByUserAndFollowsUser(getCurrentUser(), user). isPresent()) {
+        if (repository.findByUserAndFollowsUser(getCurrentUser(), user).isPresent()) {
             return;
         }
 

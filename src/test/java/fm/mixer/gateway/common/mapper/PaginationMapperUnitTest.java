@@ -76,7 +76,7 @@ class PaginationMapperUnitTest {
 
         // Then
         assertThat(exception).isInstanceOf(BadRequestException.class);
-        assertThat(((BadRequestException )exception).getMessageCode()).isEqualTo("sort.field.duplicated.error");
+        assertThat(((BadRequestException) exception).getMessageCode()).isEqualTo("sort.field.duplicated.error");
     }
 
     @Test

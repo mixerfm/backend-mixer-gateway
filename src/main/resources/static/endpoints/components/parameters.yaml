@@ -89,7 +89,7 @@ components:
         Examples: 
         "https://example.com/list?filter=Pink%20Floyd&filter=rock&filter=progressive"
         "https://example.com/list?filter=Pink%20Floyd,rock,progressive"
-      default: []
+      default: [ ]
       items:
         type: string
       example: [ 'Pink Floyd', 'rock', 'progressive' ]

@@ -25,7 +25,7 @@ public abstract class PaginationMapper {
     public static Map<SortField, Sort.Direction> toSortDirections(List<String> sortList) {
         final var sortDirections = new HashMap<SortField, Sort.Direction>();
 
-        for (final var sort: sortList) {
+        for (final var sort : sortList) {
             final var request = sort.toUpperCase().split(":");
 
             final var field = SortField.valueOf(request[0]);
