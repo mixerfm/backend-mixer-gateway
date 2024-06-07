@@ -1,5 +1,6 @@
 package fm.mixer.gateway.error.stub;
 
+import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.error.exception.ExternalServiceException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
@@ -62,6 +63,11 @@ public class ErrorControllerAdviceTestController {
     }
 
     // Client errors
+
+    @GetMapping("onAccessForbiddenException")
+    public void onAccessForbiddenException() {
+        throw new AccessForbiddenException();
+    }
 
     @GetMapping("onHttpRequestMethodNotSupportedException")
     public void onHttpRequestMethodNotSupportedException() throws HttpRequestMethodNotSupportedException {

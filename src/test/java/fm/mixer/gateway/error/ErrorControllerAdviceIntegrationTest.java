@@ -31,6 +31,7 @@ class ErrorControllerAdviceIntegrationTest extends ContainerTestBase {
         "onExternalServiceException, EXTERNAL_SERVICE_ERROR, 500",
         "onServiceUnavailableException, EXTERNAL_SERVICE_UNAVAILABLE, 503",
 
+        "onAccessForbiddenException, ACCESS_FORBIDDEN, 403",
         "onHttpRequestMethodNotSupportedException, REQUEST_METHOD_NOT_SUPPORTED, 405",
         "onHttpMediaTypeNotAcceptableException, MEDIA_TYPE_NOT_ACCEPTABLE, 406",
         "onHttpMediaTypeNotSupportedException, MEDIA_TYPE_NOT_SUPPORTED, 415",
