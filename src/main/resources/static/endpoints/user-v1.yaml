@@ -1,0 +1,296 @@
+openapi: 3.0.3
+info:
+  title: User API
+  description: |
+    This API allows client to fetch, create, update or delete user profiles and user settings (e.g. notifications).
+    User can follow, unfollow or report specific user, as well as list all followers for specific user.
+    
+    Note: Use this API only after user has valid credentials received using Auth API.
+    
+    Examples:
+    new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
+    old user -> Auth API (login) -> receive JWT -> User API.
+  version: 0.1.0
+  x-release-notes:
+    0.1.0
+
+tags:
+  - name: User
+    description: Operations for user management.
+
+paths:
+  /users:
+    post:
+      summary: Create new user.
+      description: |
+        Create new user with all required information. There can be some validation rules (e.g. password has to have minimum of 8 characters),
+        and if provided data is not compliant, endpoint will return appropriate exception.
+      operationId: createUser
+      tags:
+        - User
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/GetUserResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+  /users/{username}:
+    get:
+      summary: Retrieve information about specific user.
+      description: |
+        Retrieve information about specific user such as name, avatar etc.
+        If requested user is currently active user, additional information will be available.
+      operationId: getUser
+      tags:
+        - User
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+    put:
+      summary: Update specific user.
+      description: |
+        Update information about current active user, or if user has specific permissions he/she can also update data from other users.
+        There can be some validation rules (e.g. password has to have minimum of 8 characters), and if provided data is not compliant, 
+        endpoint will return appropriate exception.
+      operationId: updateUser
+      tags:
+        - User
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserResponse'
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+    delete:
+      summary: Delete specific user.
+      description: User can delete his/her account, or if user has specific permissions he/she can also delete other users.
+      operationId: deleteUser
+      tags:
+        - User
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Username'
+      responses:
+        '204':
+          description: Account was successfully deleted.
+        default:
+          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+
+components:
+  requestBodies:
+    CreateUserRequest:
+      description: Create user profile.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateUser'
+
+    UpdateUserRequest:
+      description: Update user profile.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUser'
+
+  responses:
+    GetUserResponse:
+      description: Get user related information.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetUser'
+
+  schemas:
+    GetUser:
+      type: object
+      description: User information returned from server.
+      required:
+        - username
+      allOf:
+        - $ref: '#/components/schemas/UserCommon'
+        - type: object
+          properties:
+            username:
+              $ref: '#/components/schemas/Username'
+            avatarUrl:
+              type: string
+              description: Profile picture. If user did not set profile picture, this field will not be present in response.
+              example: 'https://example.com/logo.png'
+            relation:
+              type: string
+              description: |
+                Relation between currently active user and this user. If there is no relation this attribute will be omitted.
+                If current user is same as user requested (e.g. user visited his/her own profile), value SELF will be returned.
+              enum:
+                - FOLLOWING
+                - BLOCKED
+                - SELF
+
+    CreateUser:
+      type: object
+      description: |
+        User provided information when creating new profile. User can create profile without supplying the username. 
+        If that is the case, server will automatically create NanoID generated username. For more information about NannoID visit: https://github.com/ai/nanoid
+      allOf:
+        - $ref: '#/components/schemas/UserCommon'
+        - type: object
+          properties:
+            username:
+              $ref: '#/components/schemas/Username'
+            avatar:
+              $ref: '#/components/schemas/AvatarContent'
+
+    UpdateUser:
+      type: object
+      description: User provided information when updating profile.
+      required:
+        - username
+      allOf:
+        - $ref: '#/components/schemas/UserCommon'
+        - type: object
+          properties:
+            username:
+              $ref: '#/components/schemas/Username'
+            avatar:
+              $ref: '#/components/schemas/AvatarContent'
+
+    UserCommon:
+      type: object
+      description: Object holding user information with only user provided data.
+      required:
+        - displayName
+        - email
+      properties:
+        displayName:
+          type: string
+          description: Human friendly user defined name.
+          maxLength: 100
+          example: 'Name Surname'
+        biography:
+          type: string
+          description: User personal biography.
+          example: 'I love rock & roll'
+        email:
+          type: string
+          description: User email address.
+          format: email
+          maxLength: 140
+          pattern: '^[a-zA-Z0-9.!#$%&*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
+          example: 'user@example.com'
+        phoneNumber:
+          type: string
+          description: User main phone number.
+          minLength: 1
+          maxLength: 35
+          example: '+1 234 567890'
+        dateOfBirth:
+          type: string
+          description: User date of birth. This date should be in the past.
+          format: date
+          example: '9999-01-01'
+        address:
+          $ref: '#/components/schemas/Address'
+        gender:
+          type: string
+          description: User selected gender.
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+        socialMedia:
+          type: array
+          description: List of user social media profiles.
+          items:
+            $ref: '#/components/schemas/SocialMedia'
+
+    SocialMedia:
+      type: object
+      description: User social media profile.
+      required:
+        - url
+        - type
+      properties:
+        url:
+          type: string
+          description: URL path to profile.
+          maxLength: 500
+        type:
+          $ref: '#/components/schemas/SocialMediaType'
+
+    SocialMediaType:
+      type: string
+      description: Social media network.
+      enum:
+        - FACEBOOK
+        - X
+        - INSTAGRAM
+
+    Address:
+      type: object
+      description: User defined address.
+      properties:
+        city:
+          description: User defined city name.
+          type: string
+          example: 'Krk'
+          minLength: 1
+          maxLength: 35
+        countryCode:
+          type: string
+          description: ISO 3166 ALPHA2 country code.
+          pattern: '[A-Z]{2}'
+          example: 'HR'
+        location:
+          $ref: '#/components/schemas/Location'
+
+    Location:
+      type: object
+      description: Current user location selected on map or from GPS location - provided by client.
+      required:
+        - longitude
+        - latitude
+      properties:
+        longitude:
+          type: number
+          example: 45.16406622076631
+        latitude:
+          type: number
+          example: 14.540282331495733
+
+    Username:
+      type: string
+      description: The unique user identifier used for fetching specific set of information.
+      example: 'V1StGXR8z5'
+
+    AvatarContent:
+      type: object
+      description: User uploaded image. If content is not sent, user avatar will not change.
+      properties:
+        bytes:
+          type: string
+          format: byte
+          example: 'TXkgcGhvdG8='

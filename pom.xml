@@ -292,6 +292,25 @@
                             </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Generate User endpoints</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/user-v1.yaml</inputSpec>
+                            <apiPackage>fm.mixer.gateway.module.user.api.v1</apiPackage>
+                            <modelPackage>fm.mixer.gateway.module.user.api.v1.model</modelPackage>
+                            <globalProperties>
+                                <supportingFiles>ApiUtil.java</supportingFiles>
+                            </globalProperties>
+                            <configOptions>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <implicitHeaders>true</implicitHeaders>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                     <!-- Generate Feign Clients (integration) -->
                     <execution>
                         <id>Generate Test client</id>
