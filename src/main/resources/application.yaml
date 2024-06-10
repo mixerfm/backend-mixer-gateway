@@ -47,6 +47,15 @@ mixer-gateway:
         - name: mix-v1
           paths:
             - /mixes/**
+            - /collections
+            - /collections/**
+        - name: user-v1
+          paths:
+            - /users
+            - /users/**
+        - name: application-v1
+          paths:
+            - /versions
   versions:
     clients:
       ANDROID_CLIENT:
