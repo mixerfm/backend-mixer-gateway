@@ -1,15 +1,15 @@
 package fm.mixer.gateway.module.user.service;
 
-import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.user.api.v1.model.AvatarContent;
 import fm.mixer.gateway.module.user.api.v1.model.CreateUser;
 import fm.mixer.gateway.module.user.api.v1.model.GetUser;
 import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
+import fm.mixer.gateway.module.user.api.v1.model.UserRelation;
 import fm.mixer.gateway.module.user.mapper.UserMapper;
-import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.repository.UserFollowerRepository;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
+import fm.mixer.gateway.module.user.util.UserRelationUtil;
 import fm.mixer.gateway.util.RandomIdentifierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,33 +24,14 @@ import java.util.Set;
 public class UserService {
 
     private final UserMapper mapper;
-    private final ValidateUserService validation;
     private final UserRepository repository;
+    private final ValidateUserService validation;
     private final UserFollowerRepository followerRepository;
 
     public GetUser getUser(String username) {
         final var user = repository.findByActiveIsTrueAndIdentifier(username).orElseThrow(ResourceNotFoundException::new);
 
-        return mapper.toGetUser(user, resolveRelation(user));
-    }
-
-    /**
-     * Will resolve relation between current active user and requested user.
-     */
-    private GetUser.RelationEnum resolveRelation(User user) {
-        final var activeUser = UserPrincipalUtil.getCurrentActiveUser();
-
-        if (activeUser.isEmpty()) {
-            return null;
-        }
-        if (activeUser.get().getId().equals(user.getId())) {
-            return GetUser.RelationEnum.SELF;
-        }
-        if (followerRepository.findByUser(activeUser.get()).stream().anyMatch(follows -> follows.getFollowsUser().getId().equals(user.getId()))) {
-            return GetUser.RelationEnum.FOLLOWING;
-        }
-
-        return null;
+        return mapper.toGetUser(user, UserRelationUtil.resolveRelation(user));
     }
 
     public GetUser createUser(CreateUser createUserRequest) {
@@ -66,7 +47,7 @@ public class UserService {
         final var user = mapper.toUserCreate(createUserRequest, uploadAvatar(createUserRequest.getAvatar()).orElse(null), username);
         repository.save(user);
 
-        return mapper.toGetUser(user, GetUser.RelationEnum.SELF);
+        return mapper.toGetUser(user, UserRelation.SELF);
     }
 
     public GetUser updateUser(String username, UpdateUser updateUserRequest) {
@@ -87,7 +68,7 @@ public class UserService {
         mapper.toUserUpdate(user, updateUserRequest, avatar);
         repository.save(user);
 
-        return mapper.toGetUser(user, GetUser.RelationEnum.SELF);
+        return mapper.toGetUser(user, UserRelation.SELF);
     }
 
     @Transactional

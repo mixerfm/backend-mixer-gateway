@@ -5,6 +5,7 @@ import fm.mixer.gateway.module.user.api.v1.model.GetUser;
 import fm.mixer.gateway.module.user.api.v1.model.SocialMediaType;
 import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
 import fm.mixer.gateway.module.user.api.v1.model.UserCommon;
+import fm.mixer.gateway.module.user.api.v1.model.UserRelation;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserLocation;
 import fm.mixer.gateway.module.user.persistance.entity.model.SocialNetworkType;
@@ -27,7 +28,7 @@ public interface UserMapper {
     @Mapping(target = "avatarUrl", source = "user.avatar")
     @Mapping(target = "relation", source = "relation")
     @Mapping(target = ".", source = "user")
-    GetUser toGetUser(User user, GetUser.RelationEnum relation);
+    GetUser toGetUser(User user, UserRelation relation);
 
     @Mapping(target = "location", source = ".")
     Address toAddress(UserLocation address);
