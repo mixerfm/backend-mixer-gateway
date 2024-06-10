@@ -59,31 +59,40 @@ mixer-gateway:
   versions:
     clients:
       ANDROID_CLIENT:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       IOS_CLIENT:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
     apis:
       APPLICATION_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       AUTH_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       COMMUNITY_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       EXPLORE_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       MIX_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       PLAY_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
+        min-version: 1.0.0
+        current-version: 1.0.0
       USER_API:
-        minVersion: 1.0.0
-        currentVersion: 1.0.0
-
+        min-version: 1.0.0
+        current-version: 1.0.0
+  mix-types:
+    GEM:
+      number-of-likes: 5
+      play-count: 10
+    GOLD:
+      number-of-likes: 100
+    PLATINUM:
+      number-of-likes: 1000
+    DIAMOND:
+      number-of-likes: 10000
