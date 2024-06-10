@@ -12,7 +12,9 @@ info:
     old user -> Auth API (login) -> receive JWT -> User API.
   version: 0.1.0
   x-release-notes:
-    - 0.1.0 Expose user management (get, create, update and delete user) and user community (follow/unfollow/report and fetch followers/following) endpoints
+    - 0.2.0 Add user relation to followers and following list
+    - 0.1.1 Add Idempotency key in header.
+    - 0.1.0 Expose user management (get, create, update and delete user) and user community (follow/unfollow/report and fetch followers/following) endpoints.
 
 tags:
   - name: User
@@ -32,6 +34,7 @@ paths:
         - User
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
       requestBody:
@@ -73,6 +76,7 @@ paths:
         - User
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
@@ -93,6 +97,7 @@ paths:
         - User
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
@@ -156,6 +161,7 @@ paths:
         - UserCommunity
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
@@ -175,6 +181,7 @@ paths:
         - UserCommunity
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
@@ -194,6 +201,7 @@ paths:
         - UserCommunity
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
@@ -213,6 +221,7 @@ paths:
         - UserCommunity
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
@@ -286,14 +295,7 @@ components:
               description: Number of users which this user follows.
               example: 256
             relation:
-              type: string
-              description: |
-                Relation between currently active user and this user. If there is no relation this attribute will be omitted.
-                If current user is same as user requested (e.g. user visited his/her own profile), value SELF will be returned.
-              enum:
-                - FOLLOWING
-                - BLOCKED
-                - SELF
+              $ref: '#/components/schemas/UserRelation'
 
     CreateUser:
       type: object
@@ -447,6 +449,8 @@ components:
           $ref: '#/components/schemas/DisplayName'
         avatarUrl:
           $ref: '#/components/schemas/AvatarUrl'
+        relation:
+          $ref: '#/components/schemas/UserRelation'
 
     Username:
       type: string
@@ -472,3 +476,13 @@ components:
           type: string
           format: byte
           example: 'TXkgcGhvdG8='
+
+    UserRelation:
+      type: string
+      description: |
+        Relation between currently active user and this user. If there is no relation this attribute will be omitted.
+        If current user is same as user requested (e.g. user visited his/her own profile), value SELF will be returned.
+      enum:
+        - FOLLOWING
+        - BLOCKED
+        - SELF
