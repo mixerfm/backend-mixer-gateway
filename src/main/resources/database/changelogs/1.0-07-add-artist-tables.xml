@@ -1,0 +1,57 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-07-add-artist-tables">
+        <comment>Create user artist table</comment>
+        <createTable tableName="user_artist" remarks="Main artist table">
+            <column name="id" type="bigint" remarks="Primary key used for internal references" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique artist identifier">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar" remarks="Artist name">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar" remarks="Type of artist, e.g. SINGER, BAND etc.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="Reference to user table if artist has opened user account">
+                <constraints nullable="true" foreignKeyName="user_artist_relation_user_foreign_key" references="user(id)"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <comment>Create Artist - Mix relation</comment>
+        <createTable tableName="user_artist_mix_relation" remarks="Relation between artist and mix">
+            <column name="artist_id" type="bigint" remarks="Reference to user_artist table">
+                <constraints foreignKeyName="user_artist_track_relation_artist_foreign_key" references="user_artist(id)"/>
+            </column>
+            <column name="mix_id" type="bigint" remarks="Reference to mix table">
+                <constraints foreignKeyName="user_artist_track_relation_mix_foreign_key" references="mix(id)"/>
+            </column>
+            <column name="position" type="smallint" remarks="Position of the artist in the mix">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="user_artist_mix_relation" columnNames="artist_id,mix_id"/>
+
+        <comment>Update existing tables</comment>
+        <addColumn tableName="mix">
+            <column name="nsfw" type="boolean" defaultValueBoolean="false" remarks="Define if mx is safe for work">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="mix_track">
+            <column name="artist_id" type="bigint" remarks="Reference to user_artist table">
+                <constraints nullable="false" foreignKeyName="mix_track_artist_foreign_key" references="user_artist(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

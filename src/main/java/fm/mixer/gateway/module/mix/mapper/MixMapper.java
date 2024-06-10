@@ -4,6 +4,7 @@ import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.module.mix.api.v1.model.Artist;
 import fm.mixer.gateway.module.mix.api.v1.model.Author;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
@@ -23,6 +24,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.play.persistance.entity.PlaySessionHistory;
 import fm.mixer.gateway.module.user.persistance.entity.User;
+import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -77,6 +79,10 @@ public interface MixMapper {
     @Mapping(target = "displayName", source = "name")
     @Mapping(target = "avatarUrl", source = "avatar")
     Author toAuthor(User user);
+
+    @Mapping(target = "username", source = "identifier")
+    @Mapping(target = "displayName", source = "name")
+    Artist toArtist(UserArtist userArtist);
 
     @PaginatedMapping
     @Mapping(target = "mixes", source = "items.content")

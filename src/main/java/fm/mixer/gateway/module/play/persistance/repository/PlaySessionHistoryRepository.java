@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlaySessionHistoryRepository extends JpaRepository<PlaySessionHistory, Long> {
 
-    @EntityGraph(attributePaths = {"user", "mix", "mix.tracks", "mix.user", "mix.tags", "mix.likes"})
+    @EntityGraph(attributePaths = {"user", "mix", "mix.tracks", "mix.user", "mix.tags", "mix.likes", "mix.artists"})
     Page<PlaySessionHistory> findByUser(User user, Pageable pageable);
 }

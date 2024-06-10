@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.mix.persistance.entity;
 
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
+import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,13 +55,8 @@ public class Mix {
     @Column(nullable = false)
     private VisibilityType visibility;
 
-    @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private boolean nsfw;
 
     @ManyToMany
     @JoinTable(
@@ -77,5 +73,23 @@ public class Mix {
         joinColumns = {@JoinColumn(name = "mix_id")},
         inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
+    @OrderColumn(name = "position")
     private Set<MixTag> tags;
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_artist_mix_relation",
+        joinColumns = {@JoinColumn(name = "mix_id")},
+        inverseJoinColumns = {@JoinColumn(name = "artist_id")}
+    )
+    @OrderColumn(name = "position")
+    private Set<UserArtist> artists;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }

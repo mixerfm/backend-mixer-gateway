@@ -15,7 +15,7 @@ import java.util.Set;
 @Repository
 public interface CollectionRepository extends JpaRepository<MixCollection, Long> {
 
-    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes"})
+    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes", "mixes.artists"})
     @Query("from MixCollection")
     Page<MixCollection> findAllWithMixes(Pageable pageable);
 
@@ -23,10 +23,10 @@ public interface CollectionRepository extends JpaRepository<MixCollection, Long>
     @Query("from MixCollection")
     Page<MixCollection> findAllWithoutMixes(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes"})
+    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes", "mixes.artists"})
     MixCollection findByIdentifier(String identifier);
 
-    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes"})
+    @EntityGraph(attributePaths = {"mixes", "user", "tags", "mixes.tracks", "mixes.user", "mixes.tags", "mixes.likes", "mixes.artists"})
     MixCollection findByIdentifierAndMixesTagsNameIn(String identifier, List<String> mixesTags);
 
     default MixCollection findFilteredByIdentifier(String identifier, List<String> mixesTags) {
