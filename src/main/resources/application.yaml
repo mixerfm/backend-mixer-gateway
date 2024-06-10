@@ -27,6 +27,11 @@ spring:
     username: ${SERVICE_DATABASE_USERNAME:mixer-gateway}
     password: ${SERVICE_DATABASE_PASSWORD:mixer-gateway}
 
+logging:
+  level:
+    root: info
+    org.zalando.logbook: trace
+
 mixer-gateway:
   security.enabled: true
   circuitbreaker:
