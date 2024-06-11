@@ -1,5 +1,7 @@
 package fm.mixer.gateway.module.user.service;
 
+import fm.mixer.gateway.auth.exception.AccessForbiddenException;
+import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.user.api.v1.model.AvatarContent;
 import fm.mixer.gateway.module.user.api.v1.model.CreateUser;
@@ -27,6 +29,11 @@ public class UserService {
     private final UserRepository repository;
     private final ValidateUserService validation;
     private final UserFollowerRepository followerRepository;
+
+    @Transactional
+    public GetUser getCurrentUser() {
+        return mapper.toGetUser(UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new), UserRelation.SELF);
+    }
 
     public GetUser getUser(String username) {
         final var user = repository.findByActiveIsTrueAndIdentifier(username).orElseThrow(ResourceNotFoundException::new);

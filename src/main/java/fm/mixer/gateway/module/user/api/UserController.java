@@ -17,6 +17,11 @@ public class UserController implements UserApiDelegate {
     private final UserService service;
 
     @Override
+    public ResponseEntity<GetUser> getCurrentActiveUser() {
+        return ResponseEntity.ok(service.getCurrentUser());
+    }
+
+    @Override
     @OpenApiValidation
     public ResponseEntity<GetUser> getUser(String username) {
         return ResponseEntity.ok(service.getUser(username));
