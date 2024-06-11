@@ -13,9 +13,9 @@ import java.util.Optional;
 @Repository
 public interface MixRepository extends JpaRepository<Mix, Long> {
 
-    @EntityGraph(attributePaths = {"tracks", "user", "tags", "likes"})
+    @EntityGraph(attributePaths = {"tracks", "user", "tags", "likes", "artists"})
     Optional<Mix> findByIdentifier(String identifier);
 
-    @EntityGraph(attributePaths = {"tracks", "user", "tags", "likes"})
+    @EntityGraph(attributePaths = {"tracks", "user", "tags", "likes", "artists"})
     Page<Mix> findAllByUser(User user, Pageable pageable);
 }

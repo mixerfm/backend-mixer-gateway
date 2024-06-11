@@ -8,6 +8,7 @@ info:
     Mix contain a group of tracks which can be played using Play API.
   version: 0.2.0
   x-release-notes:
+    - 0.3.0 Add Authorization and Idempotency headers, also add artists, nsfw and mix type attributes to response.
     - 0.2.0 Expose get endpoints for specific and list of collections. Add like/dislike endpoints for mix and collections.
     - 0.1.0 Expose get endpoints for specific mix; uploaded, listened and played mixes for specific user.
 
@@ -76,7 +77,9 @@ paths:
         - Collections
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: '#/components/parameters/CollectionIdentifier'
       responses:
@@ -95,7 +98,9 @@ paths:
         - Collections
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: '#/components/parameters/CollectionIdentifier'
       responses:
@@ -114,7 +119,9 @@ paths:
         - Collections
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: '#/components/parameters/CollectionIdentifier'
       responses:
@@ -151,7 +158,9 @@ paths:
         - Mixes
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: '#/components/parameters/MixIdentifier'
       responses:
@@ -170,7 +179,9 @@ paths:
         - Mixes
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: '#/components/parameters/MixIdentifier'
       responses:
@@ -189,7 +200,9 @@ paths:
         - Mixes
       parameters:
         # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
         # path parameter
         - $ref: '#/components/parameters/MixIdentifier'
       responses:
@@ -465,7 +478,6 @@ components:
         - name
         - author
         - visibility
-        - liked
         - tags
       properties:
         identifier:
@@ -513,7 +525,8 @@ components:
         - numberOfTracks
         - duration
         - visibility
-        - liked
+        - nsfw
+        - artists
         - tags
       properties:
         identifier:
@@ -550,16 +563,38 @@ components:
           example: 'PT1H25M14S'
         visibility:
           $ref: '#/components/schemas/Visibility'
+        type:
+          $ref: '#/components/schemas/MixType'
         liked:
           type: boolean
           description: Flag that indicates whether current user likes the mix. If there is no active user session, this attribute will be false.
           example: true
+        nsfw:
+          type: boolean
+          description: Flag that indicates if this mix is safe for work, if true than mix is not safe for work.
+          example: false
+        artists:
+          type: array
+          description: List of artists in the mix.
+          default: [ ]
+          items:
+            $ref: '#/components/schemas/Artist'
         tags:
           type: array
           description: List of mix tags.
           default: [ ]
           items:
             $ref: '#/components/schemas/Tag'
+
+    MixType:
+      type: string
+      description: Type of the mix based on number of likes and plays. If not present in response than mix did not qualify for any of available types.
+      example: DIAMOND
+      enum:
+        - GEM
+        - GOLD
+        - PLATINUM
+        - DIAMOND
 
     Visibility:
       type: string
@@ -593,3 +628,19 @@ components:
           type: string
           description: Profile picture. If user did not set profile picture, this field will not be present in response.
           example: 'https://example.com/logo.png'
+
+    Artist:
+      type: object
+      description: Artist information.
+      required:
+        - username
+        - displayName
+      properties:
+        username:
+          type: string
+          description: The unique artist identifier used for fetching specific set of information.
+          example: 'V1StGXR8z5'
+        displayName:
+          type: string
+          description: Human friendly artist name.
+          example: 'Pink Floyd'

@@ -7,8 +7,11 @@ import fm.mixer.gateway.module.user.api.v1.model.CompactUser;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserFollower;
+import fm.mixer.gateway.module.user.util.UserRelationUtil;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 
@@ -34,6 +37,11 @@ public interface UserCommunityMapper {
     @Mapping(target = "displayName", source = "user.name")
     @Mapping(target = "avatarUrl", source = "user.avatar")
     CompactUser toCompactUserFollowers(UserFollower userFollower);
+
+    @AfterMapping
+    default void updateRelations(@MappingTarget GetUserList userList) {
+        UserRelationUtil.resolveRelation(userList.getUsers());
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

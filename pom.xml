@@ -27,6 +27,7 @@
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
         <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
         <liquibase.version>4.27.0</liquibase.version>
+        <logbook.version>3.9.0</logbook.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <openapi4j.version>1.0.7</openapi4j.version>
 
@@ -57,10 +58,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- Logging -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.zalando</groupId>
+            <artifactId>logbook-spring-boot-starter</artifactId>
+            <version>${logbook.version}</version>
+        </dependency>
+
 
         <!-- Database -->
         <dependency>
