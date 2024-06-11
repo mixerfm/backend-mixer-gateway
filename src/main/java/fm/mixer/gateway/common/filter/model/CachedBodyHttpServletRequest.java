@@ -27,7 +27,6 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
 
     @Override
     public BufferedReader getReader() {
-        final var byteArrayInputStream = new ByteArrayInputStream(this.cachedBody);
-        return new BufferedReader(new InputStreamReader(byteArrayInputStream));
+        return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(this.cachedBody)));
     }
 }

@@ -53,6 +53,7 @@ mixer-gateway:
           paths:
             - /users
             - /users/**
+            - /current-user
         - name: application-v1
           paths:
             - /versions

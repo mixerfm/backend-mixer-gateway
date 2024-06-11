@@ -499,7 +499,7 @@ components:
       type: string
       description: |
         Relation between currently active user and this user. If there is no relation this attribute will be omitted.
-        If current user is same as user requested (e.g. user visited his/her own profile), value SELF will be returned.
+        If current user is same as requested user (e.g. user visited his/her own profile), value SELF will be returned.
       enum:
         - FOLLOWING
         - BLOCKED

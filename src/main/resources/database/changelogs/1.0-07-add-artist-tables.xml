@@ -44,7 +44,7 @@
 
         <comment>Update existing tables</comment>
         <addColumn tableName="mix">
-            <column name="nsfw" type="boolean" defaultValueBoolean="false" remarks="Define if mx is safe for work">
+            <column name="nsfw" type="boolean" defaultValueBoolean="false" remarks="Define if mix is safe for work">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

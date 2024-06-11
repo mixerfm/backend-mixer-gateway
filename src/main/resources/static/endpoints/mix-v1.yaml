@@ -588,7 +588,7 @@ components:
 
     MixType:
       type: string
-      description: Type of the mix based on number of likes and plays. If not present in response than mix did not qualify for any type.
+      description: Type of the mix based on number of likes and plays. If not present in response than mix did not qualify for any of available types.
       example: DIAMOND
       enum:
         - GEM

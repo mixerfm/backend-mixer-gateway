@@ -18,13 +18,11 @@ import java.io.IOException;
  */
 @Component
 @WebFilter(filterName = "content-caching-filter", urlPatterns = "/*")
-public class ContentCachingFilter  extends OncePerRequestFilter {
+public class ContentCachingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final var cachedBodyHttpServletRequest = new CachedBodyHttpServletRequest(request);
-
-        filterChain.doFilter(cachedBodyHttpServletRequest, response);
+        filterChain.doFilter(new CachedBodyHttpServletRequest(request), response);
     }
 
     @Override
