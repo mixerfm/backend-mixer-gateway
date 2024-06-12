@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserApiDelegate {
@@ -30,7 +32,9 @@ public class UserController implements UserApiDelegate {
     @Override
     @OpenApiValidation
     public ResponseEntity<GetUser> createUser(CreateUser createUser) {
-        return ResponseEntity.ok(service.createUser(createUser));
+        final var user = service.createUser(createUser);
+
+        return ResponseEntity.created(URI.create("/users/" + user.getUsername())).body(user);
     }
 
     @Override
