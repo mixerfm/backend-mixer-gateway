@@ -10,8 +10,9 @@ info:
     Examples:
     new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
     old user -> Auth API (login) -> receive JWT -> User API.
-  version: 0.1.0
+  version: 0.2.2
   x-release-notes:
+    - 0.2.2 Add required definition to CompactUser and AvatarContent
     - 0.2.1 Add current active user endpoint.
     - 0.2.0 Add user relation to followers and following list.
     - 0.1.1 Add Idempotency key in header.
@@ -296,6 +297,8 @@ components:
       description: User information returned from server.
       required:
         - username
+        - numberOfFollowers
+        - numberOfFollowing
       allOf:
         - $ref: '#/components/schemas/UserCommon'
         - type: object
@@ -460,6 +463,9 @@ components:
     CompactUser:
       type: object
       description: Object that holds only required user information.
+      required:
+        - username
+        - displayName
       properties:
         username:
           $ref: '#/components/schemas/Username'
@@ -489,6 +495,8 @@ components:
     AvatarContent:
       type: object
       description: User uploaded image. If content is not sent, user avatar will not change.
+      required:
+        - bytes
       properties:
         bytes:
           type: string
