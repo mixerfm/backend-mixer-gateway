@@ -1,6 +1,6 @@
-package fm.mixer.gateway.module.play.persistance.repository;
+package fm.mixer.gateway.module.player.persistance.repository;
 
-import fm.mixer.gateway.module.play.persistance.entity.PlaySessionHistory;
+import fm.mixer.gateway.module.player.persistance.entity.PlaySessionHistory;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -81,7 +81,7 @@ mixer-gateway:
       MIX_API:
         min-version: 1.0.0
         current-version: 1.0.0
-      PLAY_API:
+      PLAYER_API:
         min-version: 1.0.0
         current-version: 1.0.0
       USER_API:

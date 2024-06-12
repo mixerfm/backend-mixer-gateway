@@ -24,7 +24,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTag;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
-import fm.mixer.gateway.module.play.persistance.entity.PlaySessionHistory;
+import fm.mixer.gateway.module.player.persistance.entity.PlaySessionHistory;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import org.mapstruct.Mapper;

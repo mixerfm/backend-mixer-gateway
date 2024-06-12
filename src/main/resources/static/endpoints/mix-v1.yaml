@@ -5,9 +5,10 @@ info:
   description: |
     This API allows client to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
     For registered user, this API allows him/her to create new or update/delete existing mix.
-    Mix contain a group of tracks which can be played using Play API.
-  version: 0.2.0
+    Mix contain a group of tracks which can be played using Player API.
+  version: 0.3.1
   x-release-notes:
+    - 0.3.1 Few wording fixes.
     - 0.3.0 Add Authorization and Idempotency headers, also add artists, nsfw and mix type attributes to response.
     - 0.2.0 Expose get endpoints for specific and list of collections. Add like/dislike endpoints for mix and collections.
     - 0.1.0 Expose get endpoints for specific mix; uploaded, listened and played mixes for specific user.
@@ -498,7 +499,7 @@ components:
           $ref: '#/components/schemas/Visibility'
         liked:
           type: boolean
-          description: Flag that indicates whether current user likes the collection. If there is no active user session, this attribute will be false.
+          description: Flag that indicates whether current user likes the collection. If there is no active user session, it will be omitted in response.
           example: true
         tags:
           type: array
@@ -559,7 +560,7 @@ components:
         duration:
           type: string
           format: ISO 8601 duration
-          description: Total duration of the mix. If there is no tracks in list PT0S is returned
+          description: Total duration of the mix. If there is no tracks in list PT0S is returned.
           example: 'PT1H25M14S'
         visibility:
           $ref: '#/components/schemas/Visibility'
@@ -567,7 +568,7 @@ components:
           $ref: '#/components/schemas/MixType'
         liked:
           type: boolean
-          description: Flag that indicates whether current user likes the mix. If there is no active user session, this attribute will be false.
+          description: Flag that indicates whether current user likes the mix. If there is no active user session, it will be omitted in response.
           example: true
         nsfw:
           type: boolean

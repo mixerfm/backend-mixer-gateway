@@ -5,8 +5,9 @@ info:
   description: |
     This API allows client to fetch all information regarding current application state, like API and client
     minimal supported versions.
-  version: 0.1.0
+  version: 0.1.2
   x-release-notes:
+    - 0.1.2 Add required definition in VersionList schema and change Player API name
     - 0.1.1 Expand version value to support patch versions
     - 0.1.0 Expose get versions endpoint
 
@@ -45,6 +46,9 @@ components:
       type: object
       description: |
         Object that holds list of versions for each component. Pagination is not supported as number of items is predefined and small.
+      required:
+      - clients
+      - apis
       properties:
         clients:
           type: array
@@ -95,7 +99,7 @@ components:
         - COMMUNITY_API
         - EXPLORE_API
         - MIX_API
-        - PLAY_API
+        - PLAYER_API
         - USER_API
 
     Version:
