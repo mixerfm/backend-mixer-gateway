@@ -19,9 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"socialNetworks"})
     Optional<User> findByActiveIsTrueAndIdentifier(String identifier);
 
-    boolean existsByEmailOrIdentifier(String identifier, String email);
+    boolean existsByEmailAndActiveIsTrueOrIdentifierAndActiveIsTrue(String identifier, String email);
 
-    boolean existsByIdentifier(String identifier);
+    boolean existsByIdentifierAndActiveIsTrue(String identifier);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndActiveIsTrue(String email);
 }

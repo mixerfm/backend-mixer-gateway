@@ -25,12 +25,12 @@ public class ValidateUserService {
         }
 
         // If user changed email, but that email is already in use
-        if (!newEmail.equals(user.getEmail()) && repository.existsByEmail(newEmail)) {
+        if (!newEmail.equals(user.getEmail()) && repository.existsByEmailAndActiveIsTrue(newEmail)) {
             throw new BadRequestException("username.or.email.exists.error");
         }
 
         // If user changed username, but that username is already in use
-        if (!newIdentifier.equals(user.getIdentifier()) && repository.existsByIdentifier(newIdentifier)) {
+        if (!newIdentifier.equals(user.getIdentifier()) && repository.existsByIdentifierAndActiveIsTrue(newIdentifier)) {
             throw new BadRequestException("username.or.email.exists.error");
         }
 
@@ -46,7 +46,7 @@ public class ValidateUserService {
         }
 
         // Check if there is already user with this username or email
-        if (repository.existsByEmailOrIdentifier(email, identifier)) {
+        if (repository.existsByEmailAndActiveIsTrueOrIdentifierAndActiveIsTrue(email, identifier)) {
             throw new BadRequestException("username.or.email.exists.error");
         }
 
