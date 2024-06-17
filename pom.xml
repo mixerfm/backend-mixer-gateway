@@ -264,6 +264,28 @@
                     </execution>
                     <!-- Generate Controllers -->
                     <execution>
+                        <id>Generate Application endpoints</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/application-v1.yaml</inputSpec>
+                            <apiPackage>fm.mixer.gateway.module.app.api.v1</apiPackage>
+                            <modelPackage>fm.mixer.gateway.module.app.api.v1.model</modelPackage>
+                            <globalProperties>
+                                <supportingFiles>ApiUtil.java</supportingFiles>
+                            </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                            </importMappings>
+                            <configOptions>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <implicitHeaders>true</implicitHeaders>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Generate Mix endpoints</id>
                         <goals>
                             <goal>generate</goal>
@@ -286,14 +308,14 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Generate Application endpoints</id>
+                        <id>Generate Player endpoints</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/application-v1.yaml</inputSpec>
-                            <apiPackage>fm.mixer.gateway.module.app.api.v1</apiPackage>
-                            <modelPackage>fm.mixer.gateway.module.app.api.v1.model</modelPackage>
+                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/player-v1.yaml</inputSpec>
+                            <apiPackage>fm.mixer.gateway.module.player.api.v1</apiPackage>
+                            <modelPackage>fm.mixer.gateway.module.player.api.v1.model</modelPackage>
                             <globalProperties>
                                 <supportingFiles>ApiUtil.java</supportingFiles>
                             </globalProperties>

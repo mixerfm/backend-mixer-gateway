@@ -50,6 +50,8 @@ public class SecurityConfig {
                 authorize.requestMatchers(antPathRequestMatchers(
                     "/collections/*/like", "/collections/*/dislike", "/collections/*/report",
                     "/mixes/*/like", "/mixes/*/dislike", "/mixes/*/report",
+                    "/player/*/like", "/player/*/dislike", "/player/*/recommend",
+                    "/player/*/do-not-recommend", "/player/*/report",
                     "/users", "PUT /users/*", "DELETE /users/*",
                     "/users/*/follow", "/users/*/unfollow", "/users/*/remove-follower", "/users/*/report"
                 )).authenticated();
