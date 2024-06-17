@@ -1,0 +1,67 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-08-extend-player-tables">
+        <comment>Update existing tables</comment>
+        <dropTable tableName="play_session_history" />
+        <dropTable tableName="play_session" />
+        <dropUniqueConstraint tableName="user" constraintName="user_email_key"/>
+        <dropUniqueConstraint tableName="user" constraintName="user_identifier_key"/>
+
+        <comment>Create Play session table</comment>
+        <createTable tableName="play_session" remarks="User play session">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="User in this session">
+                <constraints primaryKey="true" nullable="false" foreignKeyName="play_session_user_id_foreign_key"
+                             references="user(id)"/>
+            </column>
+            <column name="mix_id" type="bigint" remarks="Which mix is user currently listening">
+                <constraints nullable="false" foreignKeyName="play_session_mix_id_foreign_key"
+                             references="mix(id)"/>
+            </column>
+            <column name="track_id" type="bigint" remarks="Which track is user currently listening">
+                <constraints nullable="false" foreignKeyName="play_session_track_id_foreign_key"
+                             references="mix_track(id)"/>
+            </column>
+            <column name="duration" type="bigint" remarks="Current duration of listening">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tracks" type="varchar" remarks="List of all tracks in this mix session item">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shuffle" type="boolean" defaultValueBoolean="false" remarks="Should session be shuffled">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <comment>Create Album table</comment>
+        <createTable tableName="mix_album">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique identifier used for fetching">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar" remarks="Name of the album">
+                <constraints nullable="false"/>
+            </column>
+            <column name="release_date" type="date" remarks="Date of release">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addColumn tableName="mix_track">
+            <column name="album_id" type="bigint" remarks="Reference to mix_album table">
+                <constraints foreignKeyName="mix_track_album_foreign_key" references="mix_album(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

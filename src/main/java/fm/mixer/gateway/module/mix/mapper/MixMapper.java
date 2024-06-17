@@ -24,7 +24,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTag;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
-import fm.mixer.gateway.module.player.persistance.entity.PlaySessionHistory;
+import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import org.mapstruct.Mapper;
@@ -75,7 +75,7 @@ public interface MixMapper {
     @MixCommonMapping
     SingleMix toSingleMix(Mix mix);
 
-    default String toDuration(Set<MixTrack> tracks) {
+    default String toDuration(List<MixTrack> tracks) {
         return tracks.stream()
             .map(MixTrack::getDuration)
             .reduce(Duration::plus)
@@ -121,11 +121,11 @@ public interface MixMapper {
 
     @PaginatedMapping
     @Mapping(target = "mixes", source = "items.content")
-    UserListenedMixes toUserListenedMixes(Page<PlaySessionHistory> items, PaginationRequest paginationRequest);
+    UserListenedMixes toUserListenedMixes(Page<PlaySession> items, PaginationRequest paginationRequest);
 
-    default UserListenedMixesMixesInner toUserListenedMixesMixesInner(PlaySessionHistory playSessionHistory) {
-        return Optional.ofNullable(toUserListenedMixesMixesInner(playSessionHistory.getMix()))
-            .map(listened -> listened.listenedDateTime(playSessionHistory.getCreatedAt()))
+    default UserListenedMixesMixesInner toUserListenedMixesMixesInner(PlaySession playSession) {
+        return Optional.ofNullable(toUserListenedMixesMixesInner(playSession.getMix()))
+            .map(listened -> listened.listenedDateTime(playSession.getCreatedAt()))
             .orElse(null);
     }
 

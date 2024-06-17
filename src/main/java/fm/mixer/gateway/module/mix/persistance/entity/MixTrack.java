@@ -3,11 +3,11 @@ package fm.mixer.gateway.module.mix.persistance.entity;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -43,9 +43,13 @@ public class MixTrack {
     @Column(nullable = false)
     private Integer playCount;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "artist_id")
     private UserArtist artist;
+
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private MixAlbum album;
 
     @CreationTimestamp
     @Column(nullable = false)
