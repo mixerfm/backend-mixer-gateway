@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Repository
 public interface CollectionRepository extends JpaRepository<MixCollection, Long> {
@@ -40,7 +39,7 @@ public interface CollectionRepository extends JpaRepository<MixCollection, Long>
         if (Objects.isNull(mixCollection)) {
             final var filteredMixes = findByIdentifier(identifier);
 
-            filteredMixes.setMixes(Set.of());
+            filteredMixes.setMixes(List.of());
 
             return filteredMixes;
         }

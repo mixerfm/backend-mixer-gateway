@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class CollectionService {
         if (Objects.isNull(mixCount) || mixCount < 1) {
             final var collectionList = repository.findAllWithoutMixes(pageable);
 
-            collectionList.stream().forEach(collection -> collection.setMixes(Set.of()));
+            collectionList.stream().forEach(collection -> collection.setMixes(List.of()));
 
             return collectionList;
         }
