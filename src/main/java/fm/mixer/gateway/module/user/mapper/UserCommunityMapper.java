@@ -26,6 +26,7 @@ public interface UserCommunityMapper {
     @Mapping(target = "username", source = "followsUser.identifier")
     @Mapping(target = "displayName", source = "followsUser.name")
     @Mapping(target = "avatarUrl", source = "followsUser.avatar")
+    @Mapping(target = "relation", ignore = true)
     CompactUser toCompactUserFollowing(UserFollower userFollower);
 
     @PaginatedMapping
@@ -36,6 +37,7 @@ public interface UserCommunityMapper {
     @Mapping(target = "username", source = "user.identifier")
     @Mapping(target = "displayName", source = "user.name")
     @Mapping(target = "avatarUrl", source = "user.avatar")
+    @Mapping(target = "relation", ignore = true)
     CompactUser toCompactUserFollowers(UserFollower userFollower);
 
     @AfterMapping

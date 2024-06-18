@@ -13,11 +13,12 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -56,7 +57,13 @@ public class User {
     private UserLocation address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserSocialNetwork> socialNetworks;
+    private List<UserSocialNetwork> socialNetworks;
+
+    @Formula("(select count(*) from user_follower uf1 where uf1.follows_user_id = id)")
+    private Integer numberOfFollowers = 0;
+
+    @Formula("(select count(*) from user_follower uf2 where uf2.user_id = id)")
+    private Integer numberOfFollowing = 0;
 
     @CreationTimestamp
     @Column(nullable = false)

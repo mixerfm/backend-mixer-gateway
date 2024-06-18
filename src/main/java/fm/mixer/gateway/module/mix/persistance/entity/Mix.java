@@ -21,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -65,7 +66,7 @@ public class Mix {
         inverseJoinColumns = {@JoinColumn(name = "track_id")}
     )
     @OrderColumn(name = "position")
-    private Set<MixTrack> tracks;
+    private List<MixTrack> tracks;
 
     @ManyToMany
     @JoinTable(
@@ -83,7 +84,7 @@ public class Mix {
         inverseJoinColumns = {@JoinColumn(name = "artist_id")}
     )
     @OrderColumn(name = "position")
-    private Set<UserArtist> artists;
+    private List<UserArtist> artists;
 
     @CreationTimestamp
     @Column(nullable = false)

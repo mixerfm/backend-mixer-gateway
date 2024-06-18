@@ -50,6 +50,7 @@ public class ValidateOpenApiService {
                 getValidator(specification).validate(getResponse(responseEntity), getRequest());
             }
             catch (ValidationException validationException) {
+                log.error(responseEntity.toString());
                 throw new OpenApiResponseValidationException(buildOpenApiFieldValidationList(validationException));
             }
         }

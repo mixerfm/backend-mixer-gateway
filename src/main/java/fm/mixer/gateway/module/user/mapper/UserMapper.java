@@ -36,6 +36,8 @@ public interface UserMapper {
     // UserLocation is defined as mapping target so MapStruct can reuse entity reference
     @Mapping(target = "latitude", source = "location.latitude")
     @Mapping(target = "longitude", source = "location.longitude")
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "id", ignore = true)
     void toUserLocation(@MappingTarget UserLocation userLocation, Address address);
 
     @ValueMapping(target = "FACEBOOK", source = "FACEBOOK")
@@ -54,6 +56,7 @@ public interface UserMapper {
     @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "userCommon")
+    @Mapping(target = "id", ignore = true)
     User toUserCreate(UserCommon userCommon, String avatar, String identifier);
 
     @Mapping(target = "name", source = "updateUser.displayName")

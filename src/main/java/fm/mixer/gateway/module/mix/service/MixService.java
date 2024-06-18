@@ -11,7 +11,7 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.mapper.MixMapper;
 import fm.mixer.gateway.module.mix.persistance.repository.MixLikeRepository;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
-import fm.mixer.gateway.module.play.persistance.repository.PlaySessionHistoryRepository;
+import fm.mixer.gateway.module.player.persistance.repository.PlaySessionRepository;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class MixService {
     private final MixRepository repository;
     private final UserRepository userRepository;
     private final MixLikeRepository likeRepository;
-    private final PlaySessionHistoryRepository historyRepository;
+    private final PlaySessionRepository historyRepository;
 
     public SingleMix getSingleMix(String mixId) {
         final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
