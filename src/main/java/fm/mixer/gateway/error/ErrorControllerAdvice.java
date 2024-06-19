@@ -124,7 +124,12 @@ public class ErrorControllerAdvice {
         return service.createError(ErrorType.MISSING_REQUEST_PARAMETER, new Object[]{ex.getParameterName()});
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, IllegalArgumentException.class})
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Error> onHttpMessageNotReadableException() {
+        return service.createError(ErrorType.MISSING_REQUEST_BODY);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Error> onIllegalArgumentException(Exception e) {
         log.error(e.getMessage(), e);
 

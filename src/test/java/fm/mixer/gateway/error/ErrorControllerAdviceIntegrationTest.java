@@ -44,7 +44,7 @@ class ErrorControllerAdviceIntegrationTest extends ContainerTestBase {
         "onConstraintViolationException, METHOD_ARGUMENT_CONSTRAINT_VIOLATION, 400",
         "onOpenApiRequestValidationException, METHOD_ARGUMENT_CONSTRAINT_VIOLATION, 400",
         "onMissingServletRequestParameterException, MISSING_REQUEST_PARAMETER, 400",
-        "onHttpMessageNotReadableException, ILLEGAL_ARGUMENT, 400",
+        "onHttpMessageNotReadableException, MISSING_REQUEST_BODY, 400",
         "onIllegalArgumentException, ILLEGAL_ARGUMENT, 400",
         "onMissingRequestHeaderException, MISSING_REQUEST_HEADER, 400",
         "onMissingPathVariableException, MISSING_REQUEST_PATH_VARIABLE, 400",
