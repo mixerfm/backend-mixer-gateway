@@ -44,6 +44,16 @@ mixer-gateway:
   openapi:
     validation:
       specifications:
+        - name: application-v1
+          paths:
+            - /versions
+        #- name: community-v1
+        #  paths:
+        #    - /comments/**
+        - name: player-v1
+          paths:
+            - /player/**
+            - /player-session
         - name: mix-v1
           paths:
             - /mixes/**
@@ -54,13 +64,6 @@ mixer-gateway:
             - /users
             - /users/**
             - /current-user
-        - name: application-v1
-          paths:
-            - /versions
-        - name: player-v1
-          paths:
-            - /player/**
-            - /player-session
   versions:
     clients:
       ANDROID_CLIENT:
