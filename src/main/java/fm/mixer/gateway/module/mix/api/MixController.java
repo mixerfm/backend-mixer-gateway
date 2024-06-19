@@ -8,7 +8,6 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.service.MixService;
 import fm.mixer.gateway.validation.annotation.OpenApiValidation;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,19 +28,19 @@ public class MixController implements MixesApiDelegate {
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<UserLikedMixes> getUserLikedMixes(String username, List<@Pattern(regexp = "^(date|name|popularity|trend)(,(asc|desc))?$") String> sort, Integer limit, Integer page) {
+    public ResponseEntity<UserLikedMixes> getUserLikedMixes(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserLikedMixes(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<UserListenedMixes> getUserMixesHistory(String username, List<@Pattern(regexp = "^(date|name|popularity|trend)(,(asc|desc))?$") String> sort, Integer limit, Integer page) {
+    public ResponseEntity<UserListenedMixes> getUserMixesHistory(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserMixesHistory(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<UserUploadedMixes> getUserUploadedMixes(String username, List<@Pattern(regexp = "^(date|name|popularity|trend)(,(asc|desc))?$") String> sort, Integer limit, Integer page) {
+    public ResponseEntity<UserUploadedMixes> getUserUploadedMixes(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserUploadedMixes(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 

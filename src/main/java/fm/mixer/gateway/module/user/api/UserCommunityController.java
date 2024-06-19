@@ -5,7 +5,6 @@ import fm.mixer.gateway.module.user.api.v1.UserCommunityApiDelegate;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
 import fm.mixer.gateway.module.user.service.UserCommunityService;
 import fm.mixer.gateway.validation.annotation.OpenApiValidation;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,13 +19,13 @@ public class UserCommunityController implements UserCommunityApiDelegate {
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<GetUserList> getFollowerList(String username, List<@Pattern(regexp = "^(date|name|popularity|trend)(:(asc|desc))?$") String> sort, Integer limit, Integer page) {
+    public ResponseEntity<GetUserList> getFollowerList(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getFollowerList(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<GetUserList> getFollowingList(String username, List<@Pattern(regexp = "^(date|name|popularity|trend)(:(asc|desc))?$") String> sort, Integer limit, Integer page) {
+    public ResponseEntity<GetUserList> getFollowingList(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getFollowingList(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
