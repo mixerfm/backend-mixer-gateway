@@ -6,7 +6,6 @@ import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.service.CollectionService;
 import fm.mixer.gateway.validation.annotation.OpenApiValidation;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,7 @@ public class CollectionsController implements CollectionsApiDelegate {
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<CollectionList> getCollectionList(List<@Pattern(regexp = "^(date|name|popularity|trend)(:(asc|desc))?$") String> sort, Integer limit, Integer page, Integer mixCount, List<@Pattern(regexp = "^(date|name|popularity|trend)(:(asc|desc))?$") String> mixSort) {
+    public ResponseEntity<CollectionList> getCollectionList(List<String> sort, Integer limit, Integer page, Integer mixCount, List<String> mixSort) {
         final var collectionPagination = PaginationMapper.toPaginationRequest(limit, page, sort);
         //TODO final var mixPagination = PaginationMapper.toPaginationRequest(mixCount, 1, mixSort); -- check if 0
 
@@ -30,7 +29,7 @@ public class CollectionsController implements CollectionsApiDelegate {
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<SingleCollection> getSingleCollection(String collectionId, List<@Pattern(regexp = "^(date|name|popularity|trend)(:(asc|desc))?$") String> sort, List<String> filter) {
+    public ResponseEntity<SingleCollection> getSingleCollection(String collectionId, List<String> sort, List<String> filter) {
         return ResponseEntity.ok(service.getSingleCollection(collectionId, PaginationMapper.toSortDirections(sort), filter));
     }
 

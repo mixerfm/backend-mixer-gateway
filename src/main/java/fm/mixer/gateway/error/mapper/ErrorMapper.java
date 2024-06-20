@@ -27,6 +27,7 @@ public interface ErrorMapper {
     @ValueMapping(target = "BAD_REQUEST", source = "METHOD_ARGUMENT_TYPE_MISMATCH")
     @ValueMapping(target = "BAD_REQUEST", source = "METHOD_ARGUMENT_NOT_VALID")
     @ValueMapping(target = "BAD_REQUEST", source = "METHOD_ARGUMENT_CONSTRAINT_VIOLATION")
+    @ValueMapping(target = "BAD_REQUEST", source = "MISSING_REQUEST_BODY")
     @ValueMapping(target = "BAD_REQUEST", source = "MISSING_REQUEST_PARAMETER")
     @ValueMapping(target = "BAD_REQUEST", source = "ILLEGAL_ARGUMENT")
     @ValueMapping(target = "BAD_REQUEST", source = "MISSING_REQUEST_HEADER")
