@@ -2,7 +2,7 @@ openapi: 3.0.3
 
 info:
   title: Common API error responses
-  description: This specifications is just holder for common error response structures.
+  description: This specifications is just holder for common response structures.
   version: 1.0.0
 
 paths:
@@ -15,7 +15,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: './components/errors.yaml#/components/schemas/Error'
+            $ref: './components/responses.yaml#/components/schemas/Error'
 
     PaginationMetadataResponse:
       description: Pagination metadata common response.
