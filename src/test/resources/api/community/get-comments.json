@@ -1,0 +1,32 @@
+{
+  "comments": [
+    {
+      "identifier": "cmid1",
+      "content": "Test Comment",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "numberOfReplies": 2,
+      "numberOfLikes": 3,
+      "numberOfDislikes": 1,
+      "reactions": [
+        {
+          "type": "LIKE"
+        }
+      ],
+      "createdDateTime": "2024-02-20T06:30:48.600",
+      "updatedDateTime": "2024-03-20T06:30:48.600"
+    }
+  ],
+  "metadata": {
+    "currentPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "totalItems": 1,
+    "totalPages": 1
+  }
+}

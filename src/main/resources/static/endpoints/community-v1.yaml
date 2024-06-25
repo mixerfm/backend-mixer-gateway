@@ -3,8 +3,9 @@ info:
   title: Community API
   description: |
     This API allows client to define user interactions such as comment and reply management (creating, editing and deleting).
-  version: 0.1.0
+  version: 0.2.0
   x-release-notes:
+    - 0.2.0 Refactor common data model and added reactions endpoints.
     - 0.1.0 Expose endpoints for fetching, creating, editing, deleting, liking/disliking and reporting comments and replies.
 
 tags:
@@ -23,7 +24,7 @@ paths:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
         # query parameter
         - $ref: './components/parameters.yaml#/components/parameters/Sort'
         - $ref: './components/parameters.yaml#/components/parameters/Limit'
@@ -32,7 +33,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetCommentListResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
     post:
       summary: Add comment on a specific mix.
@@ -46,14 +47,14 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       requestBody:
         $ref: '#/components/requestBodies/AddCommentRequest'
       responses:
         '201':
           $ref: '#/components/responses/GetCommentResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /comments/{commentId}:
     put:
@@ -75,7 +76,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetCommentResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
     delete:
       summary: Delete specific comment.
@@ -94,7 +95,7 @@ paths:
         '204':
           description: User successfully deleted the comment.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /comments/{commentId}/replies:
     get:
@@ -116,7 +117,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetCommentListResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
     post:
       summary: Reply to a specific comment.
@@ -137,13 +138,13 @@ paths:
         '201':
           $ref: '#/components/responses/GetCommentResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
-  /comments/{commentId}/like:
+  /comments/{commentId}/reactions:
     post:
-      summary: Like specific comment.
-      description: Current active user can like specific comment.
-      operationId: likeComment
+      summary: React to specific comment.
+      description: Current active user can react to specific comment. Supported actions are - LIKE, DISLIKE and REPORT.
+      operationId: react
       tags:
         - Comment
       parameters:
@@ -153,37 +154,18 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
         - $ref: '#/components/parameters/CommentIdentifier'
+      requestBody:
+        $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
         '204':
-          description: User successfully liked the comment.
+          description: User successfully reacted to the comment.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
-  
-  /comments/{commentId}/dislike:
-    post:
-      summary: Dislike specific comment.
-      description: Current active user can dislike specific comment.
-      operationId: dislikeComment
-      tags:
-        - Comment
-      parameters:
-        # headers
-        - $ref: './components/headers.yaml#/components/parameters/Authorization'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        # path parameter
-        - $ref: '#/components/parameters/CommentIdentifier'
-      responses:
-        '204':
-          description: User successfully disliked the comment.
-        default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
-  /comments/{commentId}/report:
-    post:
-      summary: Report specific comment.
-      description: Current active user can report specific comment.
-      operationId: reportComment
+    delete:
+      summary: Remove reaction to the specific comment.
+      description: Current active user can remove reaction to the specific comment.
+      operationId: removeReaction
       tags:
         - Comment
       parameters:
@@ -195,29 +177,18 @@ paths:
         - $ref: '#/components/parameters/CommentIdentifier'
       responses:
         '204':
-          description: User successfully reported the comment.
+          description: User successfully removed reaction to the comment.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
 components:
   parameters:
-    MixIdentifier:
-      name: mixId
-      in: path
-      description: The unique mix identifier used for fetching specific set of information.
-      required: true
-      example: 'V1StGXR8z5'
-      schema:
-        type: string
-
     CommentIdentifier:
       name: commentId
       in: path
-      description: The unique comment identifier used for fetching specific set of information.
       required: true
-      example: 'V1StGXR8z5'
       schema:
-        type: string
+        $ref: './components/common.yaml#/components/schemas/Identifier'
 
   requestBodies:
     AddCommentRequest:
@@ -288,15 +259,20 @@ components:
       description: Information about specific comment.
       required:
         - identifier
+        - content
+        - author
+        - numberOfReplies
+        - numberOfLikes
+        - numberOfDislikes
+        - createdDateTime
+        - updatedDateTime
       properties:
         identifier:
-          type: string
-          description: The unique comment identifier used for fetching specific set of information.
-          example: 'V1StGXR8z5'
+          $ref: './components/common.yaml#/components/schemas/Identifier'
         content:
           $ref: '#/components/schemas/CommentContent'
         author:
-          $ref: '#/components/schemas/Author'
+          $ref: './components/responses.yaml#/components/schemas/Creator'
         numberOfReplies:
           type: integer
           description: Number of replies that this comment has. If none or comment is a reply, than 0 will be returned.
@@ -309,12 +285,8 @@ components:
           type: integer
           description: Number of dislikes that this comment has. If none, than 0 will be returned.
           example: 5
-        liked:
-          type: boolean
-          description: |
-            Flag that indicates whether current user upvoted or downvoted the comment. 
-            If there is no active user session, or user did not interact with a comment it will be omitted in response.
-          example: true
+        reactions:
+          $ref: './components/responses.yaml#/components/schemas/UserReactions'
         createdDateTime:
           type: string
           description: Date and time when comment was created.
@@ -325,30 +297,6 @@ components:
           description: Date and time when comment was updated.
           format: date-time
           example: '9999-01-01T12:00:00Z'
-
-    Author:
-      type: object
-      description: The author of the comment.
-      required:
-        - active
-        - displayName
-      properties:
-        username:
-          type: string
-          description: The unique user identifier used for fetching specific set of information.
-          example: 'V1StGXR8z5'
-        displayName:
-          type: string
-          description: Human friendly user defined name.
-          example: 'Name Surname'
-        avatarUrl:
-          type: string
-          description: Profile picture. If user did not set profile picture, this field will not be present in response.
-          example: 'https://example.com/logo.png'
-        active:
-          type: boolean
-          description: Flag that indicates if user is active or account was deleted.
-          example: false
 
     CommentContent:
       type: string
