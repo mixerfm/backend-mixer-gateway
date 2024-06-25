@@ -1,0 +1,51 @@
+{
+  "clients": [
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "ANDROID_CLIENT"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "IOS_CLIENT"
+    }
+  ],
+  "apis": [
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "APPLICATION_API"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "AUTH_API"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "COMMUNITY_API"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "EXPLORE_API"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "MIX_API"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "PLAYER_API"
+    },
+    {
+      "minVersion": "1.0.0",
+      "currentVersion": "1.0.0",
+      "type": "USER_API"
+    }
+  ]
+}
