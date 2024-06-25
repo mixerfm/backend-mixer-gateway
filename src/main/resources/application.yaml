@@ -32,6 +32,16 @@ logging:
     root: info
     org.zalando.logbook: trace
 
+logbook:
+  predicate:
+    exclude:
+      - path: favicon.ico
+        methods:
+          - GET
+      - path: /actuator/**
+        methods:
+          - GET
+
 mixer-gateway:
   security.enabled: true
   circuitbreaker:
@@ -47,6 +57,7 @@ mixer-gateway:
         - name: application-v1
           paths:
             - /versions
+        # TODO uncomment
         #- name: community-v1
         #  paths:
         #    - /comments/**
