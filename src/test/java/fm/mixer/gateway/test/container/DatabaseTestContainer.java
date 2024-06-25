@@ -8,7 +8,6 @@ public class DatabaseTestContainer extends PostgreSQLContainer<DatabaseTestConta
 
     private DatabaseTestContainer() {
         super("postgres:alpine");
-        withInitScript("data/init_data.sql");
     }
 
     public static DatabaseTestContainer getInstance() {
