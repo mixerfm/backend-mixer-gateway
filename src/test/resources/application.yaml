@@ -9,7 +9,7 @@ spring:
       circuitbreaker:
         enabled: true
   liquibase:
-    change-log: database/changelogs.xml
+    change-log: database/test-changelogs.xml
     enabled: true
   jpa.open-in-view: false
   thymeleaf.check-template-location: false

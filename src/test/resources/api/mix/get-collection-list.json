@@ -1,0 +1,44 @@
+{
+  "collections": [
+    {
+      "identifier": "cid1",
+      "name": "Test Collection 1",
+      "avatarUrl": "collectionAvatar.jpg",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "visibility": "PUBLIC",
+      "reactions": [],
+      "artists": [],
+      "tags": [
+        "Rock",
+        "Pop"
+      ]
+    },
+    {
+      "identifier": "cid2",
+      "name": "Test Collection 2",
+      "avatarUrl": "collectionAvatar2.jpg",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "visibility": "PRIVATE",
+      "reactions": [],
+      "artists": [],
+      "tags": []
+    }
+  ],
+  "metadata": {
+    "currentPage": 1,
+    "totalItems": 2,
+    "totalPages": 1
+  }
+}

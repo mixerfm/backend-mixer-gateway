@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MixerGatewayApplicationIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    void contextLoads() {
+    void shouldLoadContext() {
         final var contextLoaded = true;
 
         assertThat(contextLoaded).isTrue();

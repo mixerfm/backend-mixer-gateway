@@ -20,22 +20,22 @@ class ErrorMapperUnitTest {
 
     @MethodSource("provideErrorTypes")
     @ParameterizedTest
-    void mapToHttpStatus(ErrorType given, HttpStatus expected) {
+    void shouldMapToHttpStatus(ErrorType given, HttpStatus expected) {
         // When
-        final var result = mapper.mapToHttpStatus(given);
+        final var result = mapper.toHttpStatus(given);
 
         // Then
         assertThat(result).isEqualTo(expected);
     }
 
     @Test
-    void mapToError() {
+    void shouldMapToError() {
         // Given
         final var errorMessage = "test message";
         final var type = ErrorType.BAD_REQUEST;
 
         // When
-        final var result = mapper.mapToError(type, errorMessage);
+        final var result = mapper.toError(type, errorMessage);
 
         // Then
         assertThat(result).isNotNull();
