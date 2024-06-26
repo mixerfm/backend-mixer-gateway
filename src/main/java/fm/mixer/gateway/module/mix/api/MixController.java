@@ -1,12 +1,16 @@
 package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
+import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.module.mix.api.v1.MixesApiDelegate;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
+import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.service.MixService;
+import fm.mixer.gateway.module.react.model.ResourceType;
+import fm.mixer.gateway.module.react.service.ReportService;
 import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,7 @@ import java.util.List;
 public class MixController implements MixesApiDelegate {
 
     private final MixService service;
+    private final ReportService reportService;
 
     @Override
     @OpenApiValidation
@@ -46,25 +51,29 @@ public class MixController implements MixesApiDelegate {
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<Void> likeMix(String mixId) {
-        service.setLikeFlag(mixId, true);
+    public ResponseEntity<Void> react(String mixId, UserReaction userReaction) {
+        if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
+            reportService.report(mixId, ResourceType.COMMENT);
+        }
+        else {
+            checkReactionType(userReaction.getType());
+            service.react(mixId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType()));
+        }
 
         return ResponseEntity.noContent().build();
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<Void> dislikeMix(String mixId) {
-        service.setLikeFlag(mixId, false);
+    public ResponseEntity<Void> removeReaction(String mixId) {
+        service.removeReaction(mixId);
 
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    @OpenApiValidation
-    public ResponseEntity<Void> reportMix(String mixId) {
-        service.reportMix(mixId);
-
-        return ResponseEntity.noContent().build();
+    private void checkReactionType(UserReaction.TypeEnum type) {
+        if (!List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE).contains(type)) {
+            throw new BadRequestException("reaction.type.not.supported.error");
+        }
     }
 }

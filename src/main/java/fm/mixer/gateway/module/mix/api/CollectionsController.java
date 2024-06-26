@@ -1,59 +1,73 @@
 package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
+import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.module.mix.api.v1.CollectionsApiDelegate;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
+import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.service.CollectionService;
+import fm.mixer.gateway.module.react.model.ResourceType;
+import fm.mixer.gateway.module.react.service.ReportService;
 import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
 public class CollectionsController implements CollectionsApiDelegate {
 
     private final CollectionService service;
+    private final ReportService reportService;
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<CollectionList> getCollectionList(List<String> sort, Integer limit, Integer page, Integer mixCount, List<String> mixSort) {
+    public ResponseEntity<CollectionList> getCollectionList(Integer limit, Integer page, List<String> sort, Integer mixCount, List<String> mixSort) {
         final var collectionPagination = PaginationMapper.toPaginationRequest(limit, page, sort);
-        //TODO final var mixPagination = PaginationMapper.toPaginationRequest(mixCount, 1, mixSort); -- check if 0
+        // Set mix pagination only if client send mixCount
+        final var mixPagination = (Objects.isNull(mixCount) || mixCount == 0) ? null :
+            PaginationMapper.toPaginationRequest(mixCount, 1, mixSort);
 
-        return ResponseEntity.ok(service.getCollectionList(collectionPagination, mixCount));
+        return ResponseEntity.ok(service.getCollectionList(collectionPagination, mixPagination));
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<SingleCollection> getSingleCollection(String collectionId, List<String> sort, List<String> filter) {
-        return ResponseEntity.ok(service.getSingleCollection(collectionId, PaginationMapper.toSortDirections(sort), filter));
+    public ResponseEntity<SingleCollection> getSingleCollection(String collectionId, List<String> filter, Integer limit, Integer page, List<String> sort) {
+        final var mixPagination = PaginationMapper.toPaginationRequest(limit, page, sort);
+
+        return ResponseEntity.ok(service.getSingleCollection(collectionId, mixPagination, filter));
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<Void> likeCollection(String collectionId) {
-        service.setLikeFlag(collectionId, true);
+    public ResponseEntity<Void> react(String collectionId, UserReaction userReaction) {
+        if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
+            reportService.report(collectionId, ResourceType.COLLECTIONS);
+        }
+        else {
+            checkReactionType(userReaction.getType());
+            service.react(collectionId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType()));
+        }
 
         return ResponseEntity.noContent().build();
     }
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<Void> dislikeCollection(String collectionId) {
-        service.setLikeFlag(collectionId, false);
+    public ResponseEntity<Void> removeReaction(String collectionId) {
+        service.removeReaction(collectionId);
 
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    @OpenApiValidation
-    public ResponseEntity<Void> reportCollection(String collectionId) {
-        service.reportCollection(collectionId);
-
-        return ResponseEntity.noContent().build();
+    private void checkReactionType(UserReaction.TypeEnum type) {
+        if (!List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE).contains(type)) {
+            throw new BadRequestException("reaction.type.not.supported.error");
+        }
     }
 }

@@ -20,7 +20,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -72,5 +71,5 @@ public class MixCollection {
         joinColumns = {@JoinColumn(name = "collection_id")},
         inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
-    private Set<MixTag> tags;
+    private List<MixTag> tags;
 }

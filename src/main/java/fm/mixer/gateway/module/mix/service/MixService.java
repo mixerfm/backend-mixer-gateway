@@ -52,20 +52,25 @@ public class MixService {
         return mapper.toUserUploadedMixes(repository.findAllByUser(user, pagination.pageable()), pagination);
     }
 
-    public void setLikeFlag(final String mixId, final boolean like) {
+    public void react(final String mixId, final boolean like) {
         final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
         final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
 
         // Find old record and change "liked" flag. If there is no old record create new object with mapper and store it.
-        likeRepository.save(
+        mix.getLikes().add(likeRepository.save(
             likeRepository.findByUserAndMix(user, mix).map(likeRecord -> {
                 likeRecord.setLiked(like);
                 return likeRecord;
-            }).orElse(mapper.toMixLike(user, mix, like))
-        );
+            }).orElse(mapper.toMixLikeEntity(user, mix, like))
+        ));
     }
 
-    public void reportMix(String mixId) {
-        // TODO implement
+    public void removeReaction(String mixId) {
+        final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
+        final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
+        final var reaction = likeRepository.findByUserAndMix(user, mix).orElseThrow(ResourceNotFoundException::new);
+
+        mix.getLikes().remove(reaction);
+        likeRepository.delete(reaction);
     }
 }

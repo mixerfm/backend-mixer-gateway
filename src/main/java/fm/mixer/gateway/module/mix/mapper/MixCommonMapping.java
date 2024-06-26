@@ -9,10 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 @Mapping(target = "avatarUrl", source = "avatar")
 @Mapping(target = "numberOfPlays", source = "playCount")
 @Mapping(target = "numberOfLikes", expression = "java(mix.getLikes().size())")
-@Mapping(target = "numberOfTracks", expression = "java(mix.getTracks().size())")
-@Mapping(target = "duration", source = "tracks")
 @Mapping(target = "author", source = "user")
-@Mapping(target = "liked", source = ".", qualifiedByName = "toLiked")
 @Mapping(target = "type", source = ".", qualifiedByName = "toType")
+@Mapping(target = "reactions", source = "likes")
 public @interface MixCommonMapping {
 }
