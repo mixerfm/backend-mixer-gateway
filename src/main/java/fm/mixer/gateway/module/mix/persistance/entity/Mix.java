@@ -1,6 +1,7 @@
 package fm.mixer.gateway.module.mix.persistance.entity;
 
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import jakarta.persistence.Column;

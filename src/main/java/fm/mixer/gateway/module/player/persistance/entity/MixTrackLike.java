@@ -1,4 +1,4 @@
-package fm.mixer.gateway.module.mix.persistance.entity;
+package fm.mixer.gateway.module.player.persistance.entity;
 
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import jakarta.persistence.Column;
@@ -35,6 +35,8 @@ public class MixTrackLike {
     private MixTrack track;
 
     private Boolean liked;
+
+    private Boolean recommend;
 
     @UpdateTimestamp
     @Column(nullable = false)

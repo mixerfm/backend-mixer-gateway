@@ -5,14 +5,15 @@ import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
-import fm.mixer.gateway.module.mix.persistance.repository.MixTrackLikeRepository;
-import fm.mixer.gateway.module.mix.persistance.repository.MixTrackRepository;
 import fm.mixer.gateway.module.player.api.v1.model.Session;
 import fm.mixer.gateway.module.player.api.v1.model.Track;
 import fm.mixer.gateway.module.player.api.v1.model.TrackList;
+import fm.mixer.gateway.module.player.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.player.api.v1.model.VolumeValue;
 import fm.mixer.gateway.module.player.mapper.PlayerMapper;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
+import fm.mixer.gateway.module.player.persistance.repository.MixTrackLikeRepository;
+import fm.mixer.gateway.module.player.persistance.repository.MixTrackRepository;
 import fm.mixer.gateway.module.player.persistance.repository.PlaySessionRepository;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -67,9 +68,9 @@ public class PlayerService {
         }
 
         // User is first time playing this mix or mix must be shuffled
-        final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
+        final var mix = mixRepository.findByIdentifierWithTracks(mixId).orElseThrow(ResourceNotFoundException::new);
 
-        mapper.toPlaySession(session, user, mix, mix.getTracks().getFirst());
+        mapper.toPlaySessionEntity(session, user, mix, mix.getTracks().getFirst());
 
         repository.save(session);
 
@@ -102,7 +103,7 @@ public class PlayerService {
 
         final var track = trackRepository.findById(tracks.get(nextIndex)).orElseThrow(ResourceNotFoundException::new);
 
-        mapper.toPlaySession(session, user, session.getMix(), track);
+        mapper.toPlaySessionEntity(session, user, session.getMix(), track);
 
         repository.save(session);
 
@@ -113,25 +114,30 @@ public class PlayerService {
         // TODO implement user tracking service
     }
 
-    public void setLikeFlag(final String mixId, final boolean like) {
+    public void react(final String trackId, final UserReaction.TypeEnum reaction) {
         final var user = getCurrentUser();
-        final var track = getCurrentPlaySession(user, mixId).getTrack();
+        final var track = trackRepository.findByIdentifier(trackId).orElseThrow(ResourceNotFoundException::new);
 
-        // Find old record and change "liked" flag. If there is no old record create new object with mapper and store it.
-        likeRepository.save(
-            likeRepository.findByUserAndTrack(user, track).map(likeRecord -> {
-                likeRecord.setLiked(like);
-                return likeRecord;
-            }).orElse(mapper.toMixTrackLike(user, track, like))
-        );
+        // Find old record and change "liked" or "recommend" flag. If there is no old record create new object with mapper and store it.
+        track.getLikes().add(likeRepository.save(
+            likeRepository.findByUserAndTrack(user, track).map(trackLike -> {
+                trackLike.setLiked(mapper.toLiked(reaction).orElse(trackLike.getLiked()));
+                trackLike.setRecommend(mapper.toRecommend(reaction).orElse(trackLike.getRecommend()));
+
+                return trackLike;
+            }).orElse(mapper.toMixTrackLikeEntity(user, track, reaction))
+        ));
     }
 
-    public void setRecommendedFlag(final String mixId, final boolean flag) {
-        // TODO implement user tracking service
-    }
+    public void removeReaction(final String trackId, final UserReaction.TypeEnum reaction) {
+        final var user = getCurrentUser();
+        final var track = trackRepository.findByIdentifier(trackId).orElseThrow(ResourceNotFoundException::new);
+        final var trackReaction = likeRepository.findByUserAndTrack(user, track).orElseThrow(ResourceNotFoundException::new);
 
-    public void reportTrack(String mixId) {
-        // TODO implement
+        mapper.toLiked(reaction).ifPresent((liked) -> trackReaction.setLiked(null));
+        mapper.toRecommend(reaction).ifPresent((recommend) -> trackReaction.setRecommend(null));
+
+        likeRepository.save(trackReaction);
     }
 
     private User getCurrentUser() {

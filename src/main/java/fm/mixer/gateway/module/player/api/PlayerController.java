@@ -2,9 +2,9 @@ package fm.mixer.gateway.module.player.api;
 
 import fm.mixer.gateway.module.player.api.v1.PlayerApiDelegate;
 import fm.mixer.gateway.module.player.api.v1.model.Track;
-import fm.mixer.gateway.module.player.api.v1.model.TrackList;
 import fm.mixer.gateway.module.player.api.v1.model.VolumeValue;
 import fm.mixer.gateway.module.player.service.PlayerService;
+import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,16 +16,13 @@ public class PlayerController implements PlayerApiDelegate {
     private final PlayerService service;
 
     @Override
-    public ResponseEntity<TrackList> getTrackList(String mixId) {
-        return ResponseEntity.ok(service.getTrackList(mixId));
-    }
-
-    @Override
+    @OpenApiValidation
     public ResponseEntity<Track> playTrack(String mixId) {
         return ResponseEntity.ok(service.playTrack(mixId));
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Void> pauseTrack(String mixId) {
         service.pauseTrack(mixId);
 
@@ -33,53 +30,21 @@ public class PlayerController implements PlayerApiDelegate {
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Track> nextTrack(String mixId) {
         return ResponseEntity.ok(service.nextTrack(mixId));
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Track> skipTrack(String mixId) {
         return ResponseEntity.ok(service.skipTrack(mixId));
     }
 
     @Override
+    @OpenApiValidation
     public ResponseEntity<Void> changeTrackVolume(String mixId, VolumeValue volumeValue) {
         service.changeVolume(mixId, volumeValue);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> likeTrack(String mixId) {
-        service.setLikeFlag(mixId, true);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> dislikeTrack(String mixId) {
-        service.setLikeFlag(mixId, false);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> recommendTrack(String mixId) {
-        service.setRecommendedFlag(mixId, true);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> doNotRecommendTrack(String mixId) {
-        service.setRecommendedFlag(mixId, false);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> reportTrack(String mixId) {
-        service.reportTrack(mixId);
 
         return ResponseEntity.noContent().build();
     }

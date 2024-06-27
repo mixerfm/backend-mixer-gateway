@@ -7,15 +7,18 @@ info:
     such as play, pause, skip, increase volume, like etc.
     
     Note: Main subject in Player API is track in context of specific mix, so all endpoints are actions against that track.
-  version: 0.1.0
+  version: 0.2.0
   x-release-notes:
+    - 0.2.0 Add reactions endpoints and refactor common data model
     - 0.1.0 Exposed endpoints for play, pause, skip, change-volume, like, dislike, recommend, do-not-recommend and report. Also endpoints for fetching track list and play session.
 
 tags:
   - name: Player
-    description: Available interactions with specific track.
+    description: Available interactions from the player screen.
   - name: Session
     description: Available actions for session fetch and management.
+  - name: Track
+    description: Available interactions on track list or specific track.
 
 paths:
   /player-session:
@@ -36,7 +39,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetSessionResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /player/{mixId}/play:
     post:
@@ -50,12 +53,12 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       responses:
         '200':
           $ref: '#/components/responses/GetTrackResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /player/{mixId}/pause:
     post:
@@ -69,12 +72,12 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       responses:
         '204':
           description: User successfully paused the track.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /player/{mixId}/next:
     post:
@@ -89,12 +92,12 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       responses:
         '200':
           $ref: '#/components/responses/GetTrackResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /player/{mixId}/skip:
     post:
@@ -109,12 +112,12 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       responses:
         '200':
           $ref: '#/components/responses/GetTrackResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /player/{mixId}/change-volume:
     post:
@@ -128,116 +131,16 @@ paths:
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       requestBody:
         $ref: '#/components/requestBodies/ChangeVolumeRequest'
       responses:
         '204':
           description: User successfully changed the volume of the track.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
-  /player/{mixId}/like:
-    post:
-      summary: Like current track.
-      description: Current active user can like currently playing track.
-      operationId: likeTrack
-      tags:
-        - Player
-      parameters:
-        # headers
-        - $ref: './components/headers.yaml#/components/parameters/Authorization'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
-      responses:
-        '204':
-          description: User successfully liked the track.
-        default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
-
-  /player/{mixId}/dislike:
-    post:
-      summary: Dislike current track.
-      description: Current active user can dislike currently playing track.
-      operationId: dislikeTrack
-      tags:
-        - Player
-      parameters:
-        # headers
-        - $ref: './components/headers.yaml#/components/parameters/Authorization'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
-      responses:
-        '204':
-          description: User successfully disliked the track.
-        default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
-
-  /player/{mixId}/recommend:
-    post:
-      summary: Recommend tracks similar to current track.
-      description: Recommend tracks similar to currently playing track. This info is used for better recommendations.
-      operationId: recommendTrack
-      tags:
-        - Player
-      parameters:
-        # headers
-        - $ref: './components/headers.yaml#/components/parameters/Authorization'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
-      responses:
-        '204':
-          description: User successfully put the track on recommend list.
-        default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
-
-  /player/{mixId}/do-not-recommend:
-    post:
-      summary: Do not recommend current track.
-      description: Do not recommend currently playing track again. This info is used for better recommendations.
-      operationId: doNotRecommendTrack
-      tags:
-        - Player
-      parameters:
-        # headers
-        - $ref: './components/headers.yaml#/components/parameters/Authorization'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
-      responses:
-        '204':
-          description: User successfully put the track on do-not-recommend list.
-        default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
-
-  /player/{mixId}/report:
-    post:
-      summary: Report current track.
-      description: Current active user can report currently playing track.
-      operationId: reportTrack
-      tags:
-        - Player
-      parameters:
-        # headers
-        - $ref: './components/headers.yaml#/components/parameters/Authorization'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
-      responses:
-        '204':
-          description: User successfully reported the track.
-        default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
-
-  /player/{mixId}/track-list:
+  /tracks/{mixId}:
     get:
       summary: Get track list for specific mix.
       description: |
@@ -245,28 +148,69 @@ paths:
         If user listened the whole mix or did not listen to any song from the mix, empty collection will be returned.
       operationId: getTrackList
       tags:
-        - Player
+        - Track
       parameters:
         # headers
         - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         # path parameter
-        - $ref: '#/components/parameters/MixIdentifier'
+        - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       responses:
         '200':
           $ref: '#/components/responses/GetTrackListResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /tracks/{trackId}/reactions:
+    post:
+      summary: React to specific track.
+      description: Current active user can react to specific track, e.g. like it, dislike it or put it on recommend list.
+      operationId: react
+      tags:
+        - Track
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+        # path parameter
+        - $ref: '#/components/parameters/TrackIdentifier'
+      requestBody:
+        $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
+      responses:
+        '204':
+          description: User successfully reacted to the track.
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+    delete:
+      summary: Remove reaction to the specific track.
+      description: Current active user can remove reaction to the specific track.
+      operationId: removeReaction
+      tags:
+        - Track
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+        # path parameter
+        - $ref: '#/components/parameters/TrackIdentifier'
+      requestBody:
+        $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
+      responses:
+        '204':
+          description: User successfully removed reaction.
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
 components:
   parameters:
-    MixIdentifier:
-      name: mixId
+    TrackIdentifier:
+      name: trackId
       in: path
-      description: The unique mix identifier used for fetching specific set of information.
       required: true
-      example: 'V1StGXR8z5'
       schema:
-        type: string
+        $ref: './components/common.yaml#/components/schemas/Identifier'
 
   requestBodies:
     ChangeVolumeRequest:
@@ -352,12 +296,15 @@ components:
       type: object
       description: All related information about the track.
       required:
+        - identifier
         - name
         - artists
         - album
         - streamUrl
         - duration
       properties:
+        identifier:
+          $ref: './components/common.yaml#/components/schemas/Identifier'
         name:
           type: string
           description: Human friendly track name.
@@ -365,39 +312,27 @@ components:
         artists:
           type: array
           description: List of track artist.
+          default: [ ]
           items:
-            $ref: '#/components/schemas/Artist'
+            $ref: './components/responses.yaml#/components/schemas/Creator'
+          example:
+            - username: 'V1StGXR8z5'
+              displayName: 'Pink Floyd'
+              avatarUrl: 'logo.png'
+              active: true
         album:
           $ref: '#/components/schemas/Album'
-        liked:
-          type: boolean
-          description: Flag that indicates whether current user likes the track. If there is no active user session, it will be omitted in response.
-          example: true
+        reactions:
+          $ref: './components/responses.yaml#/components/schemas/UserReactions'
         streamUrl:
           type: string
           description: URL of the track available to play on the client. Note that this URL is dynamic for each request.
-          example: 'https://example.com/song.mp3'
+          example: 'song.mp3'
         duration:
           type: string
           format: ISO 8601 duration
           description: Duration of the track.
           example: 'PT1H25M14S'
-
-    Artist:
-      type: object
-      description: Artist information.
-      required:
-        - username
-        - displayName
-      properties:
-        username:
-          type: string
-          description: The unique artist identifier used for fetching specific set of information.
-          example: 'V1StGXR8z5'
-        displayName:
-          type: string
-          description: Human friendly artist name.
-          example: 'Pink Floyd'
 
     Album:
       type: object
@@ -408,9 +343,7 @@ components:
         - releaseDate
       properties:
         identifier:
-          type: string
-          description: The unique album identifier used for fetching specific set of information.
-          example: 'V1StGXR8z5'
+          $ref: './components/common.yaml#/components/schemas/Identifier'
         displayName:
           type: string
           description: Human friendly album name.

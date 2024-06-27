@@ -1,7 +1,6 @@
 package fm.mixer.gateway.module.player.persistance.entity;
 
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
-import fm.mixer.gateway.module.mix.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

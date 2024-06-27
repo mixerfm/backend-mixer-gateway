@@ -1,4 +1,4 @@
-package fm.mixer.gateway.module.mix.persistance.entity;
+package fm.mixer.gateway.module.player.persistance.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
