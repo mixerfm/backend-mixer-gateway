@@ -53,7 +53,7 @@ public class MixController implements MixesApiDelegate {
     @OpenApiValidation
     public ResponseEntity<Void> react(String mixId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
-            reportService.report(mixId, ResourceType.COMMENT);
+            reportService.report(mixId, ResourceType.MIX);
         }
         else {
             checkReactionType(userReaction.getType());

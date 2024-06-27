@@ -55,10 +55,6 @@ public class UserCommunityService {
         repository.findByUserAndFollowsUser(user, getCurrentUser()).ifPresent(repository::delete);
     }
 
-    public void reportUser(String username) {
-        // TODO implement
-    }
-
     private User getCurrentUser() {
         return UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
     }

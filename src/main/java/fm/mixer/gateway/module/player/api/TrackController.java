@@ -31,7 +31,7 @@ public class TrackController implements TrackApiDelegate {
     @OpenApiValidation
     public ResponseEntity<Void> react(String trackId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
-            reportService.report(trackId, ResourceType.COMMENT);
+            reportService.report(trackId, ResourceType.TRACK);
         }
         else {
             checkReactionType(userReaction.getType());
