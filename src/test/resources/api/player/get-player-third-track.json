@@ -1,0 +1,20 @@
+{
+  "identifier": "tid5",
+  "name": "Track 5",
+  "artists": [
+    {
+      "username": "uaid1",
+      "displayName": "User Artist",
+      "avatarUrl": "userArtist.png",
+      "active": true
+    }
+  ],
+  "album": {
+    "identifier": "aid1",
+    "displayName": "Album 1",
+    "releaseDate": "1992-12-05"
+  },
+  "reactions": [],
+  "streamUrl": "track5.mp3",
+  "duration": "PT2M20S"
+}

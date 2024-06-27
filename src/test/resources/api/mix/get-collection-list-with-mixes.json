@@ -42,8 +42,8 @@
             "artists": [
               {
                 "username": "uaid1",
-                "displayName": "Black Sabbath",
-                "avatarUrl": "blacky.png",
+                "displayName": "User Artist",
+                "avatarUrl": "userArtist.png",
                 "active": true
               }
             ],

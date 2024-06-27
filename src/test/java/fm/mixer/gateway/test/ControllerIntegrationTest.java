@@ -65,6 +65,15 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
     /**
      * Make POST request
      * @param url - defined in specification (or in Api interface from which we implement controller delegate)
+     * @return MockHttpServletResponse which contains body and http status
+     */
+    protected MockHttpServletResponse doPostRequest(String url) throws Exception {
+        return doRequest(HttpMethod.POST, url, Map.of(), null);
+    }
+
+    /**
+     * Make POST request with body
+     * @param url - defined in specification (or in Api interface from which we implement controller delegate)
      * @param requestBodyFile - name of the file in test resource directory where request body is stored
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -89,6 +98,16 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
      */
     protected MockHttpServletResponse doDeleteRequest(String url) throws Exception {
         return doRequest(HttpMethod.DELETE, url, Map.of(), null);
+    }
+
+    /**
+     * Make DELETE request with body
+     * @param url - defined in specification (or in Api interface from which we implement controller delegate)
+     * @param requestBodyFile - name of the file in test resource directory where request body is stored
+     * @return MockHttpServletResponse which contains body and http status
+     */
+    protected MockHttpServletResponse doDeleteRequest(String url, String requestBodyFile) throws Exception {
+        return doRequest(HttpMethod.DELETE, url, Map.of(), readAsString("request/" + requestBodyFile).getBytes(StandardCharsets.UTF_8));
     }
 
     private MockHttpServletResponse doRequest(HttpMethod method, String url, Map<String, String> queryParameters, byte[] requestBody) throws Exception {

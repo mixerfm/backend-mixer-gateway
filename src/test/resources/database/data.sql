@@ -8,7 +8,8 @@ INSERT INTO "user" (identifier,name,description,date_of_birth,avatar,profile_col
 -- MIX
 INSERT INTO mix (identifier,name,description,avatar,duration,number_of_tracks,user_id,visibility,created_at,updated_at,play_count,nsfw) VALUES
     ('mid1','Test Mix','Test Mix Description','mixAvatar.jpg',150,3,1,0,'2024-01-15 12:00:54.262','2024-01-17 12:00:54.262',5,false),
-    ('mid2','Test Mix 2','Test Mix 2 Description','mixAvatar2.jpg',60,2,2,0,'2024-01-16 12:00:54.262','2024-01-18 12:00:54.262',2,true);
+    ('mid2','Test Mix 2','Test Mix 2 Description','mixAvatar2.jpg',60,2,2,0,'2024-01-16 12:00:54.262','2024-01-18 12:00:54.262',2,true),
+    ('mid3','Test Mix 3','Test Mix 3 Description','mixAvatar3.jpg',180,5,3,0,'2024-01-13 12:00:54.262','2024-01-22 12:00:54.262',7,true);
 
 INSERT INTO mix_like (user_id,mix_id,liked,updated_at) VALUES
     (1,1,true,'2024-01-20 16:36:16.556'),
@@ -57,7 +58,7 @@ INSERT INTO mix_collection_tag_relation (tag_id,collection_id,"position") VALUES
 
 -- ARTIST
 INSERT INTO user_artist (identifier,name,"type",avatar,user_id,created_at,updated_at) VALUES
-    ('uaid1','Black Sabbath','BAND','blacky.png',NULL,'2024-06-10 14:41:07.304','2024-06-10 14:40:15.922');
+    ('uaid1','User Artist','BAND','userArtist.png',NULL,'2024-06-10 14:41:07.304','2024-06-10 14:40:15.922');
 
 INSERT INTO user_artist_mix_relation (artist_id,mix_id,"position") VALUES
     (1,1,0);
@@ -68,16 +69,24 @@ INSERT INTO mix_album (identifier,name,release_date) VALUES
 
 -- TRACK
 INSERT INTO mix_track (identifier,name,duration,stream_url,created_at,updated_at,play_count,artist_id,album_id) VALUES
-    ('tid1','track1',180,'abc','2024-05-24 10:40:00.436','2024-05-24 10:40:05.202',0,1,1);
+    ('tid1','Track 1',180,'track.mp3','2024-05-24 10:40:00.436','2024-05-24 10:40:05.202',0,1,1),
+    ('tid2','Track 2',180,'track1.mp3','2024-05-26 10:40:00.436','2024-05-23 10:40:05.202',0,1,1),
+    ('tid3','Track 3',120,'track3.mp3','2024-05-16 10:40:00.436','2024-05-17 10:40:05.202',0,1,1),
+    ('tid4','Track 4',130,'track4.mp3','2024-05-18 10:40:00.436','2024-05-21 10:40:05.202',0,1,1),
+    ('tid5','Track 5',140,'track5.mp3','2024-05-19 10:40:00.436','2024-05-22 10:40:05.202',0,1,1);
 
-INSERT INTO mix_track_like (user_id,mix_track_id,liked,updated_at) VALUES
-     (1,1,true,'2024-01-20 16:36:16.556'),
-     (2,1,false,'2024-01-21 16:36:16.556'),
-     (3,1,true,'2024-01-22 16:36:16.556'),
-     (4,1,true,'2024-01-23 16:36:16.556');
+INSERT INTO mix_track_like (user_id,mix_track_id,liked,recommend,updated_at) VALUES
+     (1,1,true,true,'2024-01-20 16:36:16.556'),
+     (1,3,null,true,'2024-08-20 16:36:16.556'),
+     (2,1,false,false,'2024-01-21 16:36:16.556'),
+     (3,1,true,false,'2024-01-22 16:36:16.556'),
+     (4,1,true,null,'2024-01-23 16:36:16.556');
 
 INSERT INTO mix_track_relation (mix_id,track_id,"position") VALUES
-    (1,1,0);
+    (1,1,0),
+    (3,3,0),
+    (3,4,1),
+    (3,5,2);
 
 -- SESSION
 INSERT INTO public.play_session (user_id,mix_id,track_id,duration,tracks,shuffle,created_at,updated_at) VALUES
