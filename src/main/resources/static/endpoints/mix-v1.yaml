@@ -346,6 +346,20 @@ components:
               description: Mix description. If mix does not have description, this field will not be returned.
               example: 'My cool mix'
 
+    MixList:
+      type: object
+      description: List of mixes.
+      required:
+        - mixes
+        - metadata
+      properties:
+        mixes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mix'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
     UserUploadedMixes:
       type: object
       description: List of user uploaded mixes.
@@ -420,7 +434,9 @@ components:
 
     Collection:
       type: object
-      description: Object holding all relevant data for specific collection.
+      description: |
+        Object holding all relevant data for specific collection. Paginated list of mixes in collection is present only 
+        if mixCount variable is set and greater than 0 or client requested specific mix.
       required:
         - identifier
         - name
@@ -452,18 +468,22 @@ components:
           default: [ ]
           items:
             $ref: './components/responses.yaml#/components/schemas/Creator'
+          example:
+            - username: 'V1StGXR8z5'
+              displayName: 'Pink Floyd'
+              avatarUrl: 'logo.png'
+              active: true
         tags:
           type: array
           description: List of collection tags.
           default: [ ]
           items:
             $ref: '#/components/schemas/Tag'
+          example:
+            - 'Rock'
+            - 'Happy'
         mixes:
-          type: array
-          description: List of mixes is present only if mixCount variable is set and greater than 0 or client requested specific mix.
-          default: [ ]
-          items:
-            $ref: '#/components/schemas/Mix'
+          $ref: '#/components/schemas/MixList'
 
     Mix:
       type: object

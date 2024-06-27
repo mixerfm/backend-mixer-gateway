@@ -7,6 +7,7 @@ import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.Creator;
+import fm.mixer.gateway.module.mix.api.v1.model.MixList;
 import fm.mixer.gateway.module.mix.api.v1.model.MixType;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
@@ -21,6 +22,7 @@ import fm.mixer.gateway.module.mix.api.v1.model.Visibility;
 import fm.mixer.gateway.module.mix.config.MixTypeConfig;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.entity.MixCollection;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollectionRelation;
 import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTag;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
@@ -125,11 +127,19 @@ public interface MixMapper {
 
     @PaginatedMapping
     @Mapping(target = "collections", source = "items.content")
-    CollectionList mapToCollectionList(Page<MixCollection> items, PaginationRequest paginationRequest);
+    CollectionList toCollectionList(Page<MixCollection> items, PaginationRequest paginationRequest);
 
     @MixCollectionCommonMapping
-    @Mapping(target = "mixes", source = "mixes", qualifiedByName = "toMix")
-    SingleCollection mapToSingleCollection(MixCollection collection);
+    @Mapping(target = "mixes", ignore = true)
+    SingleCollection toSingleCollection(MixCollection collection);
+
+    default fm.mixer.gateway.module.mix.api.v1.model.Mix toMixList(MixCollectionRelation relation) {
+        return toMix(relation.getMix());
+    }
+
+    @PaginatedMapping
+    @Mapping(target = "mixes", source = "items.content")
+    MixList toMixList(Page<MixCollectionRelation> items, PaginationRequest paginationRequest);
 
     @Mapping(target = "user", source = "user")
     @Mapping(target = "mix", source = "mix")

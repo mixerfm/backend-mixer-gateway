@@ -4,11 +4,9 @@ import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.mapper.MixMapper;
-import fm.mixer.gateway.module.mix.persistance.entity.MixCollection;
 import fm.mixer.gateway.module.mix.persistance.repository.CollectionRepository;
+import fm.mixer.gateway.module.mix.persistance.repository.MixCollectionRelationRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,25 +18,36 @@ public class CollectionService {
 
     private final MixMapper mapper;
     private final CollectionRepository repository;
+    private final MixCollectionRelationRepository mixRepository;
 
     public CollectionList getCollectionList(PaginationRequest collectionPagination, PaginationRequest mixPagination) {
-        return mapper.mapToCollectionList(fetchMixCollections(Objects.nonNull(mixPagination), collectionPagination.pageable()), collectionPagination);
-    }
+        final var collections = repository.findAll(collectionPagination.pageable());
+        final var collectionList = mapper.toCollectionList(collections, collectionPagination);
 
-    private Page<MixCollection> fetchMixCollections(final boolean fetchMixes, Pageable pageable) {
-        if (!fetchMixes) {
-            final var collectionList = repository.findAllWithoutMixes(pageable);
+        // This fetch/logic is not optimized, so we might consider it to hardcode a max number of mixes (constant)
+        if (Objects.nonNull(mixPagination)) {
+            collections.forEach(collection -> {
+                final var mixes = mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.pageable());
 
-            collectionList.stream().forEach(collection -> collection.setMixes(List.of()));
-
-            return collectionList;
+                collectionList.getCollections().stream().filter(c -> c.getIdentifier().equals(collection.getIdentifier()))
+                    .findFirst().ifPresent(c -> c.setMixes(mapper.toMixList(mixes, mixPagination)));
+            });
         }
 
-        return repository.findAllWithMixes(pageable);
+        return collectionList;
     }
 
     public SingleCollection getSingleCollection(String collectionId, PaginationRequest mixPagination, List<String> filter) {
-        return mapper.mapToSingleCollection(repository.findFilteredByIdentifier(collectionId, filter));
+        final var collection = repository.findByIdentifier(collectionId);
+        final var singleCollection = mapper.toSingleCollection(collection);
+
+        if (Objects.nonNull(mixPagination)) {
+            final var mixes = mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.pageable());
+
+            singleCollection.setMixes(mapper.toMixList(mixes, mixPagination));
+        }
+
+        return singleCollection;
     }
 
     public void react(String collectionId, boolean like) {
