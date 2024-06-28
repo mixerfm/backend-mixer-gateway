@@ -110,5 +110,4 @@ mixer-gateway:
   user-colors:
     active:
       - "#001122"
-    inactive:
-      - "#112233"
+    inactive: "#112233"
