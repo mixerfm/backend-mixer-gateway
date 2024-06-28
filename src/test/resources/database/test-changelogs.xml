@@ -5,7 +5,7 @@
 
     <includeAll path="database/changelogs"/>
 
-    <changeSet id="insert-test-data" author="skurelic0" context="test">
+    <changeSet id="insert-test-data" author="skurelic" context="test">
         <sqlFile path="data.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

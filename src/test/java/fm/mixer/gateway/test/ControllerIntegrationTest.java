@@ -38,9 +38,18 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
+    public record UserContext(String userId, String email){}
+    private final UserContext DEFAULT_CONTEXT = new UserContext("uid1", "request@example.com");
+    private UserContext currentContext = DEFAULT_CONTEXT;
+
     @AfterEach
     void cleanup() {
+        currentContext = DEFAULT_CONTEXT;
         wireMockServer.resetAll();
+    }
+
+    public void setUserContext(UserContext userContext) {
+        currentContext = userContext;
     }
 
     /**
@@ -114,7 +123,8 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
         final var request = MockMvcRequestBuilders.request(method, url)
             .contentType(APPLICATION_JSON)
             .header("X-Idempotency-Key", UUID.randomUUID())
-            .header("X-User-Id", 1)
+            .header("X-User-Id", currentContext.userId)
+            .header("X-User-Email", currentContext.email)
             .characterEncoding(UTF_8)
             .content(requestBody);
 

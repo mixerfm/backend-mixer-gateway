@@ -16,7 +16,7 @@ public class WireMockConfig {
 
     @Bean
     public RequestInterceptor urlInterceptor() {
-        return template -> template.target("http://localhost:" + mockServer().port() + "/");
+        return template -> template.target(String.format("http://localhost:%d/", mockServer().port()));
     }
 }
 

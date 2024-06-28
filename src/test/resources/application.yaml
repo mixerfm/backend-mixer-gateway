@@ -108,12 +108,7 @@ mixer-gateway:
     DIAMOND:
       number-of-likes: 10000
   user-colors:
-    - "5456D0"
-    - "78E1AC"
-    - "F781CF"
-    - "B084CC"
-    - "379392"
-    - "F7624D"
-    - "33A1FD"
-    - "F4BD0F"
-    - "EF959C"
+    active:
+      - "#001122"
+    inactive:
+      - "#112233"

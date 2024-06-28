@@ -98,7 +98,12 @@ public class ErrorControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Error> onMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
-        return service.createError(ErrorType.METHOD_ARGUMENT_NOT_VALID, new Object[]{ex.getParameter().getParameterName()});
+        final var parameters = new Object[]{ex.getFieldErrors().stream()
+            .map(violation -> String.format("'%s': %s", violation.getField(), violation.getDefaultMessage()))
+            .collect(Collectors.joining(", "))
+        };
+
+        return service.createError(ErrorType.METHOD_ARGUMENT_NOT_VALID, parameters);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

@@ -7,6 +7,7 @@ import fm.mixer.gateway.module.player.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
 import fm.mixer.gateway.module.user.persistance.entity.User;
+import fm.mixer.gateway.test.UnitTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mockStatic;
 
+@UnitTest
 class PlayerMapperUnitTest {
 
     final PlayerMapper mapper = Mappers.getMapper(PlayerMapper.class);

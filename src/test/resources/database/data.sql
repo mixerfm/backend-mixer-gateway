@@ -1,9 +1,21 @@
 -- USER
-INSERT INTO "user" (identifier,name,description,date_of_birth,avatar,profile_color,created_at,updated_at,email,phone_number,gender,active) VALUES
-    ('uid1','Test User','Test User Description','2000-01-13','userAvatar.jpg', '#001122','2000-01-14 15:59:49.216','2000-06-01 15:59:53.806','info@example.com','+123456789','F',true),
-    ('uid2','Test User 2','Test User 2 Description','2000-02-13','userAvatar2.jpg', '#00112A','2000-01-15 15:59:49.216','2000-06-02 15:59:53.806','info2@example.com','+123456789','M',true),
-    ('uid3','Test User 3','Test User 3 Description','2000-03-13','userAvatar3.jpg', '#00112B','2000-01-16 15:59:49.216','2000-06-03 15:59:53.806','info3@example.com','+123456789','M',true),
-    ('uid4','Test User 4','Test User 4 Description','2000-04-13','userAvatar4.jpg', '#00112C','2000-01-17 15:59:49.216','2000-06-04 15:59:53.806','info4@example.com','+123456789','F',true);
+INSERT INTO "user" (identifier,name,description,date_of_birth,avatar,profile_color,number_of_followers,number_of_following,created_at,updated_at,email,phone_number,gender,active) VALUES
+    ('uid1','Test User','Test User Description','2000-01-13','userAvatar.jpg', '#001122',2,1,'2000-01-14 15:59:49.216','2000-06-01 15:59:53.806','info@example.com','+123456789','F',true),
+    ('uid2','Test User 2','Test User 2 Description','2000-02-13','userAvatar2.jpg', '#00112A',0,0,'2000-01-15 15:59:49.216','2000-06-02 15:59:53.806','info2@example.com','+123456789','M',true),
+    ('uid3','Test User 3','Test User 3 Description','2000-03-13','userAvatar3.jpg', '#00112B',0,0,'2000-01-16 15:59:49.216','2000-06-03 15:59:53.806','info3@example.com','+123456789','M',true),
+    ('uid4','Test User 4','Test User 4 Description','2000-04-13','userAvatar4.jpg', '#00112C',0,0,'2000-01-17 15:59:49.216','2000-06-04 15:59:53.806','info4@example.com','+123456789','F',true);
+
+INSERT INTO public.user_location (user_id,country_code,city,longitude,latitude) VALUES
+    (1,'TT','Test City',15,20);
+
+INSERT INTO public.user_social_network (user_id,"type",url) VALUES
+    (1,'FACEBOOK','http://example.com/myFBProfile'),
+    (1,'X','http://example.com/myXProfile');
+
+INSERT INTO public.user_follower (user_id,follows_user_id,created_at) VALUES
+    (1,3,'2024-06-01 10:48:30.707'),
+    (3,1,'2024-06-02 10:48:30.707'),
+    (4,1,'2024-06-03 10:48:30.707');
 
 -- MIX
 INSERT INTO mix (identifier,name,description,avatar,duration,number_of_tracks,user_id,visibility,created_at,updated_at,play_count,nsfw) VALUES
@@ -91,7 +103,3 @@ INSERT INTO mix_track_relation (mix_id,track_id,"position") VALUES
 -- SESSION
 INSERT INTO public.play_session (user_id,mix_id,track_id,duration,tracks,shuffle,created_at,updated_at) VALUES
      (1,1,1,0,'1',false,'2024-06-17 13:56:59.422117','2024-06-17 14:57:07.220679');
-
--- user_follower
--- user_location
--- user_social_network

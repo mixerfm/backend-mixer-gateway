@@ -1,0 +1,32 @@
+{
+  "displayName": "User Request Test",
+  "biography": "User Request Test Biography",
+  "email": "request@example.com",
+  "phoneNumber": "+1234567890",
+  "dateOfBirth": "1990-01-01",
+  "gender": "MALE",
+  "address": {
+    "city": "Request City",
+    "countryCode": "RT",
+    "location": {
+      "longitude": 75.456,
+      "latitude": 16.234
+    }
+  },
+  "socialMedia": [
+    {
+      "url": "http://example.com/myFBRequestProfile",
+      "type": "FACEBOOK"
+    },
+    {
+      "url": "http://example.com/myXRequestProfile",
+      "type": "X"
+    }
+  ],
+  "username": "req_uid1",
+  "numberOfFollowers": 0,
+  "numberOfFollowing": 0,
+  "profileColor": "#001122",
+  "active": true,
+  "relation": "SELF"
+}

@@ -16,6 +16,8 @@ import java.util.Optional;
 class LocalAuthService extends AuthUserService {
 
     private static final String USER_ID_HEADER = "X-User-Id";
+    private static final String USER_EMAIL_HEADER = "X-User-Email";
+
     private final HttpServletRequest httpServletRequest;
     private final UserRepository userRepository;
 
@@ -24,9 +26,20 @@ class LocalAuthService extends AuthUserService {
         // For local development without JWT token
         final var userId = httpServletRequest.getHeader(USER_ID_HEADER);
         if (StringUtils.hasText(userId)) {
-            return userRepository.findByIdAndActiveIsTrue(Long.parseLong(userId));
+            return userRepository.findByIdentifierAndActiveIsTrue(userId);
         }
 
         return resolveUserEmailFromJwt().flatMap(userRepository::findByEmailAndActiveIsTrue);
+    }
+
+    @Override
+    public Optional<String> resolveUserEmailFromJwt() {
+        // For local development without JWT token
+        final var userEmail = httpServletRequest.getHeader(USER_EMAIL_HEADER);
+        if (StringUtils.hasText(userEmail)) {
+            return Optional.of(userEmail);
+        }
+
+        return super.resolveUserEmailFromJwt();
     }
 }

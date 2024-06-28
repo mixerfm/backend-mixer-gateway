@@ -1,0 +1,33 @@
+{
+  "displayName": "Test User",
+  "biography": "Test User Description",
+  "email": "info@example.com",
+  "phoneNumber": "+123456789",
+  "dateOfBirth": "2000-01-13",
+  "gender": "FEMALE",
+  "address": {
+    "city": "Test City",
+    "countryCode": "TT",
+    "location": {
+      "longitude": 15,
+      "latitude": 20
+    }
+  },
+  "socialMedia": [
+    {
+      "url": "http://example.com/myFBProfile",
+      "type": "FACEBOOK"
+    },
+    {
+      "url": "http://example.com/myXProfile",
+      "type": "X"
+    }
+  ],
+  "username": "uid1",
+  "avatarUrl": "userAvatar.jpg",
+  "numberOfFollowers": 2,
+  "numberOfFollowing": 1,
+  "profileColor": "#001122",
+  "active": true,
+  "relation": "SELF"
+}
