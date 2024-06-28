@@ -8,14 +8,17 @@ import fm.mixer.gateway.module.user.api.v1.model.CreateUser;
 import fm.mixer.gateway.module.user.api.v1.model.GetUser;
 import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
 import fm.mixer.gateway.module.user.api.v1.model.UserRelation;
+import fm.mixer.gateway.module.user.config.UserProfileColorConfig;
 import fm.mixer.gateway.module.user.mapper.UserMapper;
 import fm.mixer.gateway.module.user.persistance.repository.UserFollowerRepository;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
+import fm.mixer.gateway.module.user.util.RandomProfileColorUtil;
 import fm.mixer.gateway.module.user.util.UserRelationUtil;
 import fm.mixer.gateway.util.RandomIdentifierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +32,7 @@ public class UserService {
     private final UserRepository repository;
     private final ValidateUserService validation;
     private final UserFollowerRepository followerRepository;
+    private final UserProfileColorConfig profileColorConfig;
 
     @Transactional
     public GetUser getCurrentUser() {
@@ -36,31 +40,37 @@ public class UserService {
     }
 
     public GetUser getUser(String username) {
-        final var user = repository.findByActiveIsTrueAndIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = repository.findActiveByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
 
         return mapper.toGetUser(user, UserRelationUtil.resolveRelation(user));
     }
 
     public GetUser createUser(CreateUser createUserRequest) {
         // If username was not supplied, randomly generate it
-        var username = createUserRequest.getUsername();
-        if (Objects.isNull(username)) {
-            username = RandomIdentifierUtil.randomIdentifier();
+        if (!StringUtils.hasText(createUserRequest.getUsername())) {
+            createUserRequest.setUsername(RandomIdentifierUtil.randomIdentifier());
+        }
+        if (!StringUtils.hasText(createUserRequest.getProfileColor())) {
+            createUserRequest.setProfileColor(RandomProfileColorUtil.randomProfileColor());
         }
 
-        validation.validateCreateUserInput(createUserRequest.getEmail(), username, createUserRequest.getDateOfBirth());
+        validation.validateCreateUserInput(createUserRequest);
 
         // Convert it to entity, save and return to the client
-        final var user = mapper.toUserCreate(createUserRequest, uploadAvatar(createUserRequest.getAvatar()).orElse(null), username);
+        final var user = mapper.toUserCreateEntity(
+            createUserRequest,
+            uploadAvatar(createUserRequest.getAvatar()).orElse(null),
+            createUserRequest.getUsername()
+        );
         repository.save(user);
 
         return mapper.toGetUser(user, UserRelation.SELF);
     }
 
     public GetUser updateUser(String username, UpdateUser updateUserRequest) {
-        var user = repository.findByActiveIsTrueAndIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        var user = repository.findActiveByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
 
-        validation.validateUpdateUserInput(updateUserRequest.getEmail(), updateUserRequest.getUsername(), updateUserRequest.getDateOfBirth(), user);
+        validation.validateUpdateUserInput(updateUserRequest, user);
 
         // Update avatar if user uploaded new one. The old one is deleted from CDN
         final var oldAvatar = user.getAvatar();
@@ -80,15 +90,19 @@ public class UserService {
 
     @Transactional
     public void deleteUser(String username) {
-        final var user = repository.findByActiveIsTrueAndIdentifier(username).orElseThrow(ResourceNotFoundException::new);
+        final var user = repository.findActiveByIdentifier(username).orElseThrow(ResourceNotFoundException::new);
 
         validation.validateUserCanDelete(user);
 
         followerRepository.deleteUser(user);
 
+        deleteAvatar(user.getAvatar());
         Optional.ofNullable(user.getSocialNetworks()).ifPresent(List::clear);
+        user.setProfileColor(profileColorConfig.getInactive());
+        user.setAvatar(null);
         user.setAddress(null);
         user.setActive(false);
+
         repository.save(user);
     }
 

@@ -33,6 +33,7 @@ public class UserCommunityService {
     }
 
     public void follow(String username) {
+        final var currentUser = getCurrentUser();
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
         // User already follow this user
@@ -40,19 +41,39 @@ public class UserCommunityService {
             return;
         }
 
-        repository.save(mapper.toUserFollower(getCurrentUser(), user));
+        changeFollowerNumbers(currentUser, user, 1);
+
+        repository.save(mapper.toUserFollower(currentUser, user));
     }
 
     public void unfollow(String username) {
+        final var currentUser = getCurrentUser();
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
-        repository.findByUserAndFollowsUser(getCurrentUser(), user).ifPresent(repository::delete);
+        repository.findByUserAndFollowsUser(currentUser, user).ifPresent((userFollower) -> {
+            changeFollowerNumbers(currentUser, user, -1);
+
+            repository.delete(userFollower);
+        });
     }
 
     public void removeFollower(String username) {
+        final var currentUser = getCurrentUser();
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
-        repository.findByUserAndFollowsUser(user, getCurrentUser()).ifPresent(repository::delete);
+        repository.findByUserAndFollowsUser(user, currentUser).ifPresent((userFollower) -> {
+            changeFollowerNumbers(user, currentUser, -1);
+
+            repository.delete(userFollower);
+        });
+    }
+
+    private void changeFollowerNumbers(User removeFollowing, User removeFollower, int byCount) {
+        removeFollower.setNumberOfFollowers(removeFollower.getNumberOfFollowers() + byCount);
+        userRepository.save(removeFollower);
+
+        removeFollowing.setNumberOfFollowing(removeFollowing.getNumberOfFollowing() + byCount);
+        userRepository.save(removeFollowing);
     }
 
     private User getCurrentUser() {

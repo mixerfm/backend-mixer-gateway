@@ -54,6 +54,8 @@ public interface UserMapper {
 
     @Mapping(target = "name", source = "userCommon.displayName")
     @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
+    @Mapping(target = "numberOfFollowers", constant = "0")
+    @Mapping(target = "numberOfFollowing", constant = "0")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "userCommon")
     @Mapping(target = "id", ignore = true)

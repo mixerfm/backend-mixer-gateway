@@ -3,6 +3,9 @@ package fm.mixer.gateway.module.user.service;
 import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.module.user.api.v1.model.CreateUser;
+import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
+import fm.mixer.gateway.module.user.config.UserProfileColorConfig;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +19,9 @@ import java.util.Objects;
 public class ValidateUserService {
 
     private final UserRepository repository;
+    private final UserProfileColorConfig colorConfig;
 
-    public void validateUpdateUserInput(String newEmail, String newIdentifier, LocalDate newDateOfBirth, User user) {
+    public void validateUpdateUserInput(final UpdateUser updateUser, final User user) {
         // Check if user is equal to currently active user
         final var currentActiveUser = UserPrincipalUtil.getCurrentActiveUser();
         if (currentActiveUser.isEmpty() || !currentActiveUser.get().getId().equals(user.getId())) {
@@ -25,33 +29,43 @@ public class ValidateUserService {
         }
 
         // If user changed email, but that email is already in use
-        if (!newEmail.equals(user.getEmail()) && repository.existsByEmailAndActiveIsTrue(newEmail)) {
+        if (!updateUser.getEmail().equals(user.getEmail()) && repository.existsByEmailAndActiveIsTrue(updateUser.getEmail())) {
             throw new BadRequestException("username.or.email.exists.error");
         }
 
         // If user changed username, but that username is already in use
-        if (!newIdentifier.equals(user.getIdentifier()) && repository.existsByIdentifierAndActiveIsTrue(newIdentifier)) {
+        if (!updateUser.getUsername().equals(user.getIdentifier()) && repository.existsByIdentifierAndActiveIsTrue(updateUser.getUsername())) {
             throw new BadRequestException("username.or.email.exists.error");
         }
 
-        if (Objects.nonNull(newDateOfBirth) && newDateOfBirth.isAfter(LocalDate.now())) {
-            throw new BadRequestException("dob.invalid.error");
-        }
+        validateDateOfBirth(updateUser.getDateOfBirth());
+        validateProfileColor(updateUser.getProfileColor());
     }
 
-    public void validateCreateUserInput(String email, String identifier, LocalDate dateOfBirth) {
+    public void validateCreateUserInput(CreateUser createUser) {
         final var currentActiveUserEmail = UserPrincipalUtil.resolveUserEmailFromJwt();
-        if (currentActiveUserEmail.isEmpty() || !currentActiveUserEmail.get().equals(email)) {
+        if (currentActiveUserEmail.isEmpty() || !currentActiveUserEmail.get().equals(createUser.getEmail())) {
             throw new AccessForbiddenException();
         }
 
         // Check if there is already user with this username or email
-        if (repository.existsByEmailAndActiveIsTrueOrIdentifierAndActiveIsTrue(email, identifier)) {
+        if (repository.existsByEmailAndActiveIsTrueOrIdentifierAndActiveIsTrue(createUser.getEmail(), createUser.getUsername())) {
             throw new BadRequestException("username.or.email.exists.error");
         }
 
+        validateDateOfBirth(createUser.getDateOfBirth());
+        validateProfileColor(createUser.getProfileColor());
+    }
+
+    private void validateDateOfBirth(LocalDate dateOfBirth) {
         if (Objects.nonNull(dateOfBirth) && dateOfBirth.isAfter(LocalDate.now())) {
             throw new BadRequestException("dob.invalid.error");
+        }
+    }
+
+    private void validateProfileColor(String profileColor) {
+        if (Objects.nonNull(profileColor) && !colorConfig.getActive().contains(profileColor)) {
+            throw new BadRequestException("profile.color.invalid.error");
         }
     }
 
