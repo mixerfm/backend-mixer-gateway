@@ -108,9 +108,9 @@ public interface PlayerMapper {
     @Mapping(target = "mix", source = "mix")
     @Mapping(target = "track", source = "track")
     @Mapping(target = "duration", expression = "java(Duration.ZERO)")
-    @Mapping(target = "tracks", source = "mix.tracks")
     @Mapping(target = "shuffle", constant = "false")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tracks", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void toPlaySessionEntity(@MappingTarget PlaySession playSession, User user, Mix mix, MixTrack track);

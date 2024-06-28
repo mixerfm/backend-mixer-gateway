@@ -32,7 +32,7 @@ public class PlayerController implements PlayerApiDelegate {
     @Override
     @OpenApiValidation
     public ResponseEntity<Track> nextTrack(String mixId) {
-        return ResponseEntity.ok(service.nextTrack(mixId));
+        return ResponseEntity.ok(service.nextTrack(mixId, false));
     }
 
     @Override

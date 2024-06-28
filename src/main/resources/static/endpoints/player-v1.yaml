@@ -144,8 +144,9 @@ paths:
     get:
       summary: Get track list for specific mix.
       description: |
-        Return only played tracks from specific mix for currently active user.
-        If user listened the whole mix or did not listen to any song from the mix, empty collection will be returned.
+        Return only played tracks from specific mix for currently active user. If user started listening the mix again,
+        only listened songs (in new listening session) will be returned - user will not be able to see all tracks from the mix as before.
+        If user did not listen to any song from the mix, empty collection will be returned.
       operationId: getTrackList
       tags:
         - Track
@@ -163,7 +164,7 @@ paths:
   /tracks/{trackId}/reactions:
     post:
       summary: React to specific track.
-      description: Current active user can react to specific track, e.g. like it, dislike it or put it on recommend list.
+      description: Current active user can react to specific track. Supported actions are - LIKE, DISLIKE, RECOMMEND, DO_NOT_RECOMMEND and REPORT.
       operationId: react
       tags:
         - Track
@@ -196,7 +197,7 @@ paths:
         # path parameter
         - $ref: '#/components/parameters/TrackIdentifier'
       requestBody:
-        $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
+        $ref: './components/parameters.yaml#/components/requestBodies/DeleteReactionRequest'
       responses:
         '204':
           description: User successfully removed reaction.

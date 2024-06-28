@@ -47,6 +47,9 @@ public class MixTrack {
     @Column(nullable = false)
     private Integer playCount;
 
+    @Column(nullable = false)
+    private Integer skipCount;
+
     @OneToMany(mappedBy = "track", fetch = FetchType.EAGER)
     private Set<MixTrackLike> likes = new HashSet<>();
 

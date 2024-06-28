@@ -71,6 +71,7 @@ public class PlayerService {
         final var mix = mixRepository.findByIdentifierWithTracks(mixId).orElseThrow(ResourceNotFoundException::new);
 
         mapper.toPlaySessionEntity(session, user, mix, mix.getTracks().getFirst());
+        session.setTracks(mapper.toMixTracksString(mix.getTracks()));
 
         repository.save(session);
 
@@ -83,17 +84,29 @@ public class PlayerService {
 
     public Track skipTrack(String mixId) {
         // TODO implement user tracking service
-        return nextTrack(mixId);
+        return nextTrack(mixId, true);
     }
 
-    public Track nextTrack(String mixId) {
+    public Track nextTrack(String mixId, boolean isSkip) {
         final var user = getCurrentUser();
         final var session = getCurrentPlaySession(user, mixId);
         final var tracks = Arrays.stream(session.getTracks().split(mapper.TRACK_DELIMITER)).map(Long::valueOf).toList();
 
+        // Increase track play or skip count
+        if (isSkip) {
+            session.getTrack().setSkipCount(session.getTrack().getSkipCount() + 1);
+        } else {
+            session.getTrack().setPlayCount(session.getTrack().getPlayCount() + 1);
+        }
+        trackRepository.save(session.getTrack());
+
         final var nextIndex = tracks.indexOf(session.getTrack().getId()) + 1;
         // No more tracks in the list
         if (nextIndex >= tracks.size()) {
+            // Increase mix play count
+            session.getMix().setPlayCount(session.getMix().getPlayCount() + 1);
+            mixRepository.save(session.getMix());
+
             session.setShuffle(true);
 
             repository.save(session);
