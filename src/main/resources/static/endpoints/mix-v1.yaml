@@ -73,7 +73,7 @@ paths:
   /collections/{collectionId}/reactions:
     post:
       summary: React to specific collection.
-      description: Current active user can react to specific collection, e.g. like it or dislike it.
+      description: Current active user can react to specific collection. Supported actions are - LIKE, DISLIKE and REPORT.
       operationId: react
       tags:
         - Collections
@@ -132,7 +132,7 @@ paths:
   /mixes/{mixId}/reactions:
     post:
       summary: React to specific mix.
-      description: Current active user can react to specific mix, e.g. like it or dislike it.
+      description: Current active user can react to specific mix. Supported actions are - LIKE, DISLIKE and REPORT.
       operationId: react
       tags:
         - Mixes
@@ -444,7 +444,6 @@ components:
         - visibility
         - tags
         - artists
-        - mixes
       properties:
         identifier:
           $ref: './components/common.yaml#/components/schemas/Identifier'

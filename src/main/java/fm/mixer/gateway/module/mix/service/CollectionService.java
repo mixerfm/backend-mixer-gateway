@@ -1,6 +1,7 @@
 package fm.mixer.gateway.module.mix.service;
 
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.mapper.MixMapper;
@@ -38,11 +39,15 @@ public class CollectionService {
     }
 
     public SingleCollection getSingleCollection(String collectionId, PaginationRequest mixPagination, List<String> filter) {
-        final var collection = repository.findByIdentifier(collectionId);
+        final var collection = repository.findByIdentifier(collectionId).orElseThrow(ResourceNotFoundException::new);
         final var singleCollection = mapper.toSingleCollection(collection);
 
         if (Objects.nonNull(mixPagination)) {
-            final var mixes = mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.pageable());
+            final var mixes = filter.isEmpty() ?
+                mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.pageable()) :
+                mixRepository.findByCollectionIdAndMixTagsNameInOrderByPosition(
+                    collection.getId(), filter, mixPagination.pageable()
+                );
 
             singleCollection.setMixes(mapper.toMixList(mixes, mixPagination));
         }
