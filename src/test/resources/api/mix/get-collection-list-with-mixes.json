@@ -1,0 +1,99 @@
+{
+  "collections": [
+    {
+      "identifier": "cid1",
+      "name": "Test Collection 1",
+      "avatarUrl": "collectionAvatar.jpg",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "visibility": "PUBLIC",
+      "reactions": [],
+      "artists": [],
+      "mixes": {
+        "mixes": [
+          {
+            "identifier": "mid1",
+            "name": "Test Mix",
+            "avatarUrl": "mixAvatar.jpg",
+            "author": {
+              "username": "uid1",
+              "displayName": "Test User",
+              "avatarUrl": "userAvatar.jpg",
+              "profileColor": "#001122",
+              "active": true
+            },
+            "numberOfPlays": 5,
+            "numberOfLikes": 4,
+            "numberOfTracks": 3,
+            "duration": "PT2M30S",
+            "visibility": "PUBLIC",
+            "type": "GEM",
+            "nsfw": false,
+            "reactions": [
+              {
+                "type": "LIKE"
+              }
+            ],
+            "artists": [
+              {
+                "username": "uaid1",
+                "displayName": "User Artist",
+                "avatarUrl": "userArtist.png",
+                "active": true
+              }
+            ],
+            "tags": [
+              "Rock",
+              "Pop",
+              "Happy"
+            ],
+            "description": "Test Mix Description"
+          }
+        ],
+        "metadata": {
+          "currentPage": 1,
+          "totalItems": 1,
+          "totalPages": 1
+        }
+      },
+      "tags": [
+        "Rock",
+        "Pop"
+      ]
+    },
+    {
+      "identifier": "cid2",
+      "name": "Test Collection 2",
+      "avatarUrl": "collectionAvatar2.jpg",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "visibility": "PRIVATE",
+      "reactions": [],
+      "artists": [],
+      "mixes": {
+        "mixes": [],
+        "metadata": {
+          "currentPage": 0,
+          "totalItems": 0,
+          "totalPages": 0
+        }
+      },
+      "tags": []
+    }
+  ],
+  "metadata": {
+    "currentPage": 1,
+    "totalItems": 2,
+    "totalPages": 1
+  }
+}

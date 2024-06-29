@@ -32,6 +32,16 @@ logging:
     root: info
     org.zalando.logbook: trace
 
+logbook:
+  predicate:
+    exclude:
+      - path: favicon.ico
+        methods:
+          - GET
+      - path: /actuator/**
+        methods:
+          - GET
+
 mixer-gateway:
   security.enabled: true
   circuitbreaker:
@@ -47,22 +57,40 @@ mixer-gateway:
         - name: application-v1
           paths:
             - /versions
+        # TODO uncomment
         #- name: community-v1
         #  paths:
-        #    - /comments/**
+        #    - /comments/*
         - name: player-v1
           paths:
-            - /player/**
+            - /player/*/play
+            - /player/*/pause
+            - /player/*/next
+            - /player/*/skip
+            - /player/*/change-volume
             - /player-session
+            - /tracks/*
+            - /tracks/*/reactions
         - name: mix-v1
           paths:
-            - /mixes/**
+            - /mixes/*
+            - /mixes/*/reactions
+            - /mixes/*/uploaded
+            - /mixes/*/liked
+            - /mixes/*/listened
             - /collections
-            - /collections/**
+            - /collections/*
+            - /collections/*
         - name: user-v1
           paths:
             - /users
-            - /users/**
+            - /users/*
+            - /users/*/followers
+            - /users/*/following
+            - /users/*/follow
+            - /users/*/unfollow
+            - /users/*/remove-follower
+            - /users/*/reactions
             - /current-user
   versions:
     clients:
@@ -104,3 +132,15 @@ mixer-gateway:
       number-of-likes: 1000
     DIAMOND:
       number-of-likes: 10000
+  user-colors:
+    active:
+      - "#5456D0"
+      - "#78E1AC"
+      - "#F781CF"
+      - "#B084CC"
+      - "#379392"
+      - "#F7624D"
+      - "#33A1FD"
+      - "#F4BD0F"
+      - "#EF959C"
+    inactive: "#5A5A5A"

@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "username": "uid1",
+      "displayName": "Test User",
+      "avatarUrl": "userAvatar.jpg",
+      "profileColor": "#001122",
+      "active": true,
+      "relation": "SELF"
+    }
+  ],
+  "metadata": {
+    "currentPage": 1,
+    "totalItems": 1,
+    "totalPages": 1
+  }
+}

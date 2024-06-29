@@ -1,0 +1,113 @@
+server:
+  port: 80
+
+spring:
+  application.name: mixer-gateway
+  jpa.show-sql: true
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+  liquibase:
+    change-log: database/test-changelogs.xml
+    enabled: true
+  jpa.open-in-view: false
+  thymeleaf.check-template-location: false
+  jackson.default-property-inclusion: non_null
+  datasource:
+    url: ${SERVICE_DATABASE_URL:jdbc:postgresql://localhost:15430/mixer-gateway}
+    username: ${SERVICE_DATABASE_USERNAME:mixer-gateway}
+    password: ${SERVICE_DATABASE_PASSWORD:mixer-gateway}
+
+logging:
+  level:
+    root: info
+    org.zalando.logbook: trace
+
+logbook:
+  predicate:
+    exclude:
+      - path: favicon.ico
+        methods:
+          - GET
+      - path: /actuator/**
+        methods:
+          - GET
+
+mixer-gateway:
+  security.enabled: false
+  circuitbreaker:
+    timelimiter.timeout-duration: 1m
+    ignore-exceptions:
+      - feign.FeignException.FeignClientException
+  integration:
+    feign:
+      TestApi.url: ${USER_SERVICE_URL:http://localhost:8001}
+  openapi:
+    validation:
+      specifications:
+        - name: application-v1
+          paths:
+            - /versions
+        # TODO uncomment
+        #- name: community-v1
+        #  paths:
+        #    - /comments/**
+        - name: player-v1
+          paths:
+            - /player/**
+            - /player-session
+        - name: mix-v1
+          paths:
+            - /mixes/**
+            - /collections
+            - /collections/**
+        - name: user-v1
+          paths:
+            - /users
+            - /users/**
+            - /current-user
+  versions:
+    clients:
+      ANDROID_CLIENT:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      IOS_CLIENT:
+        min-version: 1.0.0
+        current-version: 1.0.0
+    apis:
+      APPLICATION_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      AUTH_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      COMMUNITY_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      EXPLORE_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      MIX_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      PLAYER_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+      USER_API:
+        min-version: 1.0.0
+        current-version: 1.0.0
+  mix-types:
+    GEM:
+      number-of-likes: 5
+      play-count: 10
+    GOLD:
+      number-of-likes: 100
+    PLATINUM:
+      number-of-likes: 1000
+    DIAMOND:
+      number-of-likes: 10000
+  user-colors:
+    active:
+      - "#001122"
+    inactive: "#112233"

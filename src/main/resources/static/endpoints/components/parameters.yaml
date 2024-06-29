@@ -5,7 +5,13 @@ components:
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/UsernameSchema'
+        $ref: './common.yaml#/components/schemas/Identifier'
+    MixIdentifier:
+      name: mixId
+      in: path
+      required: true
+      schema:
+        $ref: './common.yaml#/components/schemas/Identifier'
     Sort:
       name: sort
       in: query
@@ -31,12 +37,24 @@ components:
       schema:
         $ref: '#/components/schemas/FilterSchema'
 
-  schemas:
-    UsernameSchema:
-      type: string
-      description: The unique user identifier used for fetching specific set of information.
-      example: 'V1StGXR8z5'
+  requestBodies:
+    CreateReactionRequest:
+      description: Create reaction request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './common.yaml#/components/schemas/UserReaction'
 
+    DeleteReactionRequest:
+      description: Delete reaction request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './common.yaml#/components/schemas/UserReaction'
+
+  schemas:
     SortSchema:
       type: array
       description: |

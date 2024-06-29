@@ -14,6 +14,8 @@ import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
@@ -32,7 +34,7 @@ public class CommunityService {
     public Comment createComment(String mixId, String content) {
         final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
 
-        return mapper.toComment(repository.save(mapper.toComment(content, getCurrentUser(), mix)));
+        return mapper.toComment(repository.save(mapper.toCommentEntity(content, getCurrentUser(), mix)));
     }
 
     public CommentList getReplyList(String commentId, PaginationRequest paginationRequest) {
@@ -44,8 +46,11 @@ public class CommunityService {
     public Comment createReply(String commentId, String content) {
         final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
 
-        final var reply = mapper.toComment(content, getCurrentUser(), comment.getMix());
+        final var reply = mapper.toCommentEntity(content, getCurrentUser(), comment.getMix());
         reply.setParentComment(comment);
+
+        comment.setNumberOfReplies(comment.getNumberOfReplies() + 1);
+        repository.save(comment);
 
         return mapper.toComment(repository.save(reply));
     }
@@ -69,25 +74,36 @@ public class CommunityService {
             throw new AccessForbiddenException();
         }
 
+        final var parentComment = comment.getParentComment();
+        if (Objects.nonNull(parentComment)) {
+            parentComment.setNumberOfReplies(parentComment.getNumberOfReplies() - 1);
+            repository.save(parentComment);
+        }
+
         likeRepository.deleteAllByComment(comment);
         repository.delete(comment);
     }
 
-    public void setLikeFlag(final String commentId, final boolean like) {
+    public void react(final String commentId, final boolean like) {
         final var user = getCurrentUser();
         final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
 
         // Find old record and change "liked" flag. If there is no old record create new object with mapper and store it.
-        likeRepository.save(
+        comment.getLikes().add(likeRepository.save(
             likeRepository.findByUserAndComment(user, comment).map(likeComment -> {
                 likeComment.setLiked(like);
                 return likeComment;
-            }).orElse(mapper.toCommentLike(user, comment, like))
-        );
+            }).orElse(mapper.toCommentLikeEntity(user, comment, like))
+        ));
     }
 
-    public void report(String commentId) {
-        // TODO implement
+    public void removeReaction(String commentId) {
+        final var user = getCurrentUser();
+        final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
+        final var reaction = likeRepository.findByUserAndComment(user, comment).orElseThrow(ResourceNotFoundException::new);
+
+        comment.getLikes().remove(reaction);
+        likeRepository.delete(reaction);
     }
 
     private User getCurrentUser() {

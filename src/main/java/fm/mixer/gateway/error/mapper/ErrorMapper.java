@@ -32,10 +32,10 @@ public interface ErrorMapper {
     @ValueMapping(target = "BAD_REQUEST", source = "ILLEGAL_ARGUMENT")
     @ValueMapping(target = "BAD_REQUEST", source = "MISSING_REQUEST_HEADER")
     @ValueMapping(target = "BAD_REQUEST", source = "MISSING_REQUEST_PATH_VARIABLE")
-    HttpStatus mapToHttpStatus(ErrorType errorResponseType);
+    HttpStatus toHttpStatus(ErrorType errorResponseType);
 
     @Mapping(target = "identifier", expression = "java(UUID.randomUUID())")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "type", source = "type")
-    Error mapToError(ErrorType type, String description);
+    Error toError(ErrorType type, String description);
 }

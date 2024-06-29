@@ -4,6 +4,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -57,20 +56,11 @@ public class MixCollection {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @ManyToMany
-    @JoinTable(
-        name = "mix_collection_relation",
-        joinColumns = {@JoinColumn(name = "collection_id")},
-        inverseJoinColumns = {@JoinColumn(name = "mix_id")}
-    )
-    @OrderColumn(name = "position")
-    private List<Mix> mixes;
-
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "mix_collection_tag_relation",
         joinColumns = {@JoinColumn(name = "collection_id")},
         inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
-    private Set<MixTag> tags;
+    private List<MixTag> tags;
 }

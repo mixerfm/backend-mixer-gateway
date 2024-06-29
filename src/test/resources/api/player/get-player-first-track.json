@@ -1,0 +1,24 @@
+{
+  "identifier": "tid3",
+  "name": "Track 3",
+  "artists": [
+    {
+      "username": "uaid1",
+      "displayName": "User Artist",
+      "avatarUrl": "userArtist.png",
+      "active": true
+    }
+  ],
+  "album": {
+    "identifier": "aid1",
+    "displayName": "Album 1",
+    "releaseDate": "1992-12-05"
+  },
+  "reactions": [
+    {
+      "type": "RECOMMEND"
+    }
+  ],
+  "streamUrl": "track3.mp3",
+  "duration": "PT2M"
+}

@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +35,12 @@ public class UserArtist {
 
     @Column(nullable = false)
     private String name;
+
+    @Column
+    private String avatar;
+
+    @Transient
+    private Boolean active = true;
 
     @Enumerated(EnumType.STRING)
     private UserArtistType type;

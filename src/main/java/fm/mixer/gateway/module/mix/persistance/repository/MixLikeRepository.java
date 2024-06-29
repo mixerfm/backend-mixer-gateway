@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface MixLikeRepository extends JpaRepository<MixLike, Long> {
 
-    @EntityGraph(attributePaths = {"user", "mix", "mix.tracks", "mix.user", "mix.tags", "mix.likes", "mix.artists"})
+    @EntityGraph(attributePaths = {"user", "mix", "mix.user", "mix.tags", "mix.likes", "mix.artists"})
     Page<MixLike> findByUserAndLikedIsTrue(User user, Pageable pageable);
 
     Optional<MixLike> findByUserAndMix(User user, Mix mix);

@@ -48,13 +48,9 @@ public class SecurityConfig {
         public SecurityFilterChain configure(HttpSecurity http) throws Exception {
             http.authorizeHttpRequests(authorize -> {
                 authorize.requestMatchers(antPathRequestMatchers(
-                    "/collections/*/like", "/collections/*/dislike", "/collections/*/report",
-                    "/comments/*/like", "/comments/*/dislike", "/comments/*/report",
-                    "/mixes/*/like", "/mixes/*/dislike", "/mixes/*/report",
-                    "/player/*/like", "/player/*/dislike", "/player/*/recommend",
-                    "/player/*/do-not-recommend", "/player/*/report",
+                    "/collections/*/reactions", "/comments/*/reactions", "/mixes/*/reactions", "/tracks/*/reactions",
                     "/users", "PUT /users/*", "DELETE /users/*",
-                    "/users/*/follow", "/users/*/unfollow", "/users/*/remove-follower", "/users/*/report"
+                    "/users/*/follow", "/users/*/unfollow", "/users/*/remove-follower", "/users/*/reactions"
                 )).authenticated();
                 authorize.anyRequest().permitAll();
             });

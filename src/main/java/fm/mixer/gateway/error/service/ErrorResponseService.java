@@ -26,7 +26,7 @@ public class ErrorResponseService {
         final var messageCode = String.join(".", ErrorType.class.getName(), type.name());
         final var message = getErrorMessage(messageCode, parameters);
 
-        return ResponseEntity.status(errorMapper.mapToHttpStatus(type)).body(errorMapper.mapToError(type, message));
+        return ResponseEntity.status(errorMapper.toHttpStatus(type)).body(errorMapper.toError(type, message));
     }
 
     public String getErrorMessage(final String messageName, @Nullable final Object[] parameters) {

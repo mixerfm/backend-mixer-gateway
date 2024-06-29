@@ -1,5 +1,88 @@
 components:
+  responses:
+    ErrorResponse:
+      description: Unexpected error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
   schemas:
+    Creator:
+      type: object
+      description: |
+        Object holding information about person or group of persons (that act as entity, e.g. music band) who can be user, author, artist etc..
+      required:
+        - username
+        - displayName
+        - active
+      properties:
+        username:
+          $ref: './common.yaml#/components/schemas/Identifier'
+        displayName:
+          type: string
+          description: Human friendly defined name.
+          pattern: '^[a-zA-Z0-9_ ]*$'
+          example: 'Name Surname'
+        avatarUrl:
+          type: string
+          description: Profile picture. If person did not set profile picture, this field will not be present in response.
+          example: 'logo.png'
+        profileColor:
+          type: string
+          description: Profile color in hex format without transparency information. This is automatic generated.
+          pattern: '^#[0-9a-fA-F]{6}$'
+          example: '#001122'
+        active:
+          type: boolean
+          description: Flag that indicates if user is active or account was deleted.
+          example: false
+
+    Error:
+      type: object
+      description: Error model which holds information about an error.
+      required:
+        - identifier
+        - type
+        - description
+      properties:
+        identifier:
+          type: string
+          format: uuid
+          description: Error code used for reporting purposes.
+        type:
+          $ref: '#/components/schemas/ErrorType'
+        description:
+          type: string
+          description: Human readable description of the error which should be used only for debug purposes.
+
+    ErrorType:
+      type: string
+      description: Error code which can be used to show end user error message on his/her local language.
+      enum:
+        # Server errors
+        - EXTERNAL_SERVICE_ERROR
+        - EXTERNAL_SERVICE_UNAVAILABLE
+        - INTERNAL_SERVER_ERROR
+        # Client errors
+        - ACCESS_FORBIDDEN
+        - BAD_REQUEST
+        - ILLEGAL_ARGUMENT
+        - MEDIA_TYPE_NOT_ACCEPTABLE
+        - MEDIA_TYPE_NOT_SUPPORTED
+        - METHOD_ARGUMENT_CONSTRAINT_VIOLATION
+        - METHOD_ARGUMENT_NOT_VALID
+        - METHOD_ARGUMENT_TYPE_MISMATCH
+        - MISSING_REQUEST_BODY
+        - MISSING_REQUEST_HEADER
+        - MISSING_REQUEST_PARAMETER
+        - MISSING_REQUEST_PATH_VARIABLE
+        - TOO_MANY_REQUESTS
+        - RESOURCE_NOT_FOUND
+        - REQUEST_METHOD_NOT_SUPPORTED
+        - UNAUTHORIZED_ACCESS
+        - UNPROCESSABLE_ENTITY
+
     PaginationMetadata:
       type: object
       description: Information about the subset of the entire collection returned in the payload.
@@ -38,3 +121,12 @@ components:
             If there are no items, this value will be 0, otherwise it will be number greater than 0 (at least 1).
           minimum: 0
           example: 10
+
+    UserReactions:
+      type: array
+      description: List of all user reactions to specific item.
+      example:
+        - type: 'LIKE'
+        - type: 'RECOMMEND'
+      items:
+        $ref: './common.yaml#/components/schemas/UserReaction'

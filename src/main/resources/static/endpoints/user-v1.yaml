@@ -10,9 +10,10 @@ info:
     Examples:
     new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
     old user -> Auth API (login) -> receive JWT -> User API.
-  version: 0.2.2
+  version: 0.3.0
   x-release-notes:
-    - 0.2.2 Add required definition to CompactUser and AvatarContent
+    - 0.3.0 Add reactions endpoint, profile color, input validation, user activity flag and refactor common data models.
+    - 0.2.2 Add required definition to CompactUser and AvatarContent.
     - 0.2.1 Add current active user endpoint.
     - 0.2.0 Add user relation to followers and following list.
     - 0.1.1 Add Idempotency key in header.
@@ -40,7 +41,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetUserResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users:
     post:
@@ -62,7 +63,7 @@ paths:
         '201':
           $ref: '#/components/responses/GetUserResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users/{username}:
     get:
@@ -82,7 +83,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetUserResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
     put:
       summary: Update specific user.
@@ -106,7 +107,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetUserResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
     delete:
       summary: Delete specific user.
@@ -125,7 +126,7 @@ paths:
         '204':
           description: Account was successfully deleted.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users/{username}/followers:
     get:
@@ -147,7 +148,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetUserFollowerListResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users/{username}/following:
     get:
@@ -169,7 +170,7 @@ paths:
         '200':
           $ref: '#/components/responses/GetUserFollowingListResponse'
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users/{username}/follow:
     post:
@@ -189,7 +190,7 @@ paths:
         '204':
           description: Current active user is now successfully following the user.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users/{username}/unfollow:
     post:
@@ -209,7 +210,7 @@ paths:
         '204':
           description: Current active user is now successfully unfollowed the user.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
   /users/{username}/remove-follower:
     post:
@@ -229,27 +230,29 @@ paths:
         '204':
           description: Current active user successfully removed the follower.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
-  /users/{username}/report:
+  /users/{username}/reactions:
     post:
-      summary: Report specific user.
-      description: Current active user can report specific user.
-      operationId: reportUser
+      summary: React to specific user.
+      description: Current active user can react to specific user. Supported action, for now, is only REPORT.
+      operationId: react
       tags:
         - UserCommunity
       parameters:
         # headers
-        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
-        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
         - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/Username'
+      requestBody:
+        $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
         '204':
-          description: Current active user successfully reported the user.
+          description: User successfully reacted to the user.
         default:
-          $ref: './components/errors.yaml#/components/responses/ErrorResponse'
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
 components:
   requestBodies:
@@ -299,6 +302,7 @@ components:
         - username
         - numberOfFollowers
         - numberOfFollowing
+        - active
       allOf:
         - $ref: '#/components/schemas/UserCommon'
         - type: object
@@ -315,6 +319,10 @@ components:
               type: integer
               description: Number of users which this user follows.
               example: 256
+            active:
+              type: boolean
+              description: Flag that indicates if user is active or account was deleted.
+              example: false
             relation:
               $ref: '#/components/schemas/UserRelation'
 
@@ -358,6 +366,7 @@ components:
         biography:
           type: string
           description: User personal biography.
+          pattern: '^[^+/<>|\^$€£¥₹]*$'
           example: 'I love rock & roll'
         email:
           type: string
@@ -369,6 +378,7 @@ components:
         phoneNumber:
           type: string
           description: User main phone number.
+          pattern: '^[\+]?[0-9 ]*$'
           minLength: 1
           maxLength: 35
           example: '+1 234 567890'
@@ -386,6 +396,11 @@ components:
             - MALE
             - FEMALE
             - OTHER
+        profileColor:
+          type: string
+          description: Profile color in hex format without transparency information. This is automatic generated.
+          pattern: '^#[0-9a-fA-F]{6}$'
+          example: '#001122'
         socialMedia:
           type: array
           description: List of user social media profiles.
@@ -421,6 +436,7 @@ components:
         city:
           description: User defined city name.
           type: string
+          pattern: '^[a-zA-Z ]*$'
           example: 'Krk'
           minLength: 1
           maxLength: 35
@@ -463,18 +479,12 @@ components:
     CompactUser:
       type: object
       description: Object that holds only required user information.
-      required:
-        - username
-        - displayName
-      properties:
-        username:
-          $ref: '#/components/schemas/Username'
-        displayName:
-          $ref: '#/components/schemas/DisplayName'
-        avatarUrl:
-          $ref: '#/components/schemas/AvatarUrl'
-        relation:
-          $ref: '#/components/schemas/UserRelation'
+      allOf:
+        - $ref: './components/responses.yaml#/components/schemas/Creator'
+        - type: object
+          properties:
+            relation:
+              $ref: '#/components/schemas/UserRelation'
 
     Username:
       type: string
@@ -490,7 +500,7 @@ components:
     AvatarUrl:
       type: string
       description: Profile picture. If user did not set profile picture, this field will not be present in response.
-      example: 'https://example.com/logo.png'
+      example: 'logo.png'
 
     AvatarContent:
       type: object

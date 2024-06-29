@@ -1,10 +1,12 @@
 package fm.mixer.gateway.module.mix.persistance.entity;
 
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,7 +22,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,8 +50,8 @@ public class Mix {
 
     private Integer playCount;
 
-    @OneToMany(mappedBy = "mix")
-    private Set<MixLike> likes;
+    @OneToMany(mappedBy = "mix", fetch = FetchType.EAGER)
+    private Set<MixLike> likes = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -59,6 +63,12 @@ public class Mix {
     @Column(nullable = false)
     private boolean nsfw;
 
+    @Column(nullable = false)
+    private Duration duration;
+
+    @Column(nullable = false)
+    private Integer numberOfTracks;
+
     @ManyToMany
     @JoinTable(
         name = "mix_track_relation",
@@ -68,16 +78,16 @@ public class Mix {
     @OrderColumn(name = "position")
     private List<MixTrack> tracks;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "mix_tag_relation",
         joinColumns = {@JoinColumn(name = "mix_id")},
         inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
     @OrderColumn(name = "position")
-    private Set<MixTag> tags;
+    private List<MixTag> tags;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_artist_mix_relation",
         joinColumns = {@JoinColumn(name = "mix_id")},

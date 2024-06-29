@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-10-optimize-number-of-joins">
+        <addColumn tableName="comment">
+            <column name="number_of_replies" type="smallint" defaultValueNumeric="0" remarks="Number of replies on comment">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="user">
+            <column name="profile_color" type="varchar" remarks="User defined profile color"/>
+            <column name="number_of_followers" type="int" defaultValueNumeric="0" remarks="Number of user followers">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_following" type="int" defaultValueNumeric="0" remarks="Number of user followings">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="user_artist">
+            <column name="avatar" type="varchar" remarks="Artist picture URI"/>
+        </addColumn>
+        <addColumn tableName="mix">
+            <column name="duration" type="bigint" defaultValueNumeric="0" remarks="Duration of the mix">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number_of_tracks" type="smallint" defaultValueNumeric="0" remarks="Number of tracks in the mix">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="mix_track_like">
+            <column name="recommend" type="boolean" remarks="Has user set to recommend or do not recommend the track. If not present user has no interactions with the track"/>
+        </addColumn>
+        <addColumn tableName="mix_track">
+            <column name="skip_count" type="integer" defaultValueNumeric="0" remarks="Number of track skips">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

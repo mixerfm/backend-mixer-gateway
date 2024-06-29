@@ -52,12 +52,35 @@ public interface UserMapper {
     @InheritInverseConfiguration
     UserCommon.GenderEnum toGenderEnum(UserGender gender);
 
+    @Mapping(target = "latitude", source = "location.latitude")
+    @Mapping(target = "longitude", source = "location.longitude")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    UserLocation toUserLocation(Address address);
+
     @Mapping(target = "name", source = "userCommon.displayName")
     @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
+    @Mapping(target = "numberOfFollowers", constant = "0")
+    @Mapping(target = "numberOfFollowing", constant = "0")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "userCommon")
     @Mapping(target = "id", ignore = true)
-    User toUserCreate(UserCommon userCommon, String avatar, String identifier);
+    User toUserCreateEntity(UserCommon userCommon, String avatar, String identifier);
+
+    // Social networks are required to clear manually
+    @Mapping(target = "email", constant = "[deleted]")
+    @Mapping(target = "name", constant = "[deleted]")
+    @Mapping(target = "active", constant = "false")
+    @Mapping(target = "profileColor", source = "profileColor")
+    @Mapping(target = "phoneNumber", expression = "java(null)")
+    @Mapping(target = "biography", expression = "java(null)")
+    @Mapping(target = "dateOfBirth", expression = "java(null)")
+    @Mapping(target = "avatar", expression = "java(null)")
+    @Mapping(target = "gender", expression = "java(null)")
+    @Mapping(target = "address", expression = "java(null)")
+    @Mapping(target = "numberOfFollowers", constant = "0")
+    @Mapping(target = "numberOfFollowing", constant = "0")
+    void toUserDeletedEntity(@MappingTarget User user, String profileColor);
 
     @Mapping(target = "name", source = "updateUser.displayName")
     @Mapping(target = "socialNetworks", source = "updateUser.socialMedia")

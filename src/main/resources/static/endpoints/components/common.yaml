@@ -1,0 +1,30 @@
+components:
+  schemas:
+    Identifier:
+      type: string
+      description: The unique identifier used for fetching or creating specific set of data.
+      example: 'V1StGXR8z5'
+
+    UserReaction:
+      type: object
+      description: Current active user can add reaction to specific entity such as collection, comment, mix, track etc.
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: |
+            Type of the reaction. Some reactions are contrary, and if one is set, the other is unset, e.g.:
+            - LIKE will override DISLIKE, and opposite
+            - RECOMMEND will override DO_NOT_RECOMMEND, and opposite
+            - BLOCK will override UNBLOCK, and opposite
+            There are also reactions that can be used multiple times, but won't result as boolean flags in responses, e.g.:
+            - REPORT
+          enum:
+            - LIKE
+            - DISLIKE
+            - BLOCK
+            - UNBLOCK
+            - RECOMMEND
+            - DO_NOT_RECOMMEND
+            - REPORT

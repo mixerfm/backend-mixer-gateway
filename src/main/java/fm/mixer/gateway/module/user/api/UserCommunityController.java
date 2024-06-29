@@ -1,8 +1,12 @@
 package fm.mixer.gateway.module.user.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
+import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.module.react.model.ResourceType;
+import fm.mixer.gateway.module.react.service.ReportService;
 import fm.mixer.gateway.module.user.api.v1.UserCommunityApiDelegate;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
+import fm.mixer.gateway.module.user.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.user.service.UserCommunityService;
 import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,7 @@ import java.util.List;
 public class UserCommunityController implements UserCommunityApiDelegate {
 
     private final UserCommunityService service;
+    private final ReportService reportService;
 
     @Override
     @OpenApiValidation
@@ -55,8 +60,12 @@ public class UserCommunityController implements UserCommunityApiDelegate {
 
     @Override
     @OpenApiValidation
-    public ResponseEntity<Void> reportUser(String username) {
-        service.reportUser(username);
+    public ResponseEntity<Void> react(String username, UserReaction userReaction) {
+        if (!UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
+            throw new BadRequestException("reaction.type.not.supported.error");
+        }
+
+        reportService.report(username, ResourceType.USER);
 
         return ResponseEntity.noContent().build();
     }
