@@ -95,7 +95,8 @@ public class PlayerService {
         // Increase track play or skip count
         if (isSkip) {
             session.getTrack().setSkipCount(session.getTrack().getSkipCount() + 1);
-        } else {
+        }
+        else {
             session.getTrack().setPlayCount(session.getTrack().getPlayCount() + 1);
         }
         trackRepository.save(session.getTrack());
@@ -147,8 +148,16 @@ public class PlayerService {
         final var track = trackRepository.findByIdentifier(trackId).orElseThrow(ResourceNotFoundException::new);
         final var trackReaction = likeRepository.findByUserAndTrack(user, track).orElseThrow(ResourceNotFoundException::new);
 
-        mapper.toLiked(reaction).ifPresent((liked) -> trackReaction.setLiked(null));
-        mapper.toRecommend(reaction).ifPresent((recommend) -> trackReaction.setRecommend(null));
+        mapper.toLiked(reaction).ifPresent((liked) -> {
+            if (liked.equals(trackReaction.getLiked())) {
+                trackReaction.setLiked(null);
+            }
+        });
+        mapper.toRecommend(reaction).ifPresent((recommend) -> {
+            if (recommend.equals(trackReaction.getRecommend())) {
+                trackReaction.setRecommend(null);
+            }
+        });
 
         likeRepository.save(trackReaction);
     }

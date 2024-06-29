@@ -69,10 +69,10 @@ public class UserCommunityService {
     }
 
     private void changeFollowerNumbers(User removeFollowing, User removeFollower, int byCount) {
-        removeFollower.setNumberOfFollowers(removeFollower.getNumberOfFollowers() + byCount);
+        removeFollower.setNumberOfFollowers(Math.max(removeFollower.getNumberOfFollowers() + byCount, 0));
         userRepository.save(removeFollower);
 
-        removeFollowing.setNumberOfFollowing(removeFollowing.getNumberOfFollowing() + byCount);
+        removeFollowing.setNumberOfFollowing(Math.max(removeFollowing.getNumberOfFollowing() + byCount, 0));
         userRepository.save(removeFollowing);
     }
 

@@ -98,10 +98,7 @@ public class UserService {
 
         deleteAvatar(user.getAvatar());
         Optional.ofNullable(user.getSocialNetworks()).ifPresent(List::clear);
-        user.setProfileColor(profileColorConfig.getInactive());
-        user.setAvatar(null);
-        user.setAddress(null);
-        user.setActive(false);
+        mapper.toUserDeletedEntity(user, profileColorConfig.getInactive());
 
         repository.save(user);
     }

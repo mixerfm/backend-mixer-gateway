@@ -67,6 +67,21 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     User toUserCreateEntity(UserCommon userCommon, String avatar, String identifier);
 
+    // Social networks are required to clear manually
+    @Mapping(target = "email", constant = "[deleted]")
+    @Mapping(target = "name", constant = "[deleted]")
+    @Mapping(target = "active", constant = "false")
+    @Mapping(target = "profileColor", source = "profileColor")
+    @Mapping(target = "phoneNumber", expression = "java(null)")
+    @Mapping(target = "biography", expression = "java(null)")
+    @Mapping(target = "dateOfBirth", expression = "java(null)")
+    @Mapping(target = "avatar", expression = "java(null)")
+    @Mapping(target = "gender", expression = "java(null)")
+    @Mapping(target = "address", expression = "java(null)")
+    @Mapping(target = "numberOfFollowers", constant = "0")
+    @Mapping(target = "numberOfFollowing", constant = "0")
+    void toUserDeletedEntity(@MappingTarget User user, String profileColor);
+
     @Mapping(target = "name", source = "updateUser.displayName")
     @Mapping(target = "socialNetworks", source = "updateUser.socialMedia")
     @Mapping(target = "identifier", source = "updateUser.username")
