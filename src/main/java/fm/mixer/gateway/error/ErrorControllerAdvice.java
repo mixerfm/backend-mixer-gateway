@@ -10,7 +10,6 @@ import fm.mixer.gateway.error.service.ErrorResponseService;
 import fm.mixer.gateway.model.Error;
 import fm.mixer.gateway.model.ErrorType;
 import fm.mixer.gateway.validation.exception.OpenApiRequestValidationException;
-import fm.mixer.gateway.validation.exception.OpenApiResponseValidationException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -149,15 +148,6 @@ public class ErrorControllerAdvice {
     @ExceptionHandler(MissingPathVariableException.class)
     public ResponseEntity<Error> onMissingPathVariableException(final MissingPathVariableException ex) {
         return service.createError(ErrorType.MISSING_REQUEST_PATH_VARIABLE, new Object[]{ex.getVariableName()});
-    }
-
-    @ExceptionHandler(OpenApiResponseValidationException.class)
-    public ResponseEntity<Error> onOpenApiResponseValidationException(OpenApiResponseValidationException ex) {
-        final var parameters = new Object[]{ex.getOpenApiFieldValidations().stream()
-            .map(violation -> String.format("'%s': %s", violation.path(), violation.message()))
-            .collect(Collectors.joining(", "))};
-
-        return service.createError(ErrorType.UNPROCESSABLE_ENTITY, parameters);
     }
 
     @ExceptionHandler(BadRequestException.class)

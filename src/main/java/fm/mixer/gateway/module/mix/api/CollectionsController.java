@@ -9,7 +9,6 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.service.CollectionService;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
-import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +24,6 @@ public class CollectionsController implements CollectionsApiDelegate {
     private final ReportService reportService;
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<CollectionList> getCollectionList(Integer limit, Integer page, List<String> sort, Integer mixCount, List<String> mixSort) {
         final var collectionPagination = PaginationMapper.toPaginationRequest(limit, page, sort);
         // Set mix pagination only if client send mixCount
@@ -36,7 +34,6 @@ public class CollectionsController implements CollectionsApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<SingleCollection> getSingleCollection(String collectionId, List<String> filter, Integer limit, Integer page, List<String> sort) {
         final var mixPagination = PaginationMapper.toPaginationRequest(limit, page, sort);
 
@@ -44,7 +41,6 @@ public class CollectionsController implements CollectionsApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> react(String collectionId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             reportService.report(collectionId, ResourceType.COLLECTIONS);
@@ -58,7 +54,6 @@ public class CollectionsController implements CollectionsApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> removeReaction(String collectionId) {
         service.removeReaction(collectionId);
 

@@ -11,7 +11,6 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.service.MixService;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
-import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,31 +25,26 @@ public class MixController implements MixesApiDelegate {
     private final ReportService reportService;
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<SingleMix> getSingleMix(String mixId) {
         return ResponseEntity.ok(service.getSingleMix(mixId));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<UserLikedMixes> getUserLikedMixes(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserLikedMixes(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<UserListenedMixes> getUserMixesHistory(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserMixesHistory(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<UserUploadedMixes> getUserUploadedMixes(String username, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getUserUploadedMixes(username, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> react(String mixId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             reportService.report(mixId, ResourceType.MIX);
@@ -64,7 +58,6 @@ public class MixController implements MixesApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> removeReaction(String mixId) {
         service.removeReaction(mixId);
 

@@ -48,7 +48,6 @@ class ErrorControllerAdviceIntegrationTest extends ContainerTestBase {
         "onIllegalArgumentException, ILLEGAL_ARGUMENT, 400",
         "onMissingRequestHeaderException, MISSING_REQUEST_HEADER, 400",
         "onMissingPathVariableException, MISSING_REQUEST_PATH_VARIABLE, 400",
-        "onOpenApiResponseValidationException, UNPROCESSABLE_ENTITY, 422",
         "onBadRequestException, BAD_REQUEST, 400"
     })
     void shouldHandleSpecificException(String url, String type, int status) throws Exception {

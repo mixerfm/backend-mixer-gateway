@@ -7,7 +7,6 @@ import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.error.exception.ServiceUnavailableException;
 import fm.mixer.gateway.error.exception.TooManyRequestsException;
 import fm.mixer.gateway.validation.exception.OpenApiRequestValidationException;
-import fm.mixer.gateway.validation.exception.OpenApiResponseValidationException;
 import fm.mixer.gateway.validation.exception.model.OpenApiFieldValidation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -149,11 +148,6 @@ public class ErrorControllerAdviceTestController {
     @GetMapping("onMissingPathVariableException")
     public void onMissingPathVariableException() throws MissingPathVariableException, NoSuchMethodException {
         throw new MissingPathVariableException(TEST_PATH, getMethodParameter());
-    }
-
-    @GetMapping("onOpenApiResponseValidationException")
-    public void onOpenApiResponseValidationException() {
-        throw new OpenApiResponseValidationException(List.of(new OpenApiFieldValidation(TEST_PATH, IRRELEVANT_DATA)));
     }
 
     @GetMapping("onBadRequestException")
