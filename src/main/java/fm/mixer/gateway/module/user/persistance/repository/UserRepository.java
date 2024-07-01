@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdentifierAndActiveIsTrue(String identifier);
 
     // Should be used when all info from user is required
-    @Query("from User u join fetch u.address join fetch u.socialNetworks where u.identifier = :identifier and u.active is true")
+    @Query("from User u left join fetch u.address left join fetch u.socialNetworks where u.identifier = :identifier and u.active is true")
     Optional<User> findActiveByIdentifier(String identifier);
 
     // Used in validations:
