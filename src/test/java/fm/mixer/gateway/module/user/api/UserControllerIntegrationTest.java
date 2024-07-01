@@ -13,13 +13,22 @@ class UserControllerIntegrationTest extends ControllerIntegrationTest {
     private static final String SPECIFIC_USER_URL = BASE_URL + "/req_uid1";
 
     @Test
-    void getCurrentActiveUser() throws Exception {
+    void shouldGetCurrentActiveUser() throws Exception {
         // When
         final var response = doGetRequest("/current-user");
 
         // Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertResponse(response, "get-current-user.json", GetUser.class);
+    }
+
+    @Test
+    void shouldGetUserWithoutAddress() throws Exception {
+        // When
+        final var response = doGetRequest(BASE_URL + "/uid2");
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
