@@ -10,7 +10,6 @@ import fm.mixer.gateway.module.community.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.community.service.CommunityService;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
-import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,13 +25,11 @@ public class CommentController implements CommentApiDelegate {
     private final ReportService reportService;
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<CommentList> getCommentList(String mixId, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getCommentList(mixId, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Comment> createComment(String mixId, CreateOrEditComment createOrEditComment) {
         final var comment = service.createComment(mixId, createOrEditComment.getContent());
 
@@ -40,13 +37,11 @@ public class CommentController implements CommentApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<CommentList> getReplyList(String commentId, List<String> sort, Integer limit, Integer page) {
         return ResponseEntity.ok(service.getReplyList(commentId, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Comment> createReply(String commentId, CreateOrEditComment createOrEditComment) {
         final var comment = service.createReply(commentId, createOrEditComment.getContent());
 
@@ -54,13 +49,11 @@ public class CommentController implements CommentApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Comment> editComment(String commentId, CreateOrEditComment createOrEditComment) {
         return ResponseEntity.ok(service.editComment(commentId, createOrEditComment.getContent()));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> deleteComment(String commentId) {
         service.deleteComment(commentId);
 
@@ -68,7 +61,6 @@ public class CommentController implements CommentApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> react(String commentId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             reportService.report(commentId, ResourceType.COMMENT);
@@ -82,7 +74,6 @@ public class CommentController implements CommentApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> removeReaction(String commentId) {
         service.removeReaction(commentId);
 

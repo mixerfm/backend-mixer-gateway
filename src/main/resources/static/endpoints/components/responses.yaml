@@ -81,7 +81,6 @@ components:
         - RESOURCE_NOT_FOUND
         - REQUEST_METHOD_NOT_SUPPORTED
         - UNAUTHORIZED_ACCESS
-        - UNPROCESSABLE_ENTITY
 
     PaginationMetadata:
       type: object

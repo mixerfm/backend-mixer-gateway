@@ -7,7 +7,6 @@ import fm.mixer.gateway.module.player.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.player.service.PlayerService;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
-import fm.mixer.gateway.validation.annotation.OpenApiValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,13 +21,11 @@ public class TrackController implements TrackApiDelegate {
     private final ReportService reportService;
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<TrackList> getTrackList(String mixId) {
         return ResponseEntity.ok(service.getTrackList(mixId));
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> react(String trackId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             reportService.report(trackId, ResourceType.TRACK);
@@ -42,7 +39,6 @@ public class TrackController implements TrackApiDelegate {
     }
 
     @Override
-    @OpenApiValidation
     public ResponseEntity<Void> removeReaction(String trackId, UserReaction userReaction) {
         service.removeReaction(trackId, userReaction.getType());
 
