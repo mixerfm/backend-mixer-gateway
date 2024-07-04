@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-11-add-device-table">
+        <comment>Create User Device table</comment>
+        <createTable tableName="user_device" remarks="User devices table">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique identifier used for fetching">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar" remarks="Name of the device">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint" remarks="Owner of the device">
+                <constraints nullable="false" foreignKeyName="user_device_user_id_foreign_key" references="user(id)"/>
+            </column>
+            <column name="token" type="varchar" remarks="Device token used for communication"/>
+            <column name="type" type="varchar" remarks="Type of the device">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="user_device" indexName="user_device_fetch_by_identifier">
+            <column name="identifier" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

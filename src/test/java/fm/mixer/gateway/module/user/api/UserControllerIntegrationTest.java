@@ -33,7 +33,7 @@ class UserControllerIntegrationTest extends ControllerIntegrationTest {
 
     @Test
     void shouldDoCrudOperationsOnUser() throws Exception {
-        setUserContext(new UserContext("req_uid1", "request@example.com"));
+        setUserContext(new UserContext("req_uid1", "request@example.com", "dev1"));
 
         // Create - When
         final var createResponse = doPostRequest(BASE_URL, "create-user.json");

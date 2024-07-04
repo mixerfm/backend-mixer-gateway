@@ -13,11 +13,13 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "user_social_network")
-public class UserSocialNetwork {
+public class UserSocialNetwork implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

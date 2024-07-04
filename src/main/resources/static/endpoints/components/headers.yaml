@@ -1,17 +1,16 @@
 components:
   parameters:
-    X-Idempotency-Key:
-      name: X-Idempotency-Key
+    Authorization:
+      name: Authorization
       in: header
       description: |
-        The HTTP X-Idempotency-Key request header field can be used to carry
-        idempotency key in order to make non-idempotent HTTP methods such as
-        POST or PATCH fault-tolerant.
+        The HTTP Authorization request header can be used to provide credentials that authenticate
+        a user agent with a server, allowing access to a protected resource.
       required: true
-      example: '3c6dcd15-8aa2-4e1e-8d11-44e611edc9ad'
+      example: 'Bearer dG9rZW4='
       schema:
         type: string
-        format: uuid
+        pattern: '^Bearer .*$'
     X-Accept-Version:
       name: X-Accept-Version
       in: header
@@ -32,14 +31,29 @@ components:
         type: string
         pattern: '^v\d+$'
         example: 'v1'
-    Authorization:
-      name: Authorization
+    X-Device-Id:
+      name: X-Device-Id
       in: header
       description: |
-        The HTTP Authorization request header can be used to provide credentials that authenticate
-        a user agent with a server, allowing access to a protected resource.
+        Device identifier is unique identifier assigned to the device when user login into the client application.
+        To create new device, client must call POST /devices endpoint where it receives identifier.
+        This identifier should be sent in every requests to measure user activity across devices.
+        When user logout from a device identifier should be deleted, and a new identifier will be assigned when user 
+        login again on the same device.
+        
+        Note: This is temporarily added solution which will be included into JWT token so client can't change it easily.
+      required: false
+      schema:
+        $ref: './common.yaml#/components/schemas/Identifier'
+    X-Idempotency-Key:
+      name: X-Idempotency-Key
+      in: header
+      description: |
+        The HTTP X-Idempotency-Key request header field can be used to carry
+        idempotency key in order to make non-idempotent HTTP methods such as
+        POST or PATCH fault-tolerant.
       required: true
-      example: 'Bearer dG9rZW4='
+      example: '3c6dcd15-8aa2-4e1e-8d11-44e611edc9ad'
       schema:
         type: string
-        pattern: '^Bearer .*$'
+        format: uuid

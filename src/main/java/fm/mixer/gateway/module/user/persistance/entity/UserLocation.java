@@ -10,13 +10,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "user_location")
-public class UserLocation {
+public class UserLocation implements Serializable {
 
     @Id
     @Column(name = "user_id")

@@ -27,13 +27,13 @@ class UserCommunityControllerIntegrationTest extends ControllerIntegrationTest {
         assertFollowList("/following", "get-empty-list.json");
 
         // Switch to user 2
-        setUserContext(new UserContext("uid2", "info2@example.com"));
+        setUserContext(new UserContext("uid2", "info2@example.com", "dev1"));
 
         // FollowBack - When
         final var followBackResponse = doPostRequest(USER_1_URL + "/follow");
 
         // Switch to user 1
-        setUserContext(new UserContext("uid1", "info@example.com"));
+        setUserContext(new UserContext("uid1", "info@example.com", "dev1"));
 
         // FollowBack - Then
         assertThat(followBackResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());

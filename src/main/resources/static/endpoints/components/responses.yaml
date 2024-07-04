@@ -38,6 +38,48 @@ components:
           description: Flag that indicates if user is active or account was deleted.
           example: false
 
+    Device:
+      type: object
+      description: Device on which client can listen the music.
+      allOf:
+        - $ref: '#/components/schemas/DeviceCommon'
+        - type: object
+          required:
+            - identifier
+          properties:
+            identifier:
+              $ref: './common.yaml#/components/schemas/Identifier'
+            current:
+              type: boolean
+              description: Flag that indicates if this device is currently active.
+              example: false
+
+    DeviceCommon:
+      type: object
+      description: Device common properties.
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          description: User defined device name.
+          example: 'Samsung TV - Living Room'
+        type:
+          type: string
+          description: Device type.
+          enum:
+            - ANDROID_TV
+            - ANDROID_TABLET
+            - ANDROID_PHONE
+            - ANDROID_WATCH
+            - APPLE_WATCH
+            - IPHONE
+            - IPAD
+            - PLAY_STATION
+            - WEB
+            - XBOX
+
     Error:
       type: object
       description: Error model which holds information about an error.

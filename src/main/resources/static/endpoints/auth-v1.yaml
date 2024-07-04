@@ -1,0 +1,156 @@
+openapi: 3.0.3
+
+info:
+  title: Auth API
+  description: |
+    This API allows client to manage current user session - login, register or logout user as well as refreshing the current session.
+    Also, client can control user devices from which end user is using the application, such as registering a new device or deleting existing one.
+  version: 0.1.0
+  x-version-notes:
+    - 0.1.0 Add device management endpoints like fetch, create, update or delete specific user device.
+
+tags:
+  - name: Device
+    description: Available actions for client device management.
+
+paths:
+  /devices:
+    get:
+      summary: List of all current active user devices.
+      description: List of all current active user devices, e.g. Samsung Android TV, iPhone etc.
+      operationId: getDeviceList
+      tags:
+        - Device
+      parameters:
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Device-Id'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDeviceListResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+    post:
+      summary: Add a new device to the current active user devices.
+      description: |
+        User can add a new device to his/her list of a devices. This endpoint will return list of all devices but only newly 
+        created one will have flag "current" set to true.
+      operationId: createDevice
+      tags:
+        - Device
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateDeviceRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/GetDeviceListResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /devices/{deviceId}:
+    put:
+      summary: Update specific user device.
+      description: Client can update specific user device with new token or name.
+      operationId: updateDevice
+      tags:
+        - Device
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+        - $ref: './components/headers.yaml#/components/parameters/X-Device-Id'
+        # path parameter
+        - $ref: '#/components/parameters/DeviceIdentifier'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateDeviceRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/GetDeviceListResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+    delete:
+      summary: Delete specific user device.
+      description: |
+        Client can delete specific user device which will require user to register it again.
+      operationId: deleteDevice
+      tags:
+        - Device
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/Authorization'
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+        - $ref: './components/headers.yaml#/components/parameters/X-Device-Id'
+        # path parameter
+        - $ref: '#/components/parameters/DeviceIdentifier'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDeviceListResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+components:
+  parameters:
+    DeviceIdentifier:
+      name: deviceId
+      in: path
+      required: true
+      schema:
+        $ref: './components/common.yaml#/components/schemas/Identifier'
+
+  requestBodies:
+    CreateDeviceRequest:
+      description: Add new device request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateOrUpdateDevice'
+
+    UpdateDeviceRequest:
+      description: Update specific device request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateOrUpdateDevice'
+
+  responses:
+    GetDeviceListResponse:
+      description: Get device list response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeviceList'
+
+  schemas:
+    DeviceList:
+      type: object
+      description: List of current active user devices. There is no pagination as device list has small amount of items.
+      required:
+        - devices
+      properties:
+        devices:
+          type: array
+          items:
+            $ref: './components/responses.yaml#/components/schemas/Device'
+
+    CreateOrUpdateDevice:
+      type: object
+      description: Create new or update existing user device.
+      allOf:
+        - $ref: './components/responses.yaml#/components/schemas/DeviceCommon'
+        - type: object
+          properties:
+            token:
+              type: string
+              description: Device token used for communication with device (e.g. sending notifications).
+              example: '294913EC-6100-42E8-8C2D-E9F68F286ADE'
+
