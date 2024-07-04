@@ -7,9 +7,10 @@ info:
     such as play, pause, skip, increase volume, like etc.
     
     Note: Main subject in Player API is track in context of specific mix, so all endpoints are actions against that track.
-  version: 0.2.0
+  version: 0.2.1
   x-release-notes:
-    - 0.2.0 Add reactions endpoints and refactor common data model
+    - 0.2.1 Refactor device schema returned from current-session endpoint.
+    - 0.2.0 Add reactions endpoints and refactor common data model.
     - 0.1.0 Exposed endpoints for play, pause, skip, change-volume, like, dislike, recommend, do-not-recommend and report. Also endpoints for fetching track list and play session.
 
 tags:
@@ -259,28 +260,7 @@ components:
         track:
           $ref: '#/components/schemas/Track'
         device:
-          $ref: '#/components/schemas/SessionDevice'
-
-    SessionDevice:
-      type: object
-      description: Device where session is active.
-      required:
-        - name
-        - type
-      properties:
-        name:
-          type: string
-          description: User defined device name.
-          example: 'Samsung TV - Living Room'
-        type:
-          type: string
-          description: Device type.
-          enum:
-            - CONSOLE
-            - PHONE
-            - TV
-            - WATCH
-            - WEB
+          $ref: './components/responses.yaml#/components/schemas/Device'
 
     TrackList:
       type: object
