@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
@@ -36,10 +36,13 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private WireMockServer wireMockServer;
     @Autowired
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private MockMvc mvc;
 
-    public record UserContext(String userId, String email){}
-    private final UserContext DEFAULT_CONTEXT = new UserContext("uid1", "request@example.com");
+    public record UserContext(String userId, String email, String device) {
+    }
+
+    private final UserContext DEFAULT_CONTEXT = new UserContext("uid1", "request@example.com", "dev1");
     private UserContext currentContext = DEFAULT_CONTEXT;
 
     @AfterEach
@@ -54,6 +57,7 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make GET request
+     *
      * @param url - defined in specification (or in Api interface from which we implement controller delegate)
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -63,7 +67,8 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make GET request with query parameters
-     * @param url - defined in RICE specification (or in Api interface from which we implement controller delegate)
+     *
+     * @param url             - defined in RICE specification (or in Api interface from which we implement controller delegate)
      * @param queryParameters - query parameters which are sent to endpoint
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -73,6 +78,7 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make POST request
+     *
      * @param url - defined in specification (or in Api interface from which we implement controller delegate)
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -82,7 +88,8 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make POST request with body
-     * @param url - defined in specification (or in Api interface from which we implement controller delegate)
+     *
+     * @param url             - defined in specification (or in Api interface from which we implement controller delegate)
      * @param requestBodyFile - name of the file in test resource directory where request body is stored
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -92,7 +99,8 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make PUT request
-     * @param url - defined in specification (or in Api interface from which we implement controller delegate)
+     *
+     * @param url             - defined in specification (or in Api interface from which we implement controller delegate)
      * @param requestBodyFile - name of the file in test resource directory where request body is stored
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -102,6 +110,7 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make DELETE request
+     *
      * @param url - defined in specification (or in Api interface from which we implement controller delegate)
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -111,7 +120,8 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Make DELETE request with body
-     * @param url - defined in specification (or in Api interface from which we implement controller delegate)
+     *
+     * @param url             - defined in specification (or in Api interface from which we implement controller delegate)
      * @param requestBodyFile - name of the file in test resource directory where request body is stored
      * @return MockHttpServletResponse which contains body and http status
      */
@@ -125,6 +135,7 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
             .header("X-Idempotency-Key", UUID.randomUUID())
             .header("X-User-Id", currentContext.userId)
             .header("X-User-Email", currentContext.email)
+            .header("X-Device-Id", currentContext.device)
             .characterEncoding(UTF_8)
             .content(requestBody);
 
@@ -138,7 +149,8 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
 
     /**
      * Assert given MvcResult against expected response in test directory file
-     * @param result - result of previous HTTP request on Gateway
+     *
+     * @param result               - result of previous HTTP request on Gateway
      * @param expectedResponseFile - file in test directory where expected response is stored
      */
     protected void assertResponse(MockHttpServletResponse result, String expectedResponseFile, Class<?> responseType) throws IOException {
