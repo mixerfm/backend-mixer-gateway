@@ -91,7 +91,7 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void toUserUpdate(@MappingTarget User user, UpdateUser updateUser, String avatar);
+    void toUserUpdateEntity(@MappingTarget User user, UpdateUser updateUser, String avatar);
 
     @AfterMapping
     default void toUser(@MappingTarget User user) {
