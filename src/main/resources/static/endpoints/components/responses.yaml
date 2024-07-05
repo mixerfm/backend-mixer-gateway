@@ -100,7 +100,29 @@ components:
 
     ErrorType:
       type: string
-      description: Error code which can be used to show end user error message on his/her local language.
+      description: |
+        Error code which can be used to show end user error message on his/her local language. Each error code is returned
+        with associated HTTP status, as shown below:
+          * EXTERNAL_SERVICE_ERROR - status code: 500
+          * EXTERNAL_SERVICE_UNAVAILABLE - status code: 503
+          * INTERNAL_SERVER_ERROR - status code: 500
+          * ACCESS_FORBIDDEN - status code: 403
+          * BAD_REQUEST - status code: 400
+          * ILLEGAL_ARGUMENT - status code: 400
+          * MEDIA_TYPE_NOT_ACCEPTABLE - status code: 406
+          * MEDIA_TYPE_NOT_SUPPORTED - status code: 415
+          * METHOD_ARGUMENT_CONSTRAINT_VIOLATION - status code: 400
+          * METHOD_ARGUMENT_NOT_VALID - status code: 400
+          * METHOD_ARGUMENT_TYPE_MISMATCH - status code: 400
+          * MISSING_REQUEST_BODY - status code: 400
+          * MISSING_REQUEST_HEADER - status code: 400
+          * MISSING_REQUEST_PARAMETER - status code: 400
+          * MISSING_REQUEST_PATH_VARIABLE - status code: 400
+          * TOO_MANY_REQUESTS - status code: 429
+          * RESOURCE_NOT_FOUND - status code: 404
+          * REQUEST_METHOD_NOT_SUPPORTED - status code: 405
+          * UNAUTHORIZED_ACCESS - status code: 401
+          * UNSUPPORTED_COUNTRY_LOCATION - status code: 451
       enum:
         # Server errors
         - EXTERNAL_SERVICE_ERROR
@@ -123,6 +145,7 @@ components:
         - RESOURCE_NOT_FOUND
         - REQUEST_METHOD_NOT_SUPPORTED
         - UNAUTHORIZED_ACCESS
+        - UNSUPPORTED_COUNTRY_LOCATION
 
     PaginationMetadata:
       type: object
