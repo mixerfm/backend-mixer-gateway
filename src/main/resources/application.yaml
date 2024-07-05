@@ -92,6 +92,9 @@ mixer-gateway:
             - /users/*/remove-follower
             - /users/*/reactions
             - /current-user
+  availability:
+    supported-countries:
+      - HR
   versions:
     clients:
       ANDROID_CLIENT:
