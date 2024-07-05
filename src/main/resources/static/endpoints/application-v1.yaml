@@ -19,7 +19,7 @@ tags:
 paths:
   /versions:
     get:
-      summary: Retrieve version list.
+      summary: API and client version list.
       description: Retrieve versions of each used client and API.
       operationId: getVersionList
       tags:
@@ -33,6 +33,24 @@ paths:
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
+  /availability:
+    get:
+      summary: Available features for current client.
+      description: |
+        Retrieve information about the application or its features that are available to the current client application.
+        If client request for a feature that is not available, request will result with an error, most commonly HTTP status 451.
+      operationId: getAvailability
+      tags:
+        - Application
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFeatureListResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
 components:
   responses:
     GetVersionListResponse:
@@ -41,6 +59,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/VersionList'
+
+    GetFeatureListResponse:
+      description: Get feature list response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeatureList'
 
   schemas:
     VersionList:
@@ -129,3 +154,42 @@ components:
       description: Version of the item.
       pattern: '^\d+\.\d+.\d+$'
       example: '1.2.1'
+
+    FeatureList:
+      type: object
+      description: |
+        Object that hold list of features that are available or unavailable to the client. There is no pagination as feature list has small amount of items.
+      required:
+        - features
+      properties:
+        features:
+          type: array
+          description: List of features that are available or unavailable to the client.
+          items:
+            $ref: '#/components/schemas/Feature'
+          example:
+            - type: APPLICATION
+              available: false
+
+    Feature:
+      type: object
+      description: Specific feature.
+      required:
+        - type
+        - available
+      properties:
+        type:
+          $ref: '#/components/schemas/FeatureType'
+        available:
+          type: boolean
+          description: If value is true, then this feature is available to the client.
+          example: true
+
+    FeatureType:
+      type: string
+      description: |
+        List of features is defined in this enum. Possible features are:
+          * APPLICATION - define application availability for this client. If false, client can't use this application - e.g. user traveled to unsupported country.
+      enum:
+        - APPLICATION
+      example: APPLICATION

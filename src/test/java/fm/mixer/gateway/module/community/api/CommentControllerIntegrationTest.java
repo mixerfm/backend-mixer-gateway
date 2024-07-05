@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CommentControllerIntegrationTest extends ControllerIntegrationTest {
 
-    private final static String COMMENT_BASE_URL = "/comments/%s";
-    private final static String COMMENT_ON_MIX_URL = String.format(COMMENT_BASE_URL, "mid1");
-    private final static String COMMENT_ON_COMMENT_URL = String.format(COMMENT_BASE_URL, "cmid1");
+    private static final String COMMENT_BASE_URL = "/comments/%s";
+    private static final String COMMENT_ON_MIX_URL = String.format(COMMENT_BASE_URL, "mid1");
+    private static final String COMMENT_ON_COMMENT_URL = String.format(COMMENT_BASE_URL, "cmid1");
 
     @Test
     @Order(1)

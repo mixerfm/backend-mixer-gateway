@@ -107,6 +107,9 @@ mixer-gateway:
       number-of-likes: 1000
     DIAMOND:
       number-of-likes: 10000
+  availability:
+    supported-countries:
+      - HR
   user-colors:
     active:
       - "#001122"

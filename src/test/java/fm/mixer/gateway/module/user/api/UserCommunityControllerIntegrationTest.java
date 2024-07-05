@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.user.api;
 
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
+import fm.mixer.gateway.test.model.UserContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -27,13 +28,13 @@ class UserCommunityControllerIntegrationTest extends ControllerIntegrationTest {
         assertFollowList("/following", "get-empty-list.json");
 
         // Switch to user 2
-        setUserContext(new UserContext("uid2", "info2@example.com", "dev1"));
+        setUserContext(UserContext.builder().userId("uid2").build());
 
         // FollowBack - When
         final var followBackResponse = doPostRequest(USER_1_URL + "/follow");
 
         // Switch to user 1
-        setUserContext(new UserContext("uid1", "info@example.com", "dev1"));
+        setUserContext(UserContext.builder().userId("uid1").build());
 
         // FollowBack - Then
         assertThat(followBackResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());

@@ -22,6 +22,7 @@ public interface ErrorMapper {
     @ValueMapping(target = "UNSUPPORTED_MEDIA_TYPE", source = "MEDIA_TYPE_NOT_SUPPORTED")
     @ValueMapping(target = "TOO_MANY_REQUESTS", source = "TOO_MANY_REQUESTS")
     @ValueMapping(target = "NOT_FOUND", source = "RESOURCE_NOT_FOUND")
+    @ValueMapping(target = "UNAVAILABLE_FOR_LEGAL_REASONS", source = "UNSUPPORTED_COUNTRY_LOCATION")
     @ValueMapping(target = "BAD_REQUEST", source = "BAD_REQUEST")
     @ValueMapping(target = "BAD_REQUEST", source = "METHOD_ARGUMENT_TYPE_MISMATCH")
     @ValueMapping(target = "BAD_REQUEST", source = "METHOD_ARGUMENT_NOT_VALID")

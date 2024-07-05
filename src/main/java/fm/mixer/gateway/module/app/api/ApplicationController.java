@@ -1,6 +1,7 @@
 package fm.mixer.gateway.module.app.api;
 
 import fm.mixer.gateway.module.app.api.v1.ApplicationApiDelegate;
+import fm.mixer.gateway.module.app.api.v1.model.FeatureList;
 import fm.mixer.gateway.module.app.api.v1.model.VersionList;
 import fm.mixer.gateway.module.app.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,10 @@ public class ApplicationController implements ApplicationApiDelegate {
     @Override
     public ResponseEntity<VersionList> getVersionList() {
         return ResponseEntity.ok(service.getVersionList());
+    }
+
+    @Override
+    public ResponseEntity<FeatureList> getAvailability() {
+        return ResponseEntity.ok(service.getAvailability());
     }
 }

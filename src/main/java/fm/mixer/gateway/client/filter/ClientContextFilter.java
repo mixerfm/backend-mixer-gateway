@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -16,13 +15,15 @@ import java.io.IOException;
 @Component
 public class ClientContextFilter extends OncePerRequestFilter {
 
+    private static final String DEVICE_ID_HEADER = "X-Device-Id";
+    private static final String CLIENT_COUNTRY_HEADER = "CF-IPCountry";
+
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
-        final var deviceId = request.getHeader("X-Device-Id");
-
-        if (StringUtils.hasText(deviceId)) {
-            ClientContextHolder.set(new ClientContext(deviceId));
-        }
+        ClientContextHolder.set(new ClientContext(
+            request.getHeader(DEVICE_ID_HEADER),
+            request.getHeader(CLIENT_COUNTRY_HEADER)
+        ));
 
         filterChain.doFilter(request, response);
     }

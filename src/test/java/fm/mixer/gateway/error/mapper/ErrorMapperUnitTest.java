@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @UnitTest
 class ErrorMapperUnitTest {
 
-    final ErrorMapper mapper = Mappers.getMapper(ErrorMapper.class);
+    private final ErrorMapper mapper = Mappers.getMapper(ErrorMapper.class);
 
     @MethodSource("provideErrorTypes")
     @ParameterizedTest
@@ -54,6 +54,7 @@ class ErrorMapperUnitTest {
             Arguments.of(ErrorType.MEDIA_TYPE_NOT_SUPPORTED, HttpStatus.UNSUPPORTED_MEDIA_TYPE),
             Arguments.of(ErrorType.TOO_MANY_REQUESTS, HttpStatus.TOO_MANY_REQUESTS),
             Arguments.of(ErrorType.RESOURCE_NOT_FOUND, HttpStatus.NOT_FOUND),
+            Arguments.of(ErrorType.UNSUPPORTED_COUNTRY_LOCATION, HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS),
             Arguments.of(ErrorType.BAD_REQUEST, HttpStatus.BAD_REQUEST),
             Arguments.of(ErrorType.METHOD_ARGUMENT_TYPE_MISMATCH, HttpStatus.BAD_REQUEST),
             Arguments.of(ErrorType.METHOD_ARGUMENT_NOT_VALID, HttpStatus.BAD_REQUEST),

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mockStatic;
 @UnitTest
 class PlayerMapperUnitTest {
 
-    final PlayerMapper mapper = Mappers.getMapper(PlayerMapper.class);
+    private final PlayerMapper mapper = Mappers.getMapper(PlayerMapper.class);
 
     @Test
     void shouldMapToSession() {

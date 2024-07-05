@@ -33,7 +33,14 @@ public class DeviceService {
         mapper.toUserDevice(device, createDevice, user, RandomIdentifierUtil.randomIdentifier());
         repository.save(device);
 
-        ClientContextHolder.set(new ClientContext(device.getIdentifier()));
+        ClientContextHolder.set(
+            new ClientContext(
+                device.getIdentifier(),
+                ClientContextHolder.get()
+                    .map(ClientContext::countryCode)
+                    .orElse(null)
+            )
+        );
 
         return getDeviceList(user);
     }
