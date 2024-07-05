@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @UnitTest
 class ErrorMapperUnitTest {
 
-    final ErrorMapper mapper = Mappers.getMapper(ErrorMapper.class);
+    private final ErrorMapper mapper = Mappers.getMapper(ErrorMapper.class);
 
     @MethodSource("provideErrorTypes")
     @ParameterizedTest

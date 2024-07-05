@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.user.api;
 
 import fm.mixer.gateway.module.user.api.v1.model.GetUser;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
+import fm.mixer.gateway.test.model.UserContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -33,7 +34,7 @@ class UserControllerIntegrationTest extends ControllerIntegrationTest {
 
     @Test
     void shouldDoCrudOperationsOnUser() throws Exception {
-        setUserContext(new UserContext("req_uid1", "request@example.com", "dev1"));
+        setUserContext(UserContext.builder().userId("req_uid1").build());
 
         // Create - When
         final var createResponse = doPostRequest(BASE_URL, "create-user.json");

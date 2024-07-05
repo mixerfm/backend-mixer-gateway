@@ -2,6 +2,7 @@ package fm.mixer.gateway.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import fm.mixer.gateway.test.model.UserContext;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,15 +40,11 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private MockMvc mvc;
 
-    public record UserContext(String userId, String email, String device) {
-    }
-
-    private final UserContext DEFAULT_CONTEXT = new UserContext("uid1", "request@example.com", "dev1");
-    private UserContext currentContext = DEFAULT_CONTEXT;
+    private UserContext currentContext = new UserContext();
 
     @AfterEach
     void cleanup() {
-        currentContext = DEFAULT_CONTEXT;
+        currentContext = new UserContext();
         wireMockServer.resetAll();
     }
 
@@ -133,9 +130,10 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
         final var request = MockMvcRequestBuilders.request(method, url)
             .contentType(APPLICATION_JSON)
             .header("X-Idempotency-Key", UUID.randomUUID())
-            .header("X-User-Id", currentContext.userId)
-            .header("X-User-Email", currentContext.email)
-            .header("X-Device-Id", currentContext.device)
+            .header("X-User-Id", currentContext.getUserId())
+            .header("X-User-Email", currentContext.getEmail())
+            .header("X-Device-Id", currentContext.getDevice())
+            .header("CF-IPCountry", currentContext.getCountry())
             .characterEncoding(UTF_8)
             .content(requestBody);
 

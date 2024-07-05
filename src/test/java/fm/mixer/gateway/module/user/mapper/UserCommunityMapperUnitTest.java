@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mockStatic;
 @UnitTest
 class UserCommunityMapperUnitTest {
 
-    final UserCommunityMapper mapper = Mappers.getMapper(UserCommunityMapper.class);
+    private final UserCommunityMapper mapper = Mappers.getMapper(UserCommunityMapper.class);
 
     @Test
     void shouldMapToUserFollowingList() {

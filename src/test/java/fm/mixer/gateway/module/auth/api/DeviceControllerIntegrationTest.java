@@ -4,6 +4,7 @@ import fm.mixer.gateway.module.auth.api.v1.model.Device;
 import fm.mixer.gateway.module.auth.api.v1.model.DeviceCommon;
 import fm.mixer.gateway.module.auth.api.v1.model.DeviceList;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
+import fm.mixer.gateway.test.model.UserContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -11,8 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DeviceControllerIntegrationTest extends ControllerIntegrationTest {
 
-    private final static String BASE_URL = "/devices";
-    private final static String DEVICE_URL = BASE_URL + "/%s";
+    private static final String BASE_URL = "/devices";
+    private static final String DEVICE_URL = BASE_URL + "/%s";
 
     @Test
     void shouldDoCrudOperationsOnDevice() throws Exception {
@@ -35,7 +36,7 @@ class DeviceControllerIntegrationTest extends ControllerIntegrationTest {
             .allSatisfy(device -> assertDevice(device, "Test", DeviceCommon.TypeEnum.ANDROID_TV));
 
         final var identifier = deviceList.getDevices().getFirst().getIdentifier();
-        setUserContext(new UserContext("uid1", "request@example.com", identifier));
+        setUserContext(UserContext.builder().device(identifier).build());
 
         // Update - When
         final var updatedList = doPutRequest(String.format(DEVICE_URL, identifier), "update-device.json");

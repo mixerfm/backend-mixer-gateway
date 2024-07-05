@@ -20,7 +20,7 @@ import static org.instancio.Select.field;
 @UnitTest
 class UserMapperUnitTest {
 
-    final UserMapper mapper = Mappers.getMapper(UserMapper.class);
+    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     @Test
     void shouldMapToGetUser() {

@@ -6,6 +6,7 @@ import fm.mixer.gateway.module.auth.api.v1.model.CreateOrUpdateDevice;
 import fm.mixer.gateway.module.auth.persistance.entity.UserDevice;
 import fm.mixer.gateway.module.auth.persistance.entity.model.DeviceType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
+import fm.mixer.gateway.test.UnitTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,9 +21,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+@UnitTest
 class DeviceMapperUnitTest {
 
-    final DeviceMapper mapper = Mappers.getMapper(DeviceMapper.class);
+    private final DeviceMapper mapper = Mappers.getMapper(DeviceMapper.class);
 
     @ParameterizedTest
     @EnumSource(DeviceType.class)
