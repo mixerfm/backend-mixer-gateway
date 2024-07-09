@@ -5,12 +5,13 @@ info:
   description: |
     This API allows client to fetch all information regarding current application state, like API and client
     minimal supported versions.
-  version: 0.1.3
+  version: 0.2.0
   x-release-notes:
-    - 0.1.3 Refactor ErrorResponse file location
-    - 0.1.2 Add required definition in VersionList schema and change Player API name
-    - 0.1.1 Expand version value to support patch versions
-    - 0.1.0 Expose get versions endpoint
+    - 0.2.0 Expose availability endpoints.
+    - 0.1.3 Refactor ErrorResponse file location.
+    - 0.1.2 Add required definition in VersionList schema and change Player API name.
+    - 0.1.1 Expand version value to support patch versions.
+    - 0.1.0 Expose get versions endpoint.
 
 tags:
   - name: Application
