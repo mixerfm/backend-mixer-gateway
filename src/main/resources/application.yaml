@@ -51,6 +51,9 @@ mixer-gateway:
   integration:
     feign:
       TestApi.url: ${USER_SERVICE_URL:http://localhost:8001}
+  cors:
+    allowed-origins:
+      - "https://**.mixer.fm"
   openapi:
     validation:
       specifications:

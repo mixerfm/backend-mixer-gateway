@@ -28,6 +28,7 @@ public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
+    private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -51,11 +52,12 @@ public class SecurityConfig {
         http.cors((corsConfigurer) -> corsConfigurer.configurationSource((cs) -> {
             final var configuration = new CorsConfiguration();
 
-            configuration.setAllowedOriginPatterns(List.of("https://**.mixer.fm"));
+            configuration.setAllowedOriginPatterns(corsConfig.getAllowedOrigins());
             configuration.setAllowedMethods(List.of(
                 HttpMethod.GET.name(), HttpMethod.HEAD.name(), HttpMethod.OPTIONS.name(), HttpMethod.TRACE.name(),
                 HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name()
             ));
+            configuration.setAllowedHeaders(List.of(CorsConfiguration.ALL));
             configuration.setAllowCredentials(true);
 
             return configuration;
