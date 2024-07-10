@@ -51,11 +51,12 @@ public class SecurityConfig {
         http.cors((corsConfigurer) -> corsConfigurer.configurationSource((cs) -> {
             final var configuration = new CorsConfiguration();
 
-            configuration.setAllowedOriginPatterns(List.of("https://*.mixer.fm"));
+            configuration.setAllowedOriginPatterns(List.of("https://**.mixer.fm"));
             configuration.setAllowedMethods(List.of(
                 HttpMethod.GET.name(), HttpMethod.HEAD.name(), HttpMethod.OPTIONS.name(), HttpMethod.TRACE.name(),
                 HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.PUT.name(), HttpMethod.DELETE.name()
             ));
+            configuration.setAllowCredentials(true);
 
             return configuration;
         }));
