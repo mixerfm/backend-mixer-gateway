@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-12-add-newsletter-table">
+        <comment>Create User Newsletter table</comment>
+        <createTable tableName="user_newsletter" remarks="User newsletter table">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="identifier" type="varchar" remarks="Unique identifier used for fetching">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="varchar" remarks="User email used for sending newsletters">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="user_newsletter" indexName="user_newsletter_fetch_by_identifier_and_mail">
+            <column name="identifier" />
+            <column name="email" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
