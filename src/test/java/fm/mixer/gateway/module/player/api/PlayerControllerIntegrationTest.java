@@ -1,8 +1,10 @@
 package fm.mixer.gateway.module.player.api;
 
 import fm.mixer.gateway.module.player.api.v1.model.Track;
+import fm.mixer.gateway.module.player.persistance.repository.PlaySessionRepository;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PlayerControllerIntegrationTest extends ControllerIntegrationTest {
 
     private static final String PLAYER_ON_MIX_URL = "/player/mid3";
+
+    @Autowired
+    private PlaySessionRepository repository;
 
     @Test
     void shouldChangeTracksBasedOnActions() throws Exception {
@@ -53,8 +58,8 @@ class PlayerControllerIntegrationTest extends ControllerIntegrationTest {
         assertThat(playAgainResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertResponse(playAgainResponse, "get-player-first-track.json", Track.class);
 
-        // Cleanup
-        doPostRequest("/player/mid1");
+        // Cleanup - considered that id is 2, we could also annotate this test with Transactional but that won't catch "no-transaction" errors
+        repository.deleteById(2L);
     }
 
     @Test
