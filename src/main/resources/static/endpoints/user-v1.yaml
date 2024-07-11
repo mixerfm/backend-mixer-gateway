@@ -436,7 +436,7 @@ components:
         city:
           description: User defined city name.
           type: string
-          pattern: '^[a-zA-Z ]*$'
+          pattern: '^[\p{L} ]*$'
           example: 'Krk'
           minLength: 1
           maxLength: 35
