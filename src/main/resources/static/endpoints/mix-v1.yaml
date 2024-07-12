@@ -492,6 +492,7 @@ components:
         - name
         - author
         - numberOfPlays
+        - numberOfComments
         - numberOfLikes
         - numberOfTracks
         - duration
@@ -515,6 +516,10 @@ components:
         numberOfPlays:
           type: integer
           description: Total number of mix plays.
+          minimum: 0
+        numberOfComments:
+          type: integer
+          description: Total number of mix comments.
           minimum: 0
         numberOfLikes:
           type: integer

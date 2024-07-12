@@ -9,12 +9,14 @@ import fm.mixer.gateway.module.community.api.v1.model.CommentList;
 import fm.mixer.gateway.module.community.mapper.CommunityMapper;
 import fm.mixer.gateway.module.community.persistance.repository.CommentLikeRepository;
 import fm.mixer.gateway.module.community.persistance.repository.CommentRepository;
+import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,8 @@ public class CommunityService {
     public Comment createComment(String mixId, String content) {
         final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
 
+        changeCommentCount(mix, 1);
+
         return mapper.toComment(repository.save(mapper.toCommentEntity(content, getCurrentUser(), mix)));
     }
 
@@ -44,13 +48,14 @@ public class CommunityService {
     }
 
     public Comment createReply(String commentId, String content) {
-        final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
+        final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
 
         final var reply = mapper.toCommentEntity(content, getCurrentUser(), comment.getMix());
         reply.setParentComment(comment);
 
-        comment.setNumberOfReplies(comment.getNumberOfReplies() + 1);
-        repository.save(comment);
+        // This will also save comment
+        changeReplyCount(comment, 1);
+        changeCommentCount(comment.getMix(), 1);
 
         return mapper.toComment(repository.save(reply));
     }
@@ -68,17 +73,16 @@ public class CommunityService {
     }
 
     public void deleteComment(String commentId) {
-        final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
+        final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
 
         if (!getCurrentUser().getId().equals(comment.getUser().getId())) {
             throw new AccessForbiddenException();
         }
 
-        final var parentComment = comment.getParentComment();
-        if (Objects.nonNull(parentComment)) {
-            parentComment.setNumberOfReplies(parentComment.getNumberOfReplies() - 1);
-            repository.save(parentComment);
-        }
+        changeCommentCount(comment.getMix(), -1);
+        Optional.ofNullable(comment.getParentComment()).ifPresent(
+            parentComment -> changeReplyCount(parentComment, -1)
+        );
 
         likeRepository.deleteAllByComment(comment);
         repository.delete(comment);
@@ -104,6 +108,18 @@ public class CommunityService {
 
         comment.getLikes().remove(reaction);
         likeRepository.delete(reaction);
+    }
+
+    private void changeCommentCount(Mix mix, int byCount) {
+        mix.setNumberOfComments(mix.getNumberOfComments() + byCount);
+
+        mixRepository.save(mix);
+    }
+
+    private void changeReplyCount(fm.mixer.gateway.module.community.persistance.entity.Comment comment, int byCount) {
+        comment.setNumberOfReplies(comment.getNumberOfReplies() + byCount);
+
+        repository.save(comment);
     }
 
     private User getCurrentUser() {

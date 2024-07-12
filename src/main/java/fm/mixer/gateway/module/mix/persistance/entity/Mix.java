@@ -50,6 +50,8 @@ public class Mix {
 
     private Integer playCount;
 
+    private Integer numberOfComments;
+
     @OneToMany(mappedBy = "mix", fetch = FetchType.EAGER)
     private Set<MixLike> likes = new HashSet<>();
 
