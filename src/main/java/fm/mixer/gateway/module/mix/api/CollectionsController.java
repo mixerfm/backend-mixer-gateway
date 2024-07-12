@@ -2,10 +2,10 @@ package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.CollectionsApiDelegate;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
-import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.service.CollectionService;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
@@ -41,23 +41,20 @@ public class CollectionsController implements CollectionsApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> react(String collectionId, UserReaction userReaction) {
+    public ResponseEntity<List<UserReaction>> react(String collectionId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             reportService.report(collectionId, ResourceType.COLLECTIONS);
-        }
-        else {
-            checkReactionType(userReaction.getType());
-            service.react(collectionId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType()));
+
+            return ResponseEntity.ok(List.of());
         }
 
-        return ResponseEntity.noContent().build();
+        checkReactionType(userReaction.getType());
+        return ResponseEntity.ok(service.react(collectionId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType())));
     }
 
     @Override
-    public ResponseEntity<Void> removeReaction(String collectionId) {
-        service.removeReaction(collectionId);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<List<UserReaction>> removeReaction(String collectionId) {
+        return ResponseEntity.ok(service.removeReaction(collectionId));
     }
 
     private void checkReactionType(UserReaction.TypeEnum type) {

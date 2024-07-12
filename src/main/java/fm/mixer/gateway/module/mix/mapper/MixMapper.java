@@ -1,6 +1,5 @@
 package fm.mixer.gateway.module.mix.mapper;
 
-import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.mapper.CreatorCommonMapping;
 import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
@@ -15,7 +14,6 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixesMixesInner;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixesMixesInner;
-import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixesMixesInner;
 import fm.mixer.gateway.module.mix.api.v1.model.Visibility;
@@ -27,6 +25,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTag;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
+import fm.mixer.gateway.module.react.persistance.mapper.ReactionMapper;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import org.mapstruct.Mapper;
@@ -41,26 +40,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
-@Mapper(imports = {PaginationMapper.class, LocalDateTime.class})
+@Mapper(imports = {PaginationMapper.class, LocalDateTime.class, ReactionMapper.class})
 public interface MixMapper {
 
     @Named("toMix")
     @MixCommonMapping
     fm.mixer.gateway.module.mix.api.v1.model.Mix toMix(Mix mix);
-
-    default List<UserReaction> toReactions(final Set<MixLike> likes) {
-        final var currentActiveUser = UserPrincipalUtil.getCurrentActiveUser();
-
-        return currentActiveUser.map(user -> likes.stream()
-                .filter(like -> user.getId().equals(like.getUser().getId()))
-                .map(like -> like.getLiked() ? UserReaction.TypeEnum.LIKE : UserReaction.TypeEnum.DISLIKE)
-                .map(UserReaction::new)
-                .toList()
-            )
-            .orElse(List.of());
-    }
 
     @Named("toType")
     default MixType toType(Mix mix) {
@@ -94,7 +80,7 @@ public interface MixMapper {
     UserLikedMixes toUserLikedMixes(Page<MixLike> items, PaginationRequest paginationRequest);
 
     default UserLikedMixesMixesInner toUserLikedMixesMixesInner(MixLike mixLike) {
-        return Optional.ofNullable(toUserLikedMixesMixesInner(mixLike.getMix()))
+        return Optional.ofNullable(toUserLikedMixesMixesInner(mixLike.getItem()))
             .map(liked -> liked.likedDateTime(mixLike.getUpdatedAt()))
             .orElse(null);
     }
@@ -140,11 +126,4 @@ public interface MixMapper {
     @PaginatedMapping
     @Mapping(target = "mixes", source = "items.content")
     MixList toMixList(Page<MixCollectionRelation> items, PaginationRequest paginationRequest);
-
-    @Mapping(target = "user", source = "user")
-    @Mapping(target = "mix", source = "mix")
-    @Mapping(target = "liked", source = "liked")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    MixLike toMixLikeEntity(User user, Mix mix, Boolean liked);
 }

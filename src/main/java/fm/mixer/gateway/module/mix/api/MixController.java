@@ -2,11 +2,11 @@ package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.MixesApiDelegate;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
-import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.service.MixService;
 import fm.mixer.gateway.module.react.model.ResourceType;
@@ -45,23 +45,20 @@ public class MixController implements MixesApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> react(String mixId, UserReaction userReaction) {
+    public ResponseEntity<List<UserReaction>>react(String mixId, UserReaction userReaction) {
         if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             reportService.report(mixId, ResourceType.MIX);
-        }
-        else {
-            checkReactionType(userReaction.getType());
-            service.react(mixId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType()));
+
+            return ResponseEntity.ok(List.of());
         }
 
-        return ResponseEntity.noContent().build();
+        checkReactionType(userReaction.getType());
+        return ResponseEntity.ok(service.react(mixId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType())));
     }
 
     @Override
-    public ResponseEntity<Void> removeReaction(String mixId) {
-        service.removeReaction(mixId);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<List<UserReaction>> removeReaction(String mixId) {
+        return ResponseEntity.ok(service.removeReaction(mixId));
     }
 
     private void checkReactionType(UserReaction.TypeEnum type) {

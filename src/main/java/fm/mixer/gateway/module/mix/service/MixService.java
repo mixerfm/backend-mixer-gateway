@@ -7,6 +7,7 @@ import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
+import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.mapper.MixMapper;
 import fm.mixer.gateway.module.mix.persistance.repository.MixLikeRepository;
@@ -15,6 +16,8 @@ import fm.mixer.gateway.module.player.persistance.repository.PlaySessionReposito
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +55,7 @@ public class MixService {
         return mapper.toUserUploadedMixes(repository.findAllByUser(user, pagination.pageable()), pagination);
     }
 
-    public void react(final String mixId, final boolean like) {
+    public List<UserReaction> react(final String mixId, final boolean like) {
         final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
         final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
 
@@ -63,14 +66,18 @@ public class MixService {
                 return likeRecord;
             }).orElse(mapper.toMixLikeEntity(user, mix, like))
         ));
+
+        return mapper.toReactions(mix.getLikes());
     }
 
-    public void removeReaction(String mixId) {
+    public List<UserReaction> removeReaction(String mixId) {
         final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
         final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
         final var reaction = likeRepository.findByUserAndMix(user, mix).orElseThrow(ResourceNotFoundException::new);
 
         mix.getLikes().remove(reaction);
         likeRepository.delete(reaction);
+
+        return mapper.toReactions(mix.getLikes());
     }
 }

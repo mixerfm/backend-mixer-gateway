@@ -87,8 +87,8 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '204':
-          description: User successfully reacted to the collection.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
@@ -106,8 +106,8 @@ paths:
         # path parameter
         - $ref: '#/components/parameters/CollectionIdentifier'
       responses:
-        '204':
-          description: User successfully removed reaction to the collection.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
@@ -146,8 +146,8 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '204':
-          description: User successfully reacted to the mix.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
@@ -165,8 +165,8 @@ paths:
         # path parameter
         - $ref: './components/parameters.yaml#/components/parameters/MixIdentifier'
       responses:
-        '204':
-          description: User successfully removed reaction to the mix.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 

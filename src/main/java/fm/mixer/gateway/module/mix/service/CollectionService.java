@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.mix.service;
 
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.mapper.MixMapper;
@@ -55,11 +56,13 @@ public class CollectionService {
         return singleCollection;
     }
 
-    public void react(String collectionId, boolean like) {
+    public List<UserReaction> react(String collectionId, boolean like) {
         // TODO implement
+        return List.of();
     }
 
-    public void removeReaction(String collectionId) {
+    public List<UserReaction> removeReaction(String collectionId) {
         // TODO implement
+        return List.of();
     }
 }
