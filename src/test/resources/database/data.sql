@@ -18,10 +18,10 @@ INSERT INTO public.user_follower (user_id,follows_user_id,created_at) VALUES
     (4,1,'2024-06-03 10:48:30.707');
 
 -- MIX
-INSERT INTO mix (identifier,name,description,avatar,duration,number_of_tracks,user_id,visibility,created_at,updated_at,play_count,nsfw) VALUES
-    ('mid1','Test Mix','Test Mix Description','mixAvatar.jpg',150,3,1,0,'2024-01-15 12:00:54.262','2024-01-17 12:00:54.262',5,false),
-    ('mid2','Test Mix 2','Test Mix 2 Description','mixAvatar2.jpg',60,2,2,0,'2024-01-16 12:00:54.262','2024-01-18 12:00:54.262',2,true),
-    ('mid3','Test Mix 3','Test Mix 3 Description','mixAvatar3.jpg',180,5,3,0,'2024-01-13 12:00:54.262','2024-01-22 12:00:54.262',7,true);
+INSERT INTO mix (identifier,name,description,avatar,duration,number_of_tracks,user_id,visibility,created_at,updated_at,play_count,nsfw,number_of_comments) VALUES
+    ('mid1','Test Mix','Test Mix Description','mixAvatar.jpg',150,3,1,0,'2024-01-15 12:00:54.262','2024-01-17 12:00:54.262',5,false,11),
+    ('mid2','Test Mix 2','Test Mix 2 Description','mixAvatar2.jpg',60,2,2,0,'2024-01-16 12:00:54.262','2024-01-18 12:00:54.262',2,true,12),
+    ('mid3','Test Mix 3','Test Mix 3 Description','mixAvatar3.jpg',180,5,3,0,'2024-01-13 12:00:54.262','2024-01-22 12:00:54.262',7,true,13);
 
 INSERT INTO mix_like (user_id,mix_id,liked,updated_at) VALUES
     (1,1,true,'2024-01-20 16:36:16.556'),
