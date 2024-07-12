@@ -95,6 +95,7 @@ mixer-gateway:
             - /users/*/remove-follower
             - /users/*/reactions
             - /current-user
+            - /newsletters/subscription
   availability:
     supported-countries:
       - HR
