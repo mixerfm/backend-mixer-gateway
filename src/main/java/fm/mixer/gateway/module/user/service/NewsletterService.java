@@ -17,6 +17,12 @@ public class NewsletterService {
     private final UserNewsletterRepository repository;
 
     public UserNewsletter subscribe(String email) {
+        final var newsletter = repository.findByEmail(email);
+        //noinspection OptionalIsPresent
+        if (newsletter.isPresent()) {
+            return newsletter.get();
+        }
+
         return repository.save(mapper.toUserNewsletterEntity(email));
     }
 

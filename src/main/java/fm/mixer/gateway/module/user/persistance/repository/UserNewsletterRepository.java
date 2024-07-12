@@ -7,5 +7,7 @@ import java.util.Optional;
 
 public interface UserNewsletterRepository extends JpaRepository<UserNewsletter, Long> {
 
+    Optional<UserNewsletter> findByEmail(String email);
+
     Optional<UserNewsletter> findByIdentifierAndEmail(String token, String email);
 }
