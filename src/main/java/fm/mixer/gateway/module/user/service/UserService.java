@@ -33,6 +33,7 @@ public class UserService {
     private final UserRepository repository;
     private final DeviceService deviceService;
     private final ValidateUserService validation;
+    private final NewsletterService newsletterService;
     private final UserFollowerRepository followerRepository;
     private final UserProfileColorConfig profileColorConfig;
 
@@ -65,6 +66,9 @@ public class UserService {
             createUserRequest.getUsername()
         );
         repository.save(user);
+
+        // Subscribe user to the newsletter
+        newsletterService.subscribe(user.getEmail());
 
         return mapper.toGetUser(user, UserRelation.SELF);
     }

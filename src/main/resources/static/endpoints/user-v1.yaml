@@ -10,8 +10,9 @@ info:
     Examples:
     new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
     old user -> Auth API (login) -> receive JWT -> User API.
-  version: 0.3.0
+  version: 0.3.1
   x-release-notes:
+    - 0.3.1 Expose marketing endpoints for user newsletter subscription.
     - 0.3.0 Add reactions endpoint, profile color, input validation, user activity flag and refactor common data models.
     - 0.2.2 Add required definition to CompactUser and AvatarContent.
     - 0.2.1 Add current active user endpoint.
@@ -24,6 +25,8 @@ tags:
     description: Operations for user management.
   - name: UserCommunity
     description: Operations related to user interactions.
+  - name: Marketing
+    description: Operations related to user marketing campaigns.
 
 paths:
   /current-user:
@@ -253,6 +256,47 @@ paths:
           description: User successfully reacted to the user.
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+          
+  /newsletters/subscription:
+    post:
+      summary: Subscribe an user to the newsletter.
+      description: Subscribes an anonymous user to the newsletter using their email.
+      operationId: subscribe
+      tags:
+        - Marketing
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateNewsletterRequest'
+      responses:
+        '201':
+          description: User successfully subscribed to the newsletter.
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+    delete:
+      summary: Unsubscribe an user from the newsletter.
+      description: |
+        Unsubscribes an anonymous user from the newsletter using their email and one-time token.
+        If it's used within the email body, please make sure to redirect user to some frontend page which will do this request
+        and show confirmation or/and success message.
+      operationId: unsubscribe
+      tags:
+        - Marketing
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        - $ref: './components/headers.yaml#/components/parameters/X-Idempotency-Key'
+      requestBody:
+        $ref: '#/components/requestBodies/DeleteNewsletterRequest'
+      responses:
+        '204':
+          description: User successfully unsubscribed from the newsletter.
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
 
 components:
   requestBodies:
@@ -271,6 +315,22 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UpdateUser'
+
+    CreateNewsletterRequest:
+      description: Create newsletter request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SubscribeRequest'
+
+    DeleteNewsletterRequest:
+      description: Delete newsletter request.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnsubscribeRequest'
 
   responses:
     GetUserResponse:
@@ -308,7 +368,7 @@ components:
         - type: object
           properties:
             username:
-              $ref: '#/components/schemas/Username'
+              $ref: './components/common.yaml#/components/schemas/Identifier'
             avatarUrl:
               $ref: '#/components/schemas/AvatarUrl'
             numberOfFollowers:
@@ -336,7 +396,7 @@ components:
         - type: object
           properties:
             username:
-              $ref: '#/components/schemas/Username'
+              $ref: './components/common.yaml#/components/schemas/Identifier'
             avatar:
               $ref: '#/components/schemas/AvatarContent'
 
@@ -350,7 +410,7 @@ components:
         - type: object
           properties:
             username:
-              $ref: '#/components/schemas/Username'
+              $ref: './components/common.yaml#/components/schemas/Identifier'
             avatar:
               $ref: '#/components/schemas/AvatarContent'
 
@@ -369,12 +429,7 @@ components:
           pattern: '^[^+/<>|\^$€£¥₹]*$'
           example: 'I love rock & roll'
         email:
-          type: string
-          description: User email address.
-          format: email
-          maxLength: 140
-          pattern: '^[a-zA-Z0-9.!#$%&*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
-          example: 'user@example.com'
+          $ref: '#/components/schemas/EmailValue'
         phoneNumber:
           type: string
           description: User main phone number.
@@ -436,7 +491,7 @@ components:
         city:
           description: User defined city name.
           type: string
-          pattern: '^[a-zA-Z ]*$'
+          pattern: '^[\p{L} ]*$'
           example: 'Krk'
           minLength: 1
           maxLength: 35
@@ -486,16 +541,43 @@ components:
             relation:
               $ref: '#/components/schemas/UserRelation'
 
-    Username:
-      type: string
-      description: The unique user identifier used for fetching specific set of information.
-      example: 'V1StGXR8z5'
+    SubscribeRequest:
+      type: object
+      description: All relevant data for newsletter subscription.
+      required:
+        - email
+      properties:
+        email:
+          $ref: '#/components/schemas/EmailValue'
+
+    UnsubscribeRequest:
+      type: object
+      description: All relevant data for unsubscribing from newsletter.
+      allOf:
+        - $ref: '#/components/schemas/SubscribeRequest'
+        - type: object
+          required:
+            - token
+          properties:
+            token:
+              type: string
+              format: uuid
+              description: Token used for unsubscribing from mailing list. This is one time generated unique value.
+              example: '3c6dcd15-8aa2-4e1e-8d11-44e611edc9ad'
 
     DisplayName:
       type: string
       description: Human friendly user defined name.
       maxLength: 100
       example: 'Name Surname'
+
+    EmailValue:
+      type: string
+      description: User email address.
+      format: email
+      maxLength: 140
+      pattern: '^[a-zA-Z0-9.!#$%&*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
+      example: 'user@example.com'
 
     AvatarUrl:
       type: string
