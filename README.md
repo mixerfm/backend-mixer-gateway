@@ -1,6 +1,7 @@
 # Mixer Gateway
 
 A microservice which implements main entry point for Mixer REST API. This service is used as:
+
 - Proxy to other microservices or resources
 - Validation of request and response
 - Security checking (roles and permissions)
@@ -43,6 +44,7 @@ Start Mixer Gateway with provided Maven wrapper:
 
 Testing of exposed endpoints can be done using [Bruno client](https://www.usebruno.com).
 
-Open Bruno collection located in separated [GitHub repository](https://github.com/mixerfm/backend-api-definition), directory `mixer-gateway`.
+Open Bruno collection located in separated [GitHub repository](https://github.com/mixerfm/backend-api-definition),
+directory `mixer-gateway`.
 
 Before sending a request make sure to fill all of required variables in `Vars` or `Body` tab.
