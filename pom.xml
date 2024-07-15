@@ -284,6 +284,7 @@
                             </globalProperties>
                             <importMappings>
                                 <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
                             </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
@@ -306,6 +307,7 @@
                             </globalProperties>
                             <importMappings>
                                 <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
                             </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
@@ -328,6 +330,7 @@
                             </globalProperties>
                             <importMappings>
                                 <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
                             </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
@@ -350,6 +353,7 @@
                             </globalProperties>
                             <importMappings>
                                 <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
                             </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
@@ -372,6 +376,7 @@
                             </globalProperties>
                             <importMappings>
                                 <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
                             </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
@@ -394,6 +399,7 @@
                             </globalProperties>
                             <importMappings>
                                 <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
                             </importMappings>
                             <configOptions>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
