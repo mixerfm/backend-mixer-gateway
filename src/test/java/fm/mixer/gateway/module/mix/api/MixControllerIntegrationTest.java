@@ -9,8 +9,6 @@ import fm.mixer.gateway.test.ControllerIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MixControllerIntegrationTest extends ControllerIntegrationTest {
@@ -68,34 +66,28 @@ class MixControllerIntegrationTest extends ControllerIntegrationTest {
         final var createResponse = doPostRequest(reactionUrl, "create-reaction.json");
 
         // React - Then
-        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(List.of(UserReaction.TypeEnum.LIKE));
+        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(createResponse, "get-mix-reactions-like.json", UserReaction[].class);
 
         // Report - When
         final var createReportResponse = doPostRequest(reactionUrl, "create-report-reaction.json");
 
         // React - Then
-        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(List.of(UserReaction.TypeEnum.LIKE));
+        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(createReportResponse, "get-mix-reactions-empty.json", UserReaction[].class);
 
         // Update reaction - When
         final var updateResponse = doPostRequest(reactionUrl, "update-reaction.json");
 
         // Update reaction - Then
-        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(List.of(UserReaction.TypeEnum.DISLIKE));
+        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(updateResponse, "get-mix-reactions-dislike.json", UserReaction[].class);
 
         // Delete - When
         final var deleteResponse = doDeleteRequest(reactionUrl);
 
         // Delete - Then
-        assertThat(deleteResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(List.of());
-    }
-
-    private void assertReaction(List<UserReaction.TypeEnum> reactions) throws Exception {
-        final var mix = mapper.readValue(doGetRequest(String.format(BASE_URL, "mid2")).getContentAsString(), SingleMix.class);
-
-        assertThat(mix.getReactions()).containsExactlyInAnyOrderElementsOf(reactions.stream().map(UserReaction::new).toList());
+        assertThat(deleteResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(deleteResponse, "get-mix-reactions-empty.json", UserReaction[].class);
     }
 }
