@@ -3,8 +3,9 @@ info:
   title: Community API
   description: |
     This API allows client to define user interactions such as comment and reply management (creating, editing and deleting).
-  version: 0.2.0
+  version: 0.2.1
   x-release-notes:
+    - 0.2.1 Add reactions list response.
     - 0.2.0 Refactor common data model and added reactions endpoints.
     - 0.1.0 Expose endpoints for fetching, creating, editing, deleting, liking/disliking and reporting comments and replies.
 
@@ -157,8 +158,8 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '204':
-          description: User successfully reacted to the comment.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
@@ -176,8 +177,8 @@ paths:
         # path parameter
         - $ref: '#/components/parameters/CommentIdentifier'
       responses:
-        '204':
-          description: User successfully removed reaction to the comment.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
