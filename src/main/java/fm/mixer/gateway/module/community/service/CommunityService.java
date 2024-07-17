@@ -4,15 +4,19 @@ import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.community.api.v1.model.Comment;
 import fm.mixer.gateway.module.community.api.v1.model.CommentList;
 import fm.mixer.gateway.module.community.mapper.CommunityMapper;
+import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.community.persistance.repository.CommentLikeRepository;
 import fm.mixer.gateway.module.community.persistance.repository.CommentRepository;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
+import fm.mixer.gateway.module.react.service.ReactionService;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +30,8 @@ public class CommunityService {
     private final MixRepository mixRepository;
     private final CommentRepository repository;
     private final CommentLikeRepository likeRepository;
+    @Qualifier("commentReactionService")
+    private final ReactionService<fm.mixer.gateway.module.community.persistance.entity.Comment, CommentLike> reactionService;
 
     public CommentList getCommentList(String mixId, PaginationRequest paginationRequest) {
         final var commentList = repository.findAllByMixIdentifierAndParentCommentIsNull(mixId, paginationRequest.pageable());
@@ -84,30 +90,20 @@ public class CommunityService {
             parentComment -> changeReplyCount(parentComment, -1)
         );
 
-        likeRepository.deleteAllByComment(comment);
+        likeRepository.deleteAllByItem(comment);
         repository.delete(comment);
     }
 
-    public void react(final String commentId, final boolean like) {
-        final var user = getCurrentUser();
+    public List<UserReaction> react(final String commentId, final UserReaction.TypeEnum reaction) {
         final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
 
-        // Find old record and change "liked" flag. If there is no old record create new object with mapper and store it.
-        comment.getLikes().add(likeRepository.save(
-            likeRepository.findByUserAndComment(user, comment).map(likeComment -> {
-                likeComment.setLiked(like);
-                return likeComment;
-            }).orElse(mapper.toCommentLikeEntity(user, comment, like))
-        ));
+        return reactionService.react(comment, reaction);
     }
 
-    public void removeReaction(String commentId) {
-        final var user = getCurrentUser();
+    public List<UserReaction> removeReaction(final String commentId) {
         final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
-        final var reaction = likeRepository.findByUserAndComment(user, comment).orElseThrow(ResourceNotFoundException::new);
 
-        comment.getLikes().remove(reaction);
-        likeRepository.delete(reaction);
+        return reactionService.removeReaction(comment);
     }
 
     private void changeCommentCount(Mix mix, int byCount) {

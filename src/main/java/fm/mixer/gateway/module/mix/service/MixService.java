@@ -16,6 +16,7 @@ import fm.mixer.gateway.module.player.persistance.repository.PlaySessionReposito
 import fm.mixer.gateway.module.react.service.ReactionService;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class MixService {
     private final UserRepository userRepository;
     private final MixLikeRepository likeRepository;
     private final PlaySessionRepository historyRepository;
+    @Qualifier("mixReactionService")
     private final ReactionService<Mix, MixLike> reactionService;
 
     public SingleMix getSingleMix(String mixId) {

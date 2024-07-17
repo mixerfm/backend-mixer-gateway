@@ -1,6 +1,7 @@
 package fm.mixer.gateway.module.community.persistance.entity;
 
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
+import fm.mixer.gateway.module.react.persistance.entity.ReactionContainerEntity;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +26,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "comment")
-public class Comment {
+public class Comment implements ReactionContainerEntity<Comment, CommentLike> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,8 +53,8 @@ public class Comment {
     @Column(nullable = false)
     private Integer numberOfReplies = 0;
 
-    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER)
-    private Set<CommentLike> likes = new HashSet<>();
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
+    private Set<CommentLike> reactions = new HashSet<>();
 
     @CreationTimestamp
     @Column(nullable = false)
