@@ -74,7 +74,7 @@ class MixControllerIntegrationTest extends ControllerIntegrationTest {
 
         // React - Then
         assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertResponse(createReportResponse, "get-mix-reactions-empty.json", UserReaction[].class);
+        assertResponse(createReportResponse, "get-mix-reactions-like.json", UserReaction[].class);
 
         // Update reaction - When
         final var updateResponse = doPostRequest(reactionUrl, "update-reaction.json");

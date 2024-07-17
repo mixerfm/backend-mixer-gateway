@@ -7,4 +7,6 @@ public interface ReactionContainerEntity<ITEM extends ReactionContainerEntity<IT
     Set<TABLE> getReactions();
 
     void setReactions(Set<TABLE> reactions);
+
+    Long getId();
 }

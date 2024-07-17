@@ -1,7 +1,6 @@
 package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
-import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.MixesApiDelegate;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
@@ -9,8 +8,6 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.module.mix.service.MixService;
-import fm.mixer.gateway.module.react.model.ResourceType;
-import fm.mixer.gateway.module.react.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +19,6 @@ import java.util.List;
 public class MixController implements MixesApiDelegate {
 
     private final MixService service;
-    private final ReportService reportService;
 
     @Override
     public ResponseEntity<SingleMix> getSingleMix(String mixId) {
@@ -45,25 +41,12 @@ public class MixController implements MixesApiDelegate {
     }
 
     @Override
-    public ResponseEntity<List<UserReaction>>react(String mixId, UserReaction userReaction) {
-        if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
-            reportService.report(mixId, ResourceType.MIX);
-
-            return ResponseEntity.ok(List.of());
-        }
-
-        checkReactionType(userReaction.getType());
-        return ResponseEntity.ok(service.react(mixId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType())));
+    public ResponseEntity<List<UserReaction>> react(String mixId, UserReaction userReaction) {
+        return ResponseEntity.ok(service.react(mixId, userReaction.getType()));
     }
 
     @Override
     public ResponseEntity<List<UserReaction>> removeReaction(String mixId) {
         return ResponseEntity.ok(service.removeReaction(mixId));
-    }
-
-    private void checkReactionType(UserReaction.TypeEnum type) {
-        if (!List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE).contains(type)) {
-            throw new BadRequestException("reaction.type.not.supported.error");
-        }
     }
 }

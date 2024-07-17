@@ -56,12 +56,15 @@ public class CollectionService {
         return singleCollection;
     }
 
-    public List<UserReaction> react(String collectionId, boolean like) {
+    public List<UserReaction> react(final String collectionId, final UserReaction.TypeEnum reaction) {
+        final var collection = repository.findByIdentifier(collectionId).orElseThrow(ResourceNotFoundException::new);
         // TODO implement
         return List.of();
     }
 
-    public List<UserReaction> removeReaction(String collectionId) {
+    public List<UserReaction> removeReaction(final String collectionId) {
+        final var collection = repository.findByIdentifier(collectionId).orElseThrow(ResourceNotFoundException::new);
+
         // TODO implement
         return List.of();
     }

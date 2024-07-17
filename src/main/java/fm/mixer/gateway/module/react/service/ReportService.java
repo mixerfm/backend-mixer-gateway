@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.react.service;
 import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.module.react.model.ResourceType;
+import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,11 @@ public class ReportService {
     public void report(String identifier, ResourceType resource) {
         final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
 
+        // TODO implement
+        log.warn("Reported {} with id {}, by user {}.", resource.name(), identifier, user.getId());
+    }
+
+    public void report(User user, Long identifier, ResourceType resource) {
         // TODO implement
         log.warn("Reported {} with id {}, by user {}.", resource.name(), identifier, user.getId());
     }

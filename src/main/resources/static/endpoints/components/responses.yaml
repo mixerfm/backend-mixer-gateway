@@ -8,7 +8,7 @@ components:
             $ref: '#/components/schemas/Error'
 
     ReactionsResponse:
-      description: List of user reactions. Note that some reactions will only return empty list, e.g. report.
+      description: List of user reactions.
       content:
         application/json:
           schema:

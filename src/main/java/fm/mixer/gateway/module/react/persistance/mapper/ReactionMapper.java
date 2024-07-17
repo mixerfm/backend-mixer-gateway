@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.react.persistance.mapper;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.InternalServerErrorException;
 import fm.mixer.gateway.model.UserReaction;
+import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.persistance.entity.ReactionContainerEntity;
 import fm.mixer.gateway.module.react.persistance.entity.ReactionEntity;
 import fm.mixer.gateway.module.user.persistance.entity.User;
@@ -43,6 +44,19 @@ public abstract class ReactionMapper {
         entity.setLiked(liked);
 
         return entity;
+    }
+
+    public static List<UserReaction.TypeEnum> toAllowedUserReactions(ResourceType resourceType) {
+        return switch (resourceType) {
+            case COMMENT, COLLECTIONS, MIX -> List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE);
+            case TRACK -> List.of(
+                    UserReaction.TypeEnum.LIKE,
+                    UserReaction.TypeEnum.DISLIKE,
+                    UserReaction.TypeEnum.RECOMMEND,
+                    UserReaction.TypeEnum.DO_NOT_RECOMMEND
+            );
+            default -> List.of();
+        };
     }
 
     private static <ITEM extends ReactionContainerEntity<ITEM, TABLE>, TABLE extends ReactionEntity<ITEM>> TABLE getTableClass(Class<TABLE> tableClass) {
