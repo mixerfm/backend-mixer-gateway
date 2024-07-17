@@ -6,7 +6,7 @@ import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
 import fm.mixer.gateway.module.user.api.v1.UserCommunityApiDelegate;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
-import fm.mixer.gateway.module.user.api.v1.model.UserReaction;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.user.service.UserCommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -53,13 +53,13 @@ public class UserCommunityController implements UserCommunityApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> react(String username, UserReaction userReaction) {
+    public ResponseEntity<List<UserReaction>> react(String username, UserReaction userReaction) {
         if (!UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
             throw new BadRequestException("reaction.type.not.supported.error");
         }
 
         reportService.report(username, ResourceType.USER);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(List.of());
     }
 }
