@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -168,7 +169,7 @@ public abstract class ControllerIntegrationTest extends BaseIntegrationTest {
         final var resource = resourceLoader.getResource(String.format("classpath:api/%s/%s", matcher.group("dir"), filename));
 
         try (final var br = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
-            return br.lines().collect(joining(lineSeparator()));
+            return br.lines().collect(joining(lineSeparator())).replaceAll("%CURRENT_DATE%", LocalDate.now().toString());
         }
     }
 }

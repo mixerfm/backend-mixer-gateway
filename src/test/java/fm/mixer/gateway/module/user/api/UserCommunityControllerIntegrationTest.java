@@ -1,5 +1,6 @@
 package fm.mixer.gateway.module.user.api;
 
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
 import fm.mixer.gateway.test.model.UserContext;
@@ -59,12 +60,13 @@ class UserCommunityControllerIntegrationTest extends ControllerIntegrationTest {
     }
 
     @Test
-    void react() throws Exception {
+    void shouldReportUser() throws Exception {
         // When
         final var response = doPostRequest(USER_2_URL + "/reactions", "create-report-reaction.json");
 
         // Then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(response, "get-user-reactions-empty.json", UserReaction[].class);
     }
 
     private void assertFollowList(String endpoint, String expectedResponseFile) throws Exception {
