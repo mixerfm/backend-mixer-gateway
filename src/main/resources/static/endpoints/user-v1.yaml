@@ -10,8 +10,9 @@ info:
     Examples:
     new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
     old user -> Auth API (login) -> receive JWT -> User API.
-  version: 0.3.1
+  version: 0.3.2
   x-release-notes:
+    - 0.3.2 Add creteDate in user response schema and standardize reactions endpoints.
     - 0.3.1 Expose marketing endpoints for user newsletter subscription.
     - 0.3.0 Add reactions endpoint, profile color, input validation, user activity flag and refactor common data models.
     - 0.2.2 Add required definition to CompactUser and AvatarContent.
@@ -252,15 +253,17 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '204':
-          description: User successfully reacted to the user.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
           
   /newsletters/subscription:
     post:
       summary: Subscribe an user to the newsletter.
-      description: Subscribes an anonymous user to the newsletter using their email.
+      description: |
+        Subscribes an anonymous user to the newsletter using their email. 
+        If user already signup for newsletter, bad request error will be returned.
       operationId: subscribe
       tags:
         - Marketing
@@ -363,6 +366,7 @@ components:
         - numberOfFollowers
         - numberOfFollowing
         - active
+        - createdDate
       allOf:
         - $ref: '#/components/schemas/UserCommon'
         - type: object
@@ -385,6 +389,11 @@ components:
               example: false
             relation:
               $ref: '#/components/schemas/UserRelation'
+            createdDate:
+              type: string
+              description: Date when user was created.
+              format: date
+              example: '9999-01-01'
 
     CreateUser:
       type: object
