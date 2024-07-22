@@ -1,5 +1,6 @@
 package fm.mixer.gateway.module.react.persistance.entity;
 
+import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
@@ -30,7 +31,9 @@ public abstract class ReactionEntity<ITEM> {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Boolean liked;
+    private ReactionType type;
+
+    private Boolean value;
 
     @UpdateTimestamp
     @Column(nullable = false)

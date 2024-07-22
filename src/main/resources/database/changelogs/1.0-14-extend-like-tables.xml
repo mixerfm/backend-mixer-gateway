@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-14-extend-like-tables">
+        <renameColumn tableName="comment_like" oldColumnName="liked" newColumnName="value"/>
+        <addColumn tableName="comment_like">
+            <column name="type" type="char" defaultValue="L" remarks="Type of the like">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <renameColumn tableName="mix_like" oldColumnName="liked" newColumnName="value"/>
+        <addColumn tableName="mix_like">
+            <column name="type" type="char" defaultValue="L" remarks="Type of the like">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <renameColumn tableName="mix_tag_like" oldColumnName="liked" newColumnName="value"/>
+        <addColumn tableName="mix_tag_like">
+            <column name="type" type="char" defaultValue="L" remarks="Type of the like">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <renameColumn tableName="mix_collection_like" oldColumnName="liked" newColumnName="value"/>
+        <addColumn tableName="mix_collection_like">
+            <column name="type" type="char" defaultValue="L" remarks="Type of the like">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <renameColumn tableName="mix_track_like" oldColumnName="liked" newColumnName="value"/>
+        <addColumn tableName="mix_track_like">
+            <column name="type" type="char" defaultValue="L" remarks="Type of the like">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <sql>
+            insert into mix_track_like (user_id,mix_track_id,value,updated_at,type,recommend)
+            select user_id, mix_track_id, recommend, updated_at, 'R' as type, recommend from mix_track_like
+            where recommend is not null;
+        </sql>
+        <dropColumn tableName="mix_track_like" columnName="recommend"/>
+    </changeSet>
+</databaseChangeLog>

@@ -34,18 +34,14 @@ public class ReactionService<ITEM extends ReactionContainerEntity<ITEM, TABLE>, 
             return ReactionMapper.toReactions(item.getReactions(), user);
         }
 
-        return react(item, UserReaction.TypeEnum.LIKE.equals(reactionType));
-    }
-
-    private List<UserReaction> react(final ReactionContainerEntity<ITEM, TABLE> item, final boolean like) {
-        final var user = UserPrincipalUtil.getCurrentActiveUser().orElseThrow(AccessForbiddenException::new);
-
-        // Find old record and change "liked" flag. If there is no old record create new object with mapper and store it.
+        // Find old record and change value flag. If there is no old record create new object with mapper and store it.
         final var reaction = repository.save(
-            repository.findByUserAndItem(user, item).map(likeRecord -> {
-                likeRecord.setLiked(like);
-                return likeRecord;
-            }).orElse(ReactionMapper.toReactionEntity(repository.getEntityClass() , user, item, like))
+            repository.findByUserAndItemAndType(user, item, ReactionMapper.toReactionType(reactionType)).map(reactionRecord -> {
+
+                reactionRecord.setValue(ReactionMapper.toReactionValue(reactionType));
+
+                return reactionRecord;
+            }).orElse(ReactionMapper.toReactionEntity(repository.getEntityClass() , user, item, reactionType))
         );
 
         item.getReactions().remove(reaction);
@@ -58,7 +54,8 @@ public class ReactionService<ITEM extends ReactionContainerEntity<ITEM, TABLE>, 
         checkReactionType(reactionType, true);
 
         final var user = getCurrentUser();
-        final var reaction = repository.findByUserAndItem(user, item).orElseThrow(ResourceNotFoundException::new);
+        final var reaction = repository.findByUserAndItemAndType(user, item, ReactionMapper.toReactionType(reactionType))
+            .orElseThrow(ResourceNotFoundException::new);
 
         item.getReactions().remove(reaction);
         repository.delete(reaction);
@@ -67,8 +64,12 @@ public class ReactionService<ITEM extends ReactionContainerEntity<ITEM, TABLE>, 
     }
 
     private void checkReactionType(UserReaction.TypeEnum reaction, boolean remove) {
-        // Default reaction is removed - TODO we could add check if there are multiple reactions that this should not be null
+        // Default reaction is removed
         if (Objects.isNull(reaction)) {
+            // Multiple reactions are possible - client must define which reaction to remove
+            if (ReactionMapper.toAllowedUserReactions(resourceType).size() > 2) {
+                throw new BadRequestException("ambiguous.reaction.call.error");
+            }
             return;
         }
 

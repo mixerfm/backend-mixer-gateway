@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.react.persistance.repository;
 import fm.mixer.gateway.error.exception.InternalServerErrorException;
 import fm.mixer.gateway.module.react.persistance.entity.ReactionContainerEntity;
 import fm.mixer.gateway.module.react.persistance.entity.ReactionEntity;
+import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @NoRepositoryBean
 public interface ReactionRepository<ITEM extends ReactionContainerEntity<ITEM, TABLE>, TABLE extends ReactionEntity<ITEM>> extends JpaRepository<TABLE, Long> {
 
-    Optional<TABLE> findByUserAndItem(User user, ReactionContainerEntity<ITEM, TABLE> item);
+    Optional<TABLE> findByUserAndItemAndType(User user, ReactionContainerEntity<ITEM, TABLE> item, ReactionType type);
 
     @SuppressWarnings("unchecked")
     default Class<TABLE> getEntityClass() {
