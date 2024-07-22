@@ -5,6 +5,7 @@ import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
 import fm.mixer.gateway.test.model.UserContext;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +66,8 @@ class UserCommunityControllerIntegrationTest extends ControllerIntegrationTest {
         final var response = doPostRequest(USER_2_URL + "/reactions", "create-report-reaction.json");
 
         // Then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getHeader(HttpHeaders.LOCATION)).isEqualTo(USER_2_URL + "/reactions");
         assertResponse(response, "get-user-reactions-empty.json", UserReaction[].class);
     }
 

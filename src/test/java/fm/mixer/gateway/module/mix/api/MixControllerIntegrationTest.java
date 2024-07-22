@@ -7,6 +7,7 @@ import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserUploadedMixes;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,21 +67,24 @@ class MixControllerIntegrationTest extends ControllerIntegrationTest {
         final var createResponse = doPostRequest(reactionUrl, "create-reaction.json");
 
         // React - Then
-        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse.getHeader(HttpHeaders.LOCATION)).isEqualTo(reactionUrl);
         assertResponse(createResponse, "get-mix-reactions-like.json", UserReaction[].class);
 
         // Report - When
         final var createReportResponse = doPostRequest(reactionUrl, "create-report-reaction.json");
 
         // React - Then
-        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createReportResponse.getHeader(HttpHeaders.LOCATION)).isEqualTo(reactionUrl);
         assertResponse(createReportResponse, "get-mix-reactions-like.json", UserReaction[].class);
 
         // Update reaction - When
         final var updateResponse = doPostRequest(reactionUrl, "update-reaction.json");
 
         // Update reaction - Then
-        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(updateResponse.getHeader(HttpHeaders.LOCATION)).isEqualTo(reactionUrl);
         assertResponse(updateResponse, "get-mix-reactions-dislike.json", UserReaction[].class);
 
         // Delete - When

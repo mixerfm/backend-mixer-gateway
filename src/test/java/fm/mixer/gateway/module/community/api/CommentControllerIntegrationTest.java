@@ -8,6 +8,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,29 +106,34 @@ class CommentControllerIntegrationTest extends ControllerIntegrationTest {
 
         assertThat(comment.getReactions()).isEmpty(); // pre-check
 
+        final var commentUrl = String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier());
+
         // React - When
-        final var createResponse = doPostRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()), "create-reaction.json");
+        final var createResponse = doPostRequest(commentUrl, "create-reaction.json");
 
         // React - Then
-        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse.getHeader(HttpHeaders.LOCATION)).isEqualTo(commentUrl);
         assertResponse(createResponse, "get-comment-reactions-like.json", UserReaction[].class);
 
         // Report - When
-        final var createReportResponse = doPostRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()), "create-report-reaction.json");
+        final var createReportResponse = doPostRequest(commentUrl, "create-report-reaction.json");
 
         // React - Then
-        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createReportResponse.getHeader(HttpHeaders.LOCATION)).isEqualTo(commentUrl);
         assertResponse(createReportResponse, "get-comment-reactions-like.json", UserReaction[].class);
 
         // Update reaction - When
-        final var updateResponse = doPostRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()), "update-reaction.json");
+        final var updateResponse = doPostRequest(commentUrl, "update-reaction.json");
 
         // Update reaction - Then
-        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(updateResponse.getHeader(HttpHeaders.LOCATION)).isEqualTo(commentUrl);
         assertResponse(updateResponse, "get-comment-reactions-dislike.json", UserReaction[].class);
 
         // Delete - When
-        final var deleteResponse = doDeleteRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()));
+        final var deleteResponse = doDeleteRequest(commentUrl);
 
         // Delete - Then
         assertThat(deleteResponse.getStatus()).isEqualTo(HttpStatus.OK.value());

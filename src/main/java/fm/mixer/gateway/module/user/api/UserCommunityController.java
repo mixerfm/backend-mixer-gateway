@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -60,6 +61,8 @@ public class UserCommunityController implements UserCommunityApiDelegate {
 
         reportService.report(username, ResourceType.USER);
 
-        return ResponseEntity.ok(List.of());
+        return ResponseEntity
+            .created(URI.create(String.format("/users/%s/reactions", username)))
+            .body(List.of());
     }
 }

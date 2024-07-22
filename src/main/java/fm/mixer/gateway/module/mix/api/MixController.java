@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -42,7 +43,9 @@ public class MixController implements MixesApiDelegate {
 
     @Override
     public ResponseEntity<List<UserReaction>> react(String mixId, UserReaction userReaction) {
-        return ResponseEntity.ok(service.react(mixId, userReaction.getType()));
+        return ResponseEntity
+            .created(URI.create(String.format("/mixes/%s/reactions", mixId)))
+            .body(service.react(mixId, userReaction.getType()));
     }
 
     @Override

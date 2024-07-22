@@ -88,7 +88,7 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '200':
+        '201':
           $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
@@ -147,7 +147,7 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '200':
+        '201':
           $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'

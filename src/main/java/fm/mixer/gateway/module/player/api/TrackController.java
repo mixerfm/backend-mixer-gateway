@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,9 @@ public class TrackController implements TrackApiDelegate {
 
     @Override
     public ResponseEntity<List<UserReaction>> react(String trackId, UserReaction userReaction) {
-        return ResponseEntity.ok(service.react(trackId, userReaction.getType()));
+        return ResponseEntity
+            .created(URI.create(String.format("/tracks/%s/reactions", trackId)))
+            .body(service.react(trackId, userReaction.getType()));
     }
 
     @Override

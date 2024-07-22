@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +39,9 @@ public class CollectionsController implements CollectionsApiDelegate {
 
     @Override
     public ResponseEntity<List<UserReaction>> react(String collectionId, UserReaction userReaction) {
-        return ResponseEntity.ok(service.react(collectionId, userReaction.getType()));
+        return ResponseEntity
+            .created(URI.create(String.format("/collections/%s/reactions", collectionId)))
+            .body(service.react(collectionId, userReaction.getType()));
     }
 
     @Override

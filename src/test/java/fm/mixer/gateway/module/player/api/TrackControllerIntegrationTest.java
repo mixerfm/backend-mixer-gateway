@@ -6,6 +6,7 @@ import fm.mixer.gateway.test.ControllerIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,11 +36,17 @@ class TrackControllerIntegrationTest extends ControllerIntegrationTest {
         "POST,create-like-reaction.json,get-track-reactions-like.json",
     })
     void shouldReactAndRemoveReactionOnTrack(String action, String request, String expected) throws Exception {
+        // Given
+        final var isPost = "POST".equals(action);
+
         // When
-        final var likeResponse = "POST".equals(action) ? doPostRequest(TRACK_REACTION_URL, request) : doDeleteRequest(TRACK_REACTION_URL, request);
+        final var response = isPost ? doPostRequest(TRACK_REACTION_URL, request) : doDeleteRequest(TRACK_REACTION_URL, request);
 
         // Then
-        assertThat(likeResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertResponse(likeResponse, expected, UserReaction[].class);
+        assertThat(response.getStatus()).isEqualTo(isPost ? HttpStatus.CREATED.value() : HttpStatus.OK.value());
+        if (isPost) {
+            assertThat(response.getHeader(HttpHeaders.LOCATION)).isEqualTo(TRACK_REACTION_URL);
+        }
+        assertResponse(response, expected, UserReaction[].class);
     }
 }

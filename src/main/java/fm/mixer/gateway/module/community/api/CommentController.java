@@ -58,7 +58,9 @@ public class CommentController implements CommentApiDelegate {
 
     @Override
     public ResponseEntity<List<UserReaction>> react(String commentId, UserReaction userReaction) {
-        return ResponseEntity.ok(service.react(commentId, userReaction.getType()));
+        return ResponseEntity
+            .created(URI.create(String.format("/comments/%s/reactions", commentId)))
+            .body(service.react(commentId, userReaction.getType()));
     }
 
     @Override
