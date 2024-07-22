@@ -1,16 +1,14 @@
 package fm.mixer.gateway.module.community.api;
 
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.community.api.v1.model.Comment;
 import fm.mixer.gateway.module.community.api.v1.model.CommentList;
-import fm.mixer.gateway.module.community.api.v1.model.UserReaction;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,16 +83,16 @@ class CommentControllerIntegrationTest extends ControllerIntegrationTest {
     void shouldCreateAndFetchReplyOnComment() throws Exception {
         // Create - When
         final var createResponse = doPostRequest(COMMENT_ON_COMMENT_URL + "/replies", "create-comment.json");
-        
+
         // Create - Then
         assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 
         final var createComment = mapper.readValue(createResponse.getContentAsString(), Comment.class);
         assertComment(createComment, "Test Comment Created");
-        
+
         // Fetch - When
         final var repliesResponse = doGetRequest(COMMENT_ON_COMMENT_URL + "/replies");
-        
+
         // Fetch - Then
         final var repliesCommentList = mapper.readValue(repliesResponse.getContentAsString(), CommentList.class);
         assertThat(repliesCommentList.getComments()).anyMatch(comment -> comment.getIdentifier().equals(createComment.getIdentifier()));
@@ -111,29 +109,29 @@ class CommentControllerIntegrationTest extends ControllerIntegrationTest {
         final var createResponse = doPostRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()), "create-reaction.json");
 
         // React - Then
-        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(comment.getIdentifier(), List.of(UserReaction.TypeEnum.LIKE));
+        assertThat(createResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(createResponse, "get-comment-reactions-like.json", UserReaction[].class);
 
         // Report - When
         final var createReportResponse = doPostRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()), "create-report-reaction.json");
 
         // React - Then
-        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(comment.getIdentifier(), List.of(UserReaction.TypeEnum.LIKE));
+        assertThat(createReportResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(createReportResponse, "get-comment-reactions-like.json", UserReaction[].class);
 
         // Update reaction - When
         final var updateResponse = doPostRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()), "update-reaction.json");
 
         // Update reaction - Then
-        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(comment.getIdentifier(), List.of(UserReaction.TypeEnum.DISLIKE));
+        assertThat(updateResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(updateResponse, "get-comment-reactions-dislike.json", UserReaction[].class);
 
         // Delete - When
         final var deleteResponse = doDeleteRequest(String.format(COMMENT_BASE_URL + "/reactions", comment.getIdentifier()));
 
         // Delete - Then
-        assertThat(deleteResponse.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertReaction(comment.getIdentifier(), List.of());
+        assertThat(deleteResponse.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(deleteResponse, "get-comment-reactions-empty.json", UserReaction[].class);
     }
 
     @Test
@@ -156,12 +154,5 @@ class CommentControllerIntegrationTest extends ControllerIntegrationTest {
         assertThat(comment.getReactions()).isEmpty();
         assertThat(comment.getCreatedDateTime()).isNotNull();
         assertThat(comment.getUpdatedDateTime()).isNotNull();
-    }
-
-    private void assertReaction(String identifier, List<UserReaction.TypeEnum> reactions) throws Exception {
-        final var comment = mapper.readValue(doGetRequest(COMMENT_ON_MIX_URL).getContentAsString(), CommentList.class).getComments()
-            .stream().filter(c -> c.getIdentifier().equals(identifier)).findFirst().orElseThrow();
-
-        assertThat(comment.getReactions()).containsExactlyInAnyOrderElementsOf(reactions.stream().map(UserReaction::new).toList());
     }
 }
