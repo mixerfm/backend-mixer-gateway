@@ -6,6 +6,9 @@ import fm.mixer.gateway.module.community.persistance.repository.CommentLikeRepos
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.repository.MixLikeRepository;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrackLike;
+import fm.mixer.gateway.module.player.persistance.repository.MixTrackLikeRepository;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReactionService;
 import fm.mixer.gateway.module.react.service.ReportService;
@@ -25,5 +28,10 @@ public class ReactionServiceFactoryConfig {
     @Bean
     public ReactionService<Comment, CommentLike> commentReactionService(CommentLikeRepository repository, ReportService reportService) {
         return new ReactionService<>(repository, reportService, ResourceType.COMMENT);
+    }
+
+    @Bean
+    public ReactionService<MixTrack, MixTrackLike> trackReactionService(MixTrackLikeRepository repository, ReportService reportService) {
+        return new ReactionService<>(repository, reportService, ResourceType.TRACK);
     }
 }
