@@ -6,6 +6,7 @@ import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.community.persistance.entity.Comment;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
+import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.test.UnitTest;
 import org.instancio.Instancio;
@@ -29,7 +30,8 @@ class CommunityMapperUnitTest {
         // given
         final var comment = Instancio.create(Comment.class);
         final var commentLike = comment.getReactions().stream().findFirst().orElseThrow();
-        commentLike.setLiked(true);
+        commentLike.setValue(true);
+        commentLike.setType(ReactionType.LIKE);
 
         try (final var user = mockStatic(UserPrincipalUtil.class)) {
             user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(commentLike.getUser()));
@@ -43,8 +45,8 @@ class CommunityMapperUnitTest {
             assertThat(result.getCreatedDateTime()).isEqualTo(comment.getCreatedAt());
             assertThat(result.getUpdatedDateTime()).isEqualTo(comment.getUpdatedAt());
             assertThat(result.getNumberOfReplies()).isEqualTo(comment.getNumberOfReplies());
-            assertThat(result.getNumberOfLikes()).isEqualTo(comment.getReactions().stream().filter(CommentLike::getLiked).count());
-            assertThat(result.getNumberOfDislikes()).isEqualTo(comment.getReactions().stream().filter(like -> !like.getLiked()).count());
+            assertThat(result.getNumberOfLikes()).isEqualTo(comment.getReactions().stream().filter(CommentLike::getValue).count());
+            assertThat(result.getNumberOfDislikes()).isEqualTo(comment.getReactions().stream().filter(like -> !like.getValue()).count());
 
             assertThat(result.getReactions())
                 .hasSize(1)
