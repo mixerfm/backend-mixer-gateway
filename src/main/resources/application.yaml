@@ -61,6 +61,7 @@ mixer-gateway:
         - name: application-v1
           paths:
             - /versions
+            - /availability
         # TODO uncomment
         #- name: community-v1
         #  paths:
@@ -98,6 +99,10 @@ mixer-gateway:
             - /current-user
             - /newsletters/subscription
   availability:
+    excluded-endpoints:
+      - /versions
+      - /availability
+      - /actuator/*
     supported-countries:
       - HR
   versions:

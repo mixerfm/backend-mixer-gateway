@@ -14,4 +14,5 @@ import java.util.List;
 public class AvailabilityConfig {
 
     private List<String> supportedCountries;
+    private List<String> excludedEndpoints;
 }
