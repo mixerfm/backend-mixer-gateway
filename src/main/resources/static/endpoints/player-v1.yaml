@@ -7,8 +7,9 @@ info:
     such as play, pause, skip, increase volume, like etc.
     
     Note: Main subject in Player API is track in context of specific mix, so all endpoints are actions against that track.
-  version: 0.2.1
+  version: 0.2.2
   x-release-notes:
+    - 0.2.2 Add reactions list response.
     - 0.2.1 Refactor device schema returned from current-session endpoint.
     - 0.2.0 Add reactions endpoints and refactor common data model.
     - 0.1.0 Exposed endpoints for play, pause, skip, change-volume, like, dislike, recommend, do-not-recommend and report. Also endpoints for fetching track list and play session.
@@ -179,8 +180,8 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/CreateReactionRequest'
       responses:
-        '204':
-          description: User successfully reacted to the track.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
@@ -200,8 +201,8 @@ paths:
       requestBody:
         $ref: './components/parameters.yaml#/components/requestBodies/DeleteReactionRequest'
       responses:
-        '204':
-          description: User successfully removed reaction.
+        '200':
+          $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
