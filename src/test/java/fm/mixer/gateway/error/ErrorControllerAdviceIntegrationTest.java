@@ -38,6 +38,7 @@ class ErrorControllerAdviceIntegrationTest extends ContainerTestBase {
         "onTooManyRequestsException, TOO_MANY_REQUESTS, 429",
         "onNoHandlerFoundException, RESOURCE_NOT_FOUND, 404",
         "onResourceNotFoundException, RESOURCE_NOT_FOUND, 404",
+        "onUnsupportedClientLocationException, UNSUPPORTED_COUNTRY_LOCATION, 451",
         "onMethodArgumentTypeMismatchException, METHOD_ARGUMENT_TYPE_MISMATCH, 400",
         "onMethodArgumentTypeMismatchExceptionWithNullRequiredType, METHOD_ARGUMENT_TYPE_MISMATCH, 400",
         "onMethodArgumentNotValidException, METHOD_ARGUMENT_NOT_VALID, 400",
