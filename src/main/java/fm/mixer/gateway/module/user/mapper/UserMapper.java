@@ -84,6 +84,8 @@ public interface UserMapper {
     @Mapping(target = "numberOfFollowers", constant = "0")
     @Mapping(target = "numberOfFollowing", constant = "0")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "identifier", ignore = true)
+    @Mapping(target = "socialNetworks", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void toUserDeletedEntity(@MappingTarget User user, String profileColor);

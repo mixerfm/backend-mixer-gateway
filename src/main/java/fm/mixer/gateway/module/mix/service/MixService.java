@@ -13,6 +13,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.repository.MixLikeRepository;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
 import fm.mixer.gateway.module.player.persistance.repository.PlaySessionRepository;
+import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
 import fm.mixer.gateway.module.react.service.ReactionService;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class MixService {
 
     public UserLikedMixes getUserLikedMixes(String username, PaginationRequest pagination) {
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
-        final var likedMixes = likeRepository.findByUserAndLikedIsTrue(user, pagination.pageable());
+        final var likedMixes = likeRepository.findByUserAndTypeAndValueIsTrue(user, ReactionType.LIKE, pagination.pageable());
 
         return mapper.toUserLikedMixes(likedMixes, pagination);
     }

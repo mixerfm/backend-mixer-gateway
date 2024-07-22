@@ -73,6 +73,7 @@ public interface MixMapper {
     Creator toAuthor(User user);
 
     @CreatorCommonMapping
+    @Mapping(target = "profileColor", ignore = true)
     Creator toArtist(UserArtist userArtist);
 
     @PaginatedMapping

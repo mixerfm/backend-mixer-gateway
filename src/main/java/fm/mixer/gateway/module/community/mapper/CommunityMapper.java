@@ -32,12 +32,12 @@ public interface CommunityMapper {
 
     @Named("toNumberOfLikes")
     default Integer toNumberOfLikes(final Set<CommentLike> reactions) {
-        return (int) reactions.stream().filter(CommentLike::getLiked).count();
+        return (int) reactions.stream().filter(CommentLike::getValue).count();
     }
 
     @Named("toNumberOfDislikes")
     default Integer toNumberOfDislikes(final Set<CommentLike> reactions) {
-        return (int) reactions.stream().filter(commentLike -> !commentLike.getLiked()).count();
+        return (int) reactions.stream().filter(commentLike -> !commentLike.getValue()).count();
     }
 
     @CreatorCommonMapping
