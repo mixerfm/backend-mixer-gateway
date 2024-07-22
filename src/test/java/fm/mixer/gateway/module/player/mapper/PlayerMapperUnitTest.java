@@ -1,24 +1,26 @@
 package fm.mixer.gateway.module.player.mapper;
 
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.player.api.v1.model.Track;
-import fm.mixer.gateway.module.player.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrackLike;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
+import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.test.UnitTest;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.mockito.Mockito.mockStatic;
 
 @UnitTest
@@ -29,13 +31,13 @@ class PlayerMapperUnitTest {
     @Test
     void shouldMapToSession() {
         // Given
-        final var playSession = Instancio.create(PlaySession.class);
-        final var like = playSession.getTrack().getLikes().stream().findFirst().orElseThrow();
-        like.setRecommend(true);
-        like.setLiked(true);
+        final var user = Instancio.create(User.class);
+        final var playSession = Instancio.of(PlaySession.class)
+            .set(field(PlaySession::getTrack), createTrack(user))
+            .create();
 
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
-            user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(like.getUser()));
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
+            userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
             // When
             final var result = mapper.toSession(playSession);
@@ -50,13 +52,11 @@ class PlayerMapperUnitTest {
     @Test
     void shouldMapToTrackListObject() {
         // Given
-        final var track = Instancio.create(MixTrack.class);
-        final var like = track.getLikes().stream().findFirst().orElseThrow();
-        like.setRecommend(true);
-        like.setLiked(true);
+        final var user = Instancio.create(User.class);
+        final var track = createTrack(user);
 
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
-            user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(like.getUser()));
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
+            userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
             // When
             final var result = mapper.toTrackListObject(List.of(track));
@@ -65,24 +65,6 @@ class PlayerMapperUnitTest {
             assertThat(result.getTracks()).hasSize(1);
             assertTrack(result.getTracks().getFirst(), track);
         }
-    }
-
-    @Test
-    void shouldMapToMixTrackLikeEntity() {
-        // Given
-        final var user = Instancio.create(User.class);
-        final var track = Instancio.create(MixTrack.class);
-
-        // When
-        final var result = mapper.toMixTrackLikeEntity(user, track, UserReaction.TypeEnum.RECOMMEND);
-
-        // Then
-        assertThat(result.getUser()).isEqualTo(user);
-        assertThat(result.getTrack()).isEqualTo(track);
-        assertThat(result.getLiked()).isNull();
-        assertThat(result.getRecommend()).isTrue();
-        assertThat(result.getId()).isNull();
-        assertThat(result.getUpdatedAt()).isNull();
     }
 
     @Test
@@ -104,26 +86,6 @@ class PlayerMapperUnitTest {
         assertThat(session.getId()).isNull();
         assertThat(session.getCreatedAt()).isNull();
         assertThat(session.getUpdatedAt()).isNull();
-    }
-
-    @ParameterizedTest
-    @EnumSource(UserReaction.TypeEnum.class)
-    void shouldMapToLiked(UserReaction.TypeEnum reaction) {
-        // When
-        final var result = mapper.toLiked(reaction);
-
-        // Then
-        asserReaction(reaction, result.orElse(null), UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE);
-    }
-
-    @ParameterizedTest
-    @EnumSource(UserReaction.TypeEnum.class)
-    void shouldMapToRecommend(UserReaction.TypeEnum reaction) {
-        // When
-        final var result = mapper.toRecommend(reaction);
-
-        // Then
-        asserReaction(reaction, result.orElse(null), UserReaction.TypeEnum.RECOMMEND, UserReaction.TypeEnum.DO_NOT_RECOMMEND);
     }
 
     void assertTrack(Track result, MixTrack entity) {
@@ -150,18 +112,22 @@ class PlayerMapperUnitTest {
         assertThat(artist.getAvatarUrl()).isEqualTo(entity.getArtist().getAvatar());
         assertThat(artist.getActive()).isEqualTo(entity.getArtist().getActive());
         assertThat(artist.getProfileColor()).isNull();
-
     }
 
-    void asserReaction(UserReaction.TypeEnum given, Boolean result, UserReaction.TypeEnum positive, UserReaction.TypeEnum negative) {
-        if (!List.of(positive, negative).contains(given)) {
-            assertThat(result).isNull();
-        }
-        if (given.equals(positive)) {
-            assertThat(result).isTrue();
-        }
-        if (given.equals(negative)) {
-            assertThat(result).isFalse();
-        }
+    static MixTrack createTrack(User user) {
+        return Instancio.of(MixTrack.class)
+            .set(field(MixTrack::getReactions), Set.of(
+                createTrackReaction(user, ReactionType.LIKE),
+                createTrackReaction(user, ReactionType.RECOMMEND)
+            ))
+            .create();
+    }
+
+    static MixTrackLike createTrackReaction(User user, ReactionType type) {
+        return Instancio.of(MixTrackLike.class)
+            .set(field(MixTrackLike::getType), type)
+            .set(field(MixTrackLike::getValue), true)
+            .set(field(MixTrackLike::getUser), user)
+            .create();
     }
 }
