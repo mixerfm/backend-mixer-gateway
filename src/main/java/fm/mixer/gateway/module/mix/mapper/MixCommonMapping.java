@@ -12,5 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 @Mapping(target = "author", source = "user")
 @Mapping(target = "type", source = ".", qualifiedByName = "toType")
 @Mapping(target = "reactions", expression = "java(ReactionMapper.toReactions(mix.getReactions()))")
+@Mapping(target = "createdDate", source = "createdAt")
+@Mapping(target = "updatedDate", source = "updatedAt")
 public @interface MixCommonMapping {
 }
