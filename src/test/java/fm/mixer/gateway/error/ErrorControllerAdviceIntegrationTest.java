@@ -54,6 +54,7 @@ class ErrorControllerAdviceIntegrationTest extends ContainerTestBase {
     void shouldHandleSpecificException(String url, String type, int status) throws Exception {
         // Given
         final var request = MockMvcRequestBuilders.get("/test/error-handling/" + url)
+            .header("CF-IPCountry", "HR")
             .contentType(MediaType.APPLICATION_JSON);
 
         // When

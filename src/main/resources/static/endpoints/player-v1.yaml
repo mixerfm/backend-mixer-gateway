@@ -7,8 +7,9 @@ info:
     such as play, pause, skip, increase volume, like etc.
     
     Note: Main subject in Player API is track in context of specific mix, so all endpoints are actions against that track.
-  version: 0.2.2
+  version: 0.3.0
   x-release-notes:
+    - 0.3.0 Remove streamUrl attribute from track list endpoint.
     - 0.2.2 Add reactions list response.
     - 0.2.1 Refactor device schema returned from current-session endpoint.
     - 0.2.0 Add reactions endpoints and refactor common data model.
@@ -272,9 +273,9 @@ components:
         tracks:
           type: array
           items:
-            $ref: '#/components/schemas/Track'
+            $ref: '#/components/schemas/TrackCommon'
 
-    Track:
+    TrackCommon:
       type: object
       description: All related information about the track.
       required:
@@ -282,7 +283,6 @@ components:
         - name
         - artists
         - album
-        - streamUrl
         - duration
       properties:
         identifier:
@@ -306,15 +306,25 @@ components:
           $ref: '#/components/schemas/Album'
         reactions:
           $ref: './components/responses.yaml#/components/schemas/UserReactions'
-        streamUrl:
-          type: string
-          description: URL of the track available to play on the client. Note that this URL is dynamic for each request.
-          example: 'song.mp3'
         duration:
           type: string
           format: ISO 8601 duration
           description: Duration of the track.
           example: 'PT1H25M14S'
+
+    Track:
+      type: object
+      description: All related information about the currently played track.
+      required:
+        - streamUrl
+      allOf:
+        - $ref: '#/components/schemas/TrackCommon'
+        - type: object
+          properties:
+            streamUrl:
+              type: string
+              description: URL of the track available to play on the client. Note that this URL is dynamic for each request.
+              example: 'song.mp3'
 
     Album:
       type: object

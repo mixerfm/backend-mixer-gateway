@@ -6,6 +6,7 @@ import fm.mixer.gateway.module.player.api.v1.model.Album;
 import fm.mixer.gateway.module.player.api.v1.model.Creator;
 import fm.mixer.gateway.module.player.api.v1.model.Session;
 import fm.mixer.gateway.module.player.api.v1.model.Track;
+import fm.mixer.gateway.module.player.api.v1.model.TrackCommon;
 import fm.mixer.gateway.module.player.api.v1.model.TrackList;
 import fm.mixer.gateway.module.player.persistance.entity.MixAlbum;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
@@ -34,7 +35,7 @@ public interface PlayerMapper {
         return new TrackList().tracks(toTrackList(trackList));
     }
 
-    List<Track> toTrackList(List<MixTrack> trackList);
+    List<TrackCommon> toTrackList(List<MixTrack> trackList);
 
     @Mapping(target = "artists", source = "artist")
     @Mapping(target = "reactions", expression = "java(ReactionMapper.toReactions(mixTrack.getReactions()))")
