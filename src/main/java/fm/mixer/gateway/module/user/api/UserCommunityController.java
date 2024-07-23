@@ -2,11 +2,11 @@ package fm.mixer.gateway.module.user.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.react.model.ResourceType;
 import fm.mixer.gateway.module.react.service.ReportService;
 import fm.mixer.gateway.module.user.api.v1.UserCommunityApiDelegate;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
-import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.user.service.UserCommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

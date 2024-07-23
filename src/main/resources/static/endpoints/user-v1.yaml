@@ -257,13 +257,13 @@ paths:
           $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
-          
+
   /newsletters/subscription:
     post:
       summary: Subscribe an user to the newsletter.
       description: |
         Subscribes an anonymous user to the newsletter using their email. 
-        If user already signup for newsletter, bad request error will be returned.
+        If user already signup for the newsletter, bad request error will be returned.
       operationId: subscribe
       tags:
         - Marketing

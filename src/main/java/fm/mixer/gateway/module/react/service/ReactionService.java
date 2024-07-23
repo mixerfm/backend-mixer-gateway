@@ -41,13 +41,17 @@ public class ReactionService<ITEM extends ReactionContainerEntity<ITEM, TABLE>, 
                 reactionRecord.setValue(ReactionMapper.toReactionValue(reactionType));
 
                 return reactionRecord;
-            }).orElse(ReactionMapper.toReactionEntity(repository.getEntityClass() , user, item, reactionType))
+            }).orElse(ReactionMapper.toReactionEntity(repository.getEntityClass(), user, item, reactionType))
         );
 
         item.getReactions().remove(reaction);
         item.getReactions().add(reaction);
 
         return ReactionMapper.toReactions(item.getReactions(), user);
+    }
+
+    public List<UserReaction> removeReaction(final ReactionContainerEntity<ITEM, TABLE> item) {
+        return removeReaction(item, null);
     }
 
     public List<UserReaction> removeReaction(final ReactionContainerEntity<ITEM, TABLE> item, UserReaction.TypeEnum reactionType) {

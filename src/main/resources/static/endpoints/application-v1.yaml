@@ -74,8 +74,8 @@ components:
       description: |
         Object that holds list of versions for each component. Pagination is not supported as number of items is predefined and small.
       required:
-      - clients
-      - apis
+        - clients
+        - apis
       properties:
         clients:
           type: array

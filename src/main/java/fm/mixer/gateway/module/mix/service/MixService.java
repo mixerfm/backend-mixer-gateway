@@ -69,6 +69,6 @@ public class MixService {
     public List<UserReaction> removeReaction(final String mixId) {
         final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
 
-        return reactionService.removeReaction(mix, null);
+        return reactionService.removeReaction(mix);
     }
 }

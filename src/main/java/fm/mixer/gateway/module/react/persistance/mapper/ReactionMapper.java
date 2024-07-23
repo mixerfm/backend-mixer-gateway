@@ -81,10 +81,10 @@ public abstract class ReactionMapper {
         return switch (resourceType) {
             case COMMENT, COLLECTIONS, MIX -> List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE);
             case TRACK -> List.of(
-                    UserReaction.TypeEnum.LIKE,
-                    UserReaction.TypeEnum.DISLIKE,
-                    UserReaction.TypeEnum.RECOMMEND,
-                    UserReaction.TypeEnum.DO_NOT_RECOMMEND
+                UserReaction.TypeEnum.LIKE,
+                UserReaction.TypeEnum.DISLIKE,
+                UserReaction.TypeEnum.RECOMMEND,
+                UserReaction.TypeEnum.DO_NOT_RECOMMEND
             );
             default -> List.of();
         };
