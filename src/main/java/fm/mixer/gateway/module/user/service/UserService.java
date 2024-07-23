@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.user.service;
 
 import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
+import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.module.auth.service.DeviceService;
 import fm.mixer.gateway.module.user.api.v1.model.AvatarContent;
@@ -67,8 +68,12 @@ public class UserService {
         );
         repository.save(user);
 
-        // Subscribe user to the newsletter
-        newsletterService.subscribe(user.getEmail());
+        // Subscribe user to the newsletter - ignore if user already sing-up for the newsletter
+        try {
+            newsletterService.subscribe(user.getEmail());
+        }
+        catch (BadRequestException ignore) {
+        }
 
         return mapper.toGetUser(user, UserRelation.SELF);
     }
