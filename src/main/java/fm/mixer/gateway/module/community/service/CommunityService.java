@@ -18,6 +18,7 @@ import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,7 @@ public class CommunityService {
         return mapper.toCommentList(commentList, paginationRequest);
     }
 
+    @Transactional
     public Comment createComment(String mixId, String content) {
         final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
 
@@ -53,6 +55,7 @@ public class CommunityService {
         return mapper.toCommentList(replies, paginationRequest);
     }
 
+    @Transactional
     public Comment createReply(String commentId, String content) {
         final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
 
@@ -78,6 +81,7 @@ public class CommunityService {
         return mapper.toComment(repository.save(comment));
     }
 
+    @Transactional
     public void deleteComment(String commentId) {
         final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
 
@@ -89,6 +93,14 @@ public class CommunityService {
         Optional.ofNullable(comment.getParentComment()).ifPresent(
             parentComment -> changeReplyCount(parentComment, -1)
         );
+
+        // Delete all replies
+        final var replies = repository.findAllByParentComment(comment);
+        if (!replies.isEmpty()) {
+            likeRepository.deleteAllByItemIn(replies);
+            repository.deleteAll(replies);
+            changeCommentCount(comment.getMix(), -replies.size());
+        }
 
         likeRepository.deleteAllByItem(comment);
         repository.delete(comment);
