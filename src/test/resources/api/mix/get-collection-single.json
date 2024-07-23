@@ -51,6 +51,8 @@
           "Pop",
           "Happy"
         ],
+        "createdDate": "2024-01-15",
+        "updatedDate": "2024-01-17",
         "description": "Test Mix Description"
       }
     ],
@@ -64,5 +66,7 @@
     "Rock",
     "Pop"
   ],
+  "createdDate": "2024-06-03",
+  "updatedDate": "2024-06-06",
   "description": "Test Collection Description"
 }
