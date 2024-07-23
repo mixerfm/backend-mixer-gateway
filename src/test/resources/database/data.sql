@@ -18,27 +18,27 @@ INSERT INTO public.user_follower (user_id,follows_user_id,created_at) VALUES
     (4,1,'2024-06-03 10:48:30.707');
 
 -- MIX
-INSERT INTO mix (identifier,name,description,avatar,duration,number_of_tracks,user_id,visibility,created_at,updated_at,play_count,nsfw) VALUES
-    ('mid1','Test Mix','Test Mix Description','mixAvatar.jpg',150,3,1,0,'2024-01-15 12:00:54.262','2024-01-17 12:00:54.262',5,false),
-    ('mid2','Test Mix 2','Test Mix 2 Description','mixAvatar2.jpg',60,2,2,0,'2024-01-16 12:00:54.262','2024-01-18 12:00:54.262',2,true),
-    ('mid3','Test Mix 3','Test Mix 3 Description','mixAvatar3.jpg',180,5,3,0,'2024-01-13 12:00:54.262','2024-01-22 12:00:54.262',7,true);
+INSERT INTO mix (identifier,name,description,avatar,duration,number_of_tracks,user_id,visibility,created_at,updated_at,play_count,nsfw,number_of_comments) VALUES
+    ('mid1','Test Mix','Test Mix Description','mixAvatar.jpg',150,3,1,0,'2024-01-15 12:00:54.262','2024-01-17 12:00:54.262',5,false,11),
+    ('mid2','Test Mix 2','Test Mix 2 Description','mixAvatar2.jpg',60,2,2,0,'2024-01-16 12:00:54.262','2024-01-18 12:00:54.262',2,true,12),
+    ('mid3','Test Mix 3','Test Mix 3 Description','mixAvatar3.jpg',180,5,3,0,'2024-01-13 12:00:54.262','2024-01-22 12:00:54.262',7,true,13);
 
-INSERT INTO mix_like (user_id,mix_id,liked,updated_at) VALUES
-    (1,1,true,'2024-01-20 16:36:16.556'),
-    (2,1,false,'2024-01-21 16:36:16.556'),
-    (3,1,true,'2024-01-22 16:36:16.556'),
-    (4,1,true,'2024-01-23 16:36:16.556');
+INSERT INTO mix_like (user_id,mix_id,value,updated_at,type) VALUES
+    (1,1,true,'2024-01-20 16:36:16.556','L'),
+    (2,1,false,'2024-01-21 16:36:16.556','L'),
+    (3,1,true,'2024-01-22 16:36:16.556','L'),
+    (4,1,true,'2024-01-23 16:36:16.556','L');
 
 -- COLLECTION
 INSERT INTO mix_collection (identifier,name,description,avatar,user_id,visibility,created_at,updated_at) VALUES
     ('cid1','Test Collection 1','Test Collection Description','collectionAvatar.jpg',1,0,'2024-06-03 20:46:22.722','2024-06-06 20:46:30.626'),
     ('cid2','Test Collection 2','Test Collection 2 Description','collectionAvatar2.jpg',1,1,'2024-06-04 20:46:22.722','2024-06-05 20:46:30.626');
 
-INSERT INTO mix_collection_like (user_id,mix_collection_id,liked,updated_at) VALUES
-     (1,1,true,'2024-01-20 16:36:16.556'),
-     (2,1,false,'2024-01-21 16:36:16.556'),
-     (3,1,true,'2024-01-22 16:36:16.556'),
-     (4,1,true,'2024-01-23 16:36:16.556');
+INSERT INTO mix_collection_like (user_id,mix_collection_id,value,updated_at,type) VALUES
+     (1,1,true,'2024-01-20 16:36:16.556','L'),
+     (2,1,false,'2024-01-21 16:36:16.556','L'),
+     (3,1,true,'2024-01-22 16:36:16.556','L'),
+     (4,1,true,'2024-01-23 16:36:16.556','L');
 
 INSERT INTO mix_collection_relation (collection_id,mix_id,"position") VALUES
     (1,1,0);
@@ -47,11 +47,11 @@ INSERT INTO mix_collection_relation (collection_id,mix_id,"position") VALUES
 INSERT INTO comment (identifier,"content",user_id,mix_id,parent_comment_id,number_of_replies,created_at,updated_at) VALUES
     ('cmid1','Test Comment',1,1,NULL,2,'2024-02-20 06:30:48.601','2024-03-20 06:30:48.601');
 
-INSERT INTO comment_like (user_id,comment_id,liked,updated_at) VALUES
-    (1,1,true,'2024-01-20 16:36:16.556'),
-    (2,1,false,'2024-01-21 16:36:16.556'),
-    (3,1,true,'2024-01-22 16:36:16.556'),
-    (4,1,true,'2024-01-23 16:36:16.556');
+INSERT INTO comment_like (user_id,comment_id,value,type,updated_at) VALUES
+    (1,1,true,'L','2024-01-20 16:36:16.556'),
+    (2,1,false,'L','2024-01-21 16:36:16.556'),
+    (3,1,true,'L','2024-01-22 16:36:16.556'),
+    (4,1,true,'L','2024-01-23 16:36:16.556');
 
 -- TAGS
 INSERT INTO mix_tag (name) VALUES
@@ -87,12 +87,15 @@ INSERT INTO mix_track (identifier,name,duration,stream_url,created_at,updated_at
     ('tid4','Track 4',130,'track4.mp3','2024-05-18 10:40:00.436','2024-05-21 10:40:05.202',0,1,1),
     ('tid5','Track 5',140,'track5.mp3','2024-05-19 10:40:00.436','2024-05-22 10:40:05.202',0,1,1);
 
-INSERT INTO mix_track_like (user_id,mix_track_id,liked,recommend,updated_at) VALUES
-     (1,1,true,true,'2024-01-20 16:36:16.556'),
-     (1,3,null,true,'2024-08-20 16:36:16.556'),
-     (2,1,false,false,'2024-01-21 16:36:16.556'),
-     (3,1,true,false,'2024-01-22 16:36:16.556'),
-     (4,1,true,null,'2024-01-23 16:36:16.556');
+INSERT INTO mix_track_like (user_id,mix_track_id,type,value,updated_at) VALUES
+     (1,1,'L',true,'2024-01-20 16:36:16.556'),
+     (1,1,'R',true,'2024-01-20 16:36:16.556'),
+     (1,3,'R',true,'2024-08-20 16:36:16.556'),
+     (2,1,'L',false,'2024-01-21 16:36:16.556'),
+     (2,1,'R',false,'2024-01-21 16:36:16.556'),
+     (3,1,'L',true,'2024-01-22 16:36:16.556'),
+     (3,1,'R',false,'2024-01-22 16:36:16.556'),
+     (4,1,'L',true,'2024-01-23 16:36:16.556');
 
 INSERT INTO mix_track_relation (mix_id,track_id,"position") VALUES
     (1,1,0),

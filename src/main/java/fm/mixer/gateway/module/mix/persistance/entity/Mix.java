@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.mix.persistance.entity;
 
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
+import fm.mixer.gateway.module.react.persistance.entity.ReactionContainerEntity;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import jakarta.persistence.Column;
@@ -32,7 +33,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "mix")
-public class Mix {
+public class Mix implements ReactionContainerEntity<Mix, MixLike> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,8 +51,10 @@ public class Mix {
 
     private Integer playCount;
 
-    @OneToMany(mappedBy = "mix", fetch = FetchType.EAGER)
-    private Set<MixLike> likes = new HashSet<>();
+    private Integer numberOfComments;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
+    private Set<MixLike> reactions = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

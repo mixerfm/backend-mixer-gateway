@@ -6,6 +6,7 @@ import fm.mixer.gateway.error.exception.ExternalServiceException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.error.exception.ServiceUnavailableException;
 import fm.mixer.gateway.error.exception.TooManyRequestsException;
+import fm.mixer.gateway.error.exception.UnsupportedClientLocationException;
 import fm.mixer.gateway.error.service.ErrorResponseService;
 import fm.mixer.gateway.model.Error;
 import fm.mixer.gateway.model.ErrorType;
@@ -84,6 +85,11 @@ public class ErrorControllerAdvice {
     @ExceptionHandler({NoHandlerFoundException.class, ResourceNotFoundException.class, NoResourceFoundException.class})
     public ResponseEntity<Error> onResourceNotFoundException() {
         return service.createError(ErrorType.RESOURCE_NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnsupportedClientLocationException.class)
+    public ResponseEntity<Error> onUnsupportedClientLocationException() {
+        return service.createError(ErrorType.UNSUPPORTED_COUNTRY_LOCATION);
     }
 
     // *** Client bad requests ***

@@ -25,7 +25,7 @@ class MarketingControllerIntegrationTest extends ControllerIntegrationTest {
 
         // Subscribe - Then
         assertThat(subscribeResponse.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(subscribeResponse.getHeader(HttpHeaders.LOCATION)).startsWith("/newsletters/subscription/");
+        assertThat(subscribeResponse.getHeader(HttpHeaders.LOCATION)).startsWith(NEWSLETTER_URL);
 
         setIdentifier();
 

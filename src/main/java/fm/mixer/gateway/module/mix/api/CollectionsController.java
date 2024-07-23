@@ -1,18 +1,16 @@
 package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.common.mapper.PaginationMapper;
-import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.CollectionsApiDelegate;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
-import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.service.CollectionService;
-import fm.mixer.gateway.module.react.model.ResourceType;
-import fm.mixer.gateway.module.react.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +19,6 @@ import java.util.Objects;
 public class CollectionsController implements CollectionsApiDelegate {
 
     private final CollectionService service;
-    private final ReportService reportService;
 
     @Override
     public ResponseEntity<CollectionList> getCollectionList(Integer limit, Integer page, List<String> sort, Integer mixCount, List<String> mixSort) {
@@ -41,28 +38,14 @@ public class CollectionsController implements CollectionsApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> react(String collectionId, UserReaction userReaction) {
-        if (UserReaction.TypeEnum.REPORT.equals(userReaction.getType())) {
-            reportService.report(collectionId, ResourceType.COLLECTIONS);
-        }
-        else {
-            checkReactionType(userReaction.getType());
-            service.react(collectionId, UserReaction.TypeEnum.LIKE.equals(userReaction.getType()));
-        }
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<List<UserReaction>> react(String collectionId, UserReaction userReaction) {
+        return ResponseEntity
+            .created(URI.create(String.format("/collections/%s/reactions", collectionId)))
+            .body(service.react(collectionId, userReaction.getType()));
     }
 
     @Override
-    public ResponseEntity<Void> removeReaction(String collectionId) {
-        service.removeReaction(collectionId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    private void checkReactionType(UserReaction.TypeEnum type) {
-        if (!List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE).contains(type)) {
-            throw new BadRequestException("reaction.type.not.supported.error");
-        }
+    public ResponseEntity<List<UserReaction>> removeReaction(String collectionId) {
+        return ResponseEntity.ok(service.removeReaction(collectionId));
     }
 }

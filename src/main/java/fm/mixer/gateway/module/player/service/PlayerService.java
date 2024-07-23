@@ -4,19 +4,22 @@ import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
 import fm.mixer.gateway.module.player.api.v1.model.Session;
 import fm.mixer.gateway.module.player.api.v1.model.Track;
 import fm.mixer.gateway.module.player.api.v1.model.TrackList;
-import fm.mixer.gateway.module.player.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.player.api.v1.model.VolumeValue;
 import fm.mixer.gateway.module.player.mapper.PlayerMapper;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
+import fm.mixer.gateway.module.player.persistance.entity.MixTrackLike;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
-import fm.mixer.gateway.module.player.persistance.repository.MixTrackLikeRepository;
 import fm.mixer.gateway.module.player.persistance.repository.MixTrackRepository;
 import fm.mixer.gateway.module.player.persistance.repository.PlaySessionRepository;
+import fm.mixer.gateway.module.react.service.ReactionService;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -32,7 +35,9 @@ public class PlayerService {
 
     private final MixRepository mixRepository;
     private final MixTrackRepository trackRepository;
-    private final MixTrackLikeRepository likeRepository;
+
+    @Qualifier("trackReactionService")
+    private final ReactionService<MixTrack, MixTrackLike> reactionService;
 
     public Session getPlayerSession() {
         final var user = getCurrentUser();
@@ -128,38 +133,16 @@ public class PlayerService {
         // TODO implement user tracking service
     }
 
-    public void react(final String trackId, final UserReaction.TypeEnum reaction) {
-        final var user = getCurrentUser();
+    public List<UserReaction> react(final String trackId, final UserReaction.TypeEnum reaction) {
         final var track = trackRepository.findByIdentifier(trackId).orElseThrow(ResourceNotFoundException::new);
 
-        // Find old record and change "liked" or "recommend" flag. If there is no old record create new object with mapper and store it.
-        track.getLikes().add(likeRepository.save(
-            likeRepository.findByUserAndTrack(user, track).map(trackLike -> {
-                trackLike.setLiked(mapper.toLiked(reaction).orElse(trackLike.getLiked()));
-                trackLike.setRecommend(mapper.toRecommend(reaction).orElse(trackLike.getRecommend()));
-
-                return trackLike;
-            }).orElse(mapper.toMixTrackLikeEntity(user, track, reaction))
-        ));
+        return reactionService.react(track, reaction);
     }
 
-    public void removeReaction(final String trackId, final UserReaction.TypeEnum reaction) {
-        final var user = getCurrentUser();
+    public List<UserReaction> removeReaction(final String trackId, final UserReaction.TypeEnum reaction) {
         final var track = trackRepository.findByIdentifier(trackId).orElseThrow(ResourceNotFoundException::new);
-        final var trackReaction = likeRepository.findByUserAndTrack(user, track).orElseThrow(ResourceNotFoundException::new);
 
-        mapper.toLiked(reaction).ifPresent((liked) -> {
-            if (liked.equals(trackReaction.getLiked())) {
-                trackReaction.setLiked(null);
-            }
-        });
-        mapper.toRecommend(reaction).ifPresent((recommend) -> {
-            if (recommend.equals(trackReaction.getRecommend())) {
-                trackReaction.setRecommend(null);
-            }
-        });
-
-        likeRepository.save(trackReaction);
+        return reactionService.removeReaction(track, reaction);
     }
 
     private User getCurrentUser() {

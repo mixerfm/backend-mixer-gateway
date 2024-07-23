@@ -23,3 +23,10 @@ components:
         application/json:
           schema:
             $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    UserReactionsResponse:
+      description: User reactions response.
+      content:
+        application/json:
+          schema:
+            $ref: './components/responses.yaml#/components/schemas/UserReactions'

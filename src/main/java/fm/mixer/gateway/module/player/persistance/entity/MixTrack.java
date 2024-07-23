@@ -1,5 +1,6 @@
 package fm.mixer.gateway.module.player.persistance.entity;
 
+import fm.mixer.gateway.module.react.persistance.entity.ReactionContainerEntity;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +27,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "mix_track")
-public class MixTrack {
+public class MixTrack implements ReactionContainerEntity<MixTrack, MixTrackLike> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,8 +51,8 @@ public class MixTrack {
     @Column(nullable = false)
     private Integer skipCount;
 
-    @OneToMany(mappedBy = "track", fetch = FetchType.EAGER)
-    private Set<MixTrackLike> likes = new HashSet<>();
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
+    private Set<MixTrackLike> reactions = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "artist_id")

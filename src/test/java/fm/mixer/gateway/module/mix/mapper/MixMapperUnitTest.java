@@ -3,9 +3,9 @@ package fm.mixer.gateway.module.mix.mapper;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.model.PaginationMetadata;
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.Collection;
 import fm.mixer.gateway.module.mix.api.v1.model.Creator;
-import fm.mixer.gateway.module.mix.api.v1.model.UserReaction;
 import fm.mixer.gateway.module.mix.config.MixTypeConfig;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.entity.MixCollection;
@@ -13,6 +13,7 @@ import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTag;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
+import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserArtist;
 import fm.mixer.gateway.test.UnitTest;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -40,16 +42,13 @@ class MixMapperUnitTest {
     @Test
     void shouldMapToMix() {
         // Given
-        final var mix = Instancio.of(Mix.class)
-            .set(field(Mix::getArtists), List.of(Instancio.create(UserArtist.class)))
-            .create();
-        final var mixLike = mix.getLikes().stream().findFirst().orElseThrow();
-        mixLike.setLiked(true);
+        final var user = Instancio.create(User.class);
+        final var mix = createMix(user);
 
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
             try (final var config = mockStatic(MixTypeConfig.class)) {
                 config.when(MixTypeConfig::getConfig).thenReturn(Map.of());
-                user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(mixLike.getUser()));
+                userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
                 // When
                 final var result = mapper.toMix(mix);
@@ -63,16 +62,13 @@ class MixMapperUnitTest {
     @Test
     void shouldMapToSingleMix() {
         // Given
-        final var mix = Instancio.of(Mix.class)
-            .set(field(Mix::getArtists), List.of(Instancio.create(UserArtist.class)))
-            .create();
-        final var mixLike = mix.getLikes().stream().findFirst().orElseThrow();
-        mixLike.setLiked(true);
+        final var user = Instancio.create(User.class);
+        final var mix = createMix(user);
 
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
             try (final var config = mockStatic(MixTypeConfig.class)) {
                 config.when(MixTypeConfig::getConfig).thenReturn(Map.of());
-                user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(mixLike.getUser()));
+                userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
                 // When
                 final var result = mapper.toSingleMix(mix);
@@ -97,17 +93,16 @@ class MixMapperUnitTest {
     @Test
     void shouldMapToUserLikedMixes() {
         // Given
-        // Instancio wont generate second level HashSet - bug in lib?
-        final var mixLike = Instancio.of(MixLike.class).set(field(MixLike::getMix), Instancio.create(Mix.class)).create();
+        final var user = Instancio.create(User.class);
+        final var mix = createMix(user);
+        final var mixLike = Instancio.of(MixLike.class)
+            .set(field(MixLike::getItem), mix)
+            .create();
 
-        mixLike.getMix().getLikes().stream().findFirst().ifPresent(l -> l.setLiked(true));
-
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
             try (final var config = mockStatic(MixTypeConfig.class)) {
                 config.when(MixTypeConfig::getConfig).thenReturn(Map.of());
-                user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(
-                    mixLike.getMix().getLikes().stream().findFirst().map(MixLike::getUser)
-                );
+                userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
                 // When
                 final var result = mapper.toUserLikedMixes(
@@ -116,7 +111,7 @@ class MixMapperUnitTest {
                 );
 
                 // Then
-                assertMix(mixLike.getMix(), result.getMixes().getFirst());
+                assertMix(mixLike.getItem(), result.getMixes().getFirst());
                 assertPaginationMetadata(result.getMetadata());
             }
         }
@@ -125,16 +120,13 @@ class MixMapperUnitTest {
     @Test
     void shouldMapToUserUploadedMixes() {
         // Given
-        final var mix = Instancio.create(Mix.class);
+        final var user = Instancio.create(User.class);
+        final var mix = createMix(user);
 
-        mix.getLikes().stream().findFirst().ifPresent(l -> l.setLiked(true));
-
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
             try (final var config = mockStatic(MixTypeConfig.class)) {
                 config.when(MixTypeConfig::getConfig).thenReturn(Map.of());
-                user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(
-                    mix.getLikes().stream().findFirst().map(MixLike::getUser)
-                );
+                userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
                 // When
                 final var result = mapper.toUserUploadedMixes(
@@ -152,16 +144,16 @@ class MixMapperUnitTest {
     @Test
     void shouldMapToUserListenedMixes() {
         // Given
-        final var playSession = Instancio.create(PlaySession.class);
+        final var user = Instancio.create(User.class);
+        final var mix = createMix(user);
+        final var playSession = Instancio.of(PlaySession.class)
+            .set(field(PlaySession::getMix), mix)
+            .create();
 
-        playSession.getMix().getLikes().stream().findFirst().ifPresent(l -> l.setLiked(true));
-
-        try (final var user = mockStatic(UserPrincipalUtil.class)) {
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
             try (final var config = mockStatic(MixTypeConfig.class)) {
                 config.when(MixTypeConfig::getConfig).thenReturn(Map.of());
-                user.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(
-                    playSession.getMix().getLikes().stream().findFirst().map(MixLike::getUser)
-                );
+                userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
 
                 // When
                 final var result = mapper.toUserListenedMixes(
@@ -204,30 +196,12 @@ class MixMapperUnitTest {
         assertThat(result.getDescription()).isEqualTo(collection.getDescription());
     }
 
-    @Test
-    void shouldMapToMixLikeEntity() {
-        // Given
-        final var user = Instancio.create(User.class);
-        final var mix = Instancio.create(Mix.class);
-
-        // When
-        final var result = mapper.toMixLikeEntity(user, mix, true);
-
-        // Then
-        assertThat(result.getUser()).isEqualTo(user);
-        assertThat(result.getMix()).isEqualTo(mix);
-        assertThat(result.getLiked()).isTrue();
-
-        assertThat(result.getId()).isNull();
-        assertThat(result.getUpdatedAt()).isNull();
-    }
-
     private void assertMix(Mix entity, fm.mixer.gateway.module.mix.api.v1.model.Mix result) {
         assertThat(result.getIdentifier()).isEqualTo(entity.getIdentifier());
         assertThat(result.getName()).isEqualTo(entity.getName());
         assertThat(result.getAvatarUrl()).isEqualTo(entity.getAvatar());
         assertThat(result.getNumberOfPlays()).isEqualTo(entity.getPlayCount());
-        assertThat(result.getNumberOfLikes()).isEqualTo(entity.getLikes().size());
+        assertThat(result.getNumberOfLikes()).isEqualTo(entity.getReactions().size());
         assertThat(result.getNumberOfTracks()).isEqualTo(entity.getNumberOfTracks());
         assertThat(result.getDuration()).isEqualTo(entity.getDuration().toString());
         assertThat(result.getVisibility().name()).isEqualTo(entity.getVisibility().name());
@@ -277,5 +251,21 @@ class MixMapperUnitTest {
         assertThat(creator.getDisplayName()).isEqualTo(artist.getName());
         assertThat(creator.getAvatarUrl()).isEqualTo(artist.getAvatar());
         assertThat(creator.getActive()).isEqualTo(artist.getActive());
+    }
+
+    private static Mix createMix(User user) {
+        final var otherUser = Instancio.create(User.class);
+
+        return Instancio.of(Mix.class)
+            .set(field(Mix::getReactions), Set.of(createReaction(user), createReaction(otherUser), createReaction(otherUser)))
+            .create();
+    }
+
+    private static MixLike createReaction(User user) {
+        return Instancio.of(MixLike.class)
+            .set(field(MixLike::getUser), user)
+            .set(field(MixLike::getType), ReactionType.LIKE)
+            .set(field(MixLike::getValue), true)
+            .create();
     }
 }

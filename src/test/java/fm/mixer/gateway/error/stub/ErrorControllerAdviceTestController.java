@@ -6,6 +6,7 @@ import fm.mixer.gateway.error.exception.ExternalServiceException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.error.exception.ServiceUnavailableException;
 import fm.mixer.gateway.error.exception.TooManyRequestsException;
+import fm.mixer.gateway.error.exception.UnsupportedClientLocationException;
 import fm.mixer.gateway.validation.exception.OpenApiRequestValidationException;
 import fm.mixer.gateway.validation.exception.model.OpenApiFieldValidation;
 import jakarta.validation.ConstraintViolationException;
@@ -96,6 +97,11 @@ public class ErrorControllerAdviceTestController {
     @GetMapping("onResourceNotFoundException")
     public void onResourceNotFoundException() {
         throw new ResourceNotFoundException();
+    }
+
+    @GetMapping("onUnsupportedClientLocationException")
+    public void onUnsupportedClientLocationException() {
+        throw new UnsupportedClientLocationException();
     }
 
     // Client bad requests

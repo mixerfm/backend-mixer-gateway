@@ -11,6 +11,7 @@ import fm.mixer.gateway.module.user.persistance.repository.UserFollowerRepositor
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class UserCommunityService {
         return mapper.toUserFollowingList(userFollowsThem, paginationRequest);
     }
 
+    @Transactional
     public void follow(String username) {
         final var currentUser = getCurrentUser();
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
@@ -46,6 +48,7 @@ public class UserCommunityService {
         repository.save(mapper.toUserFollower(currentUser, user));
     }
 
+    @Transactional
     public void unfollow(String username) {
         final var currentUser = getCurrentUser();
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
@@ -57,6 +60,7 @@ public class UserCommunityService {
         });
     }
 
+    @Transactional
     public void removeFollower(String username) {
         final var currentUser = getCurrentUser();
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);

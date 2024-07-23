@@ -28,6 +28,7 @@
               "active": true
             },
             "numberOfPlays": 5,
+            "numberOfComments": 11,
             "numberOfLikes": 4,
             "numberOfTracks": 3,
             "duration": "PT2M30S",

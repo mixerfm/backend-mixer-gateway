@@ -2,16 +2,15 @@ package fm.mixer.gateway.module.community.persistance.repository;
 
 import fm.mixer.gateway.module.community.persistance.entity.Comment;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
-import fm.mixer.gateway.module.user.persistance.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import fm.mixer.gateway.module.react.persistance.repository.ReactionRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
+public interface CommentLikeRepository extends ReactionRepository<Comment, CommentLike> {
 
-    Optional<CommentLike> findByUserAndComment(User user, Comment comment);
+    void deleteAllByItem(Comment comment);
 
-    void deleteAllByComment(Comment comment);
+    void deleteAllByItemIn(List<Comment> comments);
 }

@@ -1,9 +1,11 @@
 package fm.mixer.gateway.module.user.api;
 
+import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.user.api.v1.model.GetUserList;
 import fm.mixer.gateway.test.ControllerIntegrationTest;
 import fm.mixer.gateway.test.model.UserContext;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,12 +61,14 @@ class UserCommunityControllerIntegrationTest extends ControllerIntegrationTest {
     }
 
     @Test
-    void react() throws Exception {
+    void shouldReportUser() throws Exception {
         // When
         final var response = doPostRequest(USER_2_URL + "/reactions", "create-report-reaction.json");
 
         // Then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getHeader(HttpHeaders.LOCATION)).isEqualTo(USER_2_URL + "/reactions");
+        assertResponse(response, "get-user-reactions-empty.json", UserReaction[].class);
     }
 
     private void assertFollowList(String endpoint, String expectedResponseFile) throws Exception {

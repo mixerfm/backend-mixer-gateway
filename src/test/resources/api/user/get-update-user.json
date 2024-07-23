@@ -28,5 +28,6 @@
   "numberOfFollowing": 0,
   "profileColor": "#001122",
   "active": true,
-  "relation": "SELF"
+  "relation": "SELF",
+  "createdDate": "%CURRENT_DATE%"
 }

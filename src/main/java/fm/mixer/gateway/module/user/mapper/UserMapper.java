@@ -26,6 +26,7 @@ public interface UserMapper {
     @Mapping(target = "socialMedia", source = "user.socialNetworks")
     @Mapping(target = "username", source = "user.identifier")
     @Mapping(target = "avatarUrl", source = "user.avatar")
+    @Mapping(target = "createdDate", source = "user.createdAt")
     @Mapping(target = "relation", source = "relation")
     @Mapping(target = ".", source = "user")
     GetUser toGetUser(User user, UserRelation relation);
@@ -65,6 +66,8 @@ public interface UserMapper {
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "userCommon")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     User toUserCreateEntity(UserCommon userCommon, String avatar, String identifier);
 
     // Social networks are required to clear manually
@@ -80,6 +83,11 @@ public interface UserMapper {
     @Mapping(target = "address", expression = "java(null)")
     @Mapping(target = "numberOfFollowers", constant = "0")
     @Mapping(target = "numberOfFollowing", constant = "0")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "identifier", ignore = true)
+    @Mapping(target = "socialNetworks", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void toUserDeletedEntity(@MappingTarget User user, String profileColor);
 
     @Mapping(target = "name", source = "updateUser.displayName")
@@ -91,6 +99,8 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "numberOfFollowers", ignore = true)
+    @Mapping(target = "numberOfFollowing", ignore = true)
     void toUserUpdateEntity(@MappingTarget User user, UpdateUser updateUser, String avatar);
 
     @AfterMapping
