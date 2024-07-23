@@ -10,8 +10,9 @@ info:
     Examples:
     new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
     old user -> Auth API (login) -> receive JWT -> User API.
-  version: 0.3.2
+  version: 0.3.3
   x-release-notes:
+    - 0.3.3 Add common validation to the user display name.
     - 0.3.2 Add creteDate in user response schema and standardize reactions endpoints.
     - 0.3.1 Expose marketing endpoints for user newsletter subscription.
     - 0.3.0 Add reactions endpoint, profile color, input validation, user activity flag and refactor common data models.
@@ -431,11 +432,13 @@ components:
         - email
       properties:
         displayName:
-          $ref: '#/components/schemas/DisplayName'
+          $ref: './components/common.yaml#/components/schemas/DisplayName'
         biography:
           type: string
           description: User personal biography.
           pattern: '^[^+/<>|\^$€£¥₹]*$'
+          minLength: 2
+          maxLength: 300
           example: 'I love rock & roll'
         email:
           $ref: '#/components/schemas/EmailValue'
@@ -502,7 +505,7 @@ components:
           type: string
           pattern: '^[\p{L} ]*$'
           example: 'Krk'
-          minLength: 1
+          minLength: 2
           maxLength: 35
         countryCode:
           type: string
@@ -573,12 +576,6 @@ components:
               format: uuid
               description: Token used for unsubscribing from mailing list. This is one time generated unique value.
               example: '3c6dcd15-8aa2-4e1e-8d11-44e611edc9ad'
-
-    DisplayName:
-      type: string
-      description: Human friendly user defined name.
-      maxLength: 100
-      example: 'Name Surname'
 
     EmailValue:
       type: string

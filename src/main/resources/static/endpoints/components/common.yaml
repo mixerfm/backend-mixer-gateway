@@ -5,6 +5,14 @@ components:
       description: The unique identifier used for fetching or creating specific set of data.
       example: 'V1StGXR8z5'
 
+    DisplayName:
+      type: string
+      description: Human friendly defined name.
+      pattern: '^[a-zA-Z0-9_ ]*$'
+      minLength: 3
+      maxLength: 40
+      example: 'Name Surname'
+
     UserReaction:
       type: object
       description: Current active user can add reaction to specific entity such as collection, comment, mix, track etc.

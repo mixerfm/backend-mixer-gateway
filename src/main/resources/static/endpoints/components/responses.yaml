@@ -27,10 +27,7 @@ components:
         username:
           $ref: './common.yaml#/components/schemas/Identifier'
         displayName:
-          type: string
-          description: Human friendly defined name.
-          pattern: '^[a-zA-Z0-9_ ]*$'
-          example: 'Name Surname'
+          $ref: './common.yaml#/components/schemas/DisplayName'
         avatarUrl:
           type: string
           description: Profile picture. If person did not set profile picture, this field will not be present in response.
