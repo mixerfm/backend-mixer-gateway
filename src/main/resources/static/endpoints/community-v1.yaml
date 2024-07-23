@@ -3,8 +3,9 @@ info:
   title: Community API
   description: |
     This API allows client to define user interactions such as comment and reply management (creating, editing and deleting).
-  version: 0.2.1
+  version: 0.2.2
   x-release-notes:
+    - 0.2.2 Fine-tune comment content definition.
     - 0.2.1 Add reactions list response.
     - 0.2.0 Refactor common data model and added reactions endpoints.
     - 0.1.0 Expose endpoints for fetching, creating, editing, deleting, liking/disliking and reporting comments and replies.
@@ -302,4 +303,7 @@ components:
     CommentContent:
       type: string
       description: Comment content.
+      pattern: '^[^+/<>|\^$€£¥₹]*$'
+      minLength: 2
+      maxLength: 500
       example: 'My cool comment'

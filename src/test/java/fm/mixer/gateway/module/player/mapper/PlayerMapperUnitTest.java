@@ -4,6 +4,7 @@ import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.player.api.v1.model.Track;
+import fm.mixer.gateway.module.player.api.v1.model.TrackCommon;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrackLike;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
@@ -63,7 +64,7 @@ class PlayerMapperUnitTest {
 
             // Then
             assertThat(result.getTracks()).hasSize(1);
-            assertTrack(result.getTracks().getFirst(), track);
+            assertTrackCommon(result.getTracks().getFirst(), track);
         }
     }
 
@@ -88,10 +89,9 @@ class PlayerMapperUnitTest {
         assertThat(session.getUpdatedAt()).isNull();
     }
 
-    void assertTrack(Track result, MixTrack entity) {
+    void assertTrackCommon(TrackCommon result, MixTrack entity) {
         assertThat(result.getIdentifier()).isEqualTo(entity.getIdentifier());
         assertThat(result.getName()).isEqualTo(entity.getName());
-        assertThat(result.getStreamUrl()).isEqualTo(entity.getStreamUrl());
         assertThat(result.getDuration()).isEqualTo(entity.getDuration().toString());
 
         assertThat(result.getReactions()).containsExactlyInAnyOrderElementsOf(
@@ -112,6 +112,12 @@ class PlayerMapperUnitTest {
         assertThat(artist.getAvatarUrl()).isEqualTo(entity.getArtist().getAvatar());
         assertThat(artist.getActive()).isEqualTo(entity.getArtist().getActive());
         assertThat(artist.getProfileColor()).isNull();
+    }
+
+    void assertTrack(Track result, MixTrack entity) {
+        assertThat(result.getStreamUrl()).isEqualTo(entity.getStreamUrl());
+
+        assertTrackCommon(result, entity);
     }
 
     static MixTrack createTrack(User user) {
