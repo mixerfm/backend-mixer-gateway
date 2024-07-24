@@ -1,0 +1,253 @@
+openapi: 3.0.3
+info:
+  title: Search API
+  description: |
+    This API allows you to search for specific set of artists, collections, mixes, tags and users.
+    
+    If user is registered, search results may be more accurate and based on user recommendations.
+  version: 0.1.0
+  x-release-notes:
+    0.1.0 - Exposing search endpoints for artists, tags, users, collections and mixes (and all of them).
+
+tags:
+  - name: Search
+    description: Available actions for searching for specific item based on query.
+
+paths:
+  /search/all:
+    get:
+      summary: Retrieve list of items that matches search query.
+      description: Retrieve list of all resources (artists, collections, mixes, tags and users) that matches search query.
+      operationId: searchAll
+      tags:
+        - Search
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/SearchQuery'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetGroupedSearchItemsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /search/artists:
+    get:
+      summary: Retrieve list of artists that matches search query.
+      description: Retrieve list of artists that matches search query.
+      operationId: searchArtist
+      tags:
+        - Search
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/SearchQuery'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSearchItemsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /search/collections:
+    get:
+      summary: Retrieve list of collections that matches search query.
+      description: Retrieve list of collections that matches search query.
+      operationId: searchCollection
+      tags:
+        - Search
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/SearchQuery'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSearchItemsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /search/mixes:
+    get:
+      summary: Retrieve list of mixes that matches search query.
+      description: Retrieve list of mixes that matches search query.
+      operationId: searchMix
+      tags:
+        - Search
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/SearchQuery'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSearchItemsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /search/tags:
+    get:
+      summary: Retrieve list of tags that matches search query.
+      description: Retrieve list of tags that matches search query.
+      operationId: searchTag
+      tags:
+        - Search
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/SearchQuery'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSearchItemsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /search/users:
+    get:
+      summary: Retrieve list of users that matches search query.
+      description: Retrieve list of users that matches search query.
+      operationId: searchUser
+      tags:
+        - Search
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # path parameter
+        - $ref: '#/components/parameters/SearchQuery'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetSearchItemsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+components:
+  parameters:
+    SearchQuery:
+      name: query
+      in: query
+      description: |
+        Search parameter define which results will be fetched. Client can search by only one search parameter.
+        If parameter is not set, default list of items will be returned.
+      required: false
+      schema:
+        type: string
+        example: 'Test User'
+        minLength: 2
+        maxLength: 10
+
+  responses:
+    GetGroupedSearchItemsResponse:
+      description: Get grouped search items response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchItemResultGroupList'
+
+    GetSearchItemsResponse:
+      description: Get search items response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchItemResultList'
+
+  schemas:
+    SearchItemResultGroupList:
+      type: object
+      description: |
+        Group of search results items. Pagination data will contain data from maximum number of results, e.g.:
+        If there are 10 items from group A, and 50 items from group B, with 5 items limit per-fetch, pagination will
+        contain 10 pages, and after second page, results from group A will not be present in response.
+      required:
+        - groups
+        - metadata
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchItemResultGroup'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    SearchItemResultGroup:
+      type: object
+      description: Result of search query grouped by searchable items.
+      properties:
+        type:
+          $ref: '#/components/schemas/SearchItemResultGroupType'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchItemResult'
+
+    SearchItemResultGroupType:
+      type: string
+      description: Type of the search result.
+      example: 'ARTIST'
+      enum:
+        - ARTIST
+        - COLLECTION
+        - MIX
+        - TAG
+        - USER
+
+    SearchItemResultList:
+      type: object
+      description: List of search results.
+      required:
+        - items
+        - metadata
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchItemResult'
+        metadata:
+          $ref: './components/responses.yaml#/components/schemas/PaginationMetadata'
+
+    SearchItemResult:
+      type: object
+      description: Search item result data, such as displayName, identifier and image.
+      required:
+        - identifier
+        - displayName
+      properties:
+        identifier:
+          $ref: './components/common.yaml#/components/schemas/Identifier'
+        displayName:
+          $ref: './components/common.yaml#/components/schemas/DisplayName'
+        avatarUrl:
+          type: string
+          description: |
+            Search item image, e.g. artist profile image.
+            If item does not contain image (e.g. tag or user without profile picture), it will not be present in response.
+          example: 'logo.png'
+        popularityCount:
+          type: integer
+          description: Some result items might include popularity count such as - number of playlist that have specific tag.
+          example: 153
