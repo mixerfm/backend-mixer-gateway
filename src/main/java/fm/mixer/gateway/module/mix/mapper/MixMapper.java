@@ -127,4 +127,13 @@ public interface MixMapper {
     @PaginatedMapping
     @Mapping(target = "mixes", source = "items.content")
     MixList toMixList(Page<MixCollectionRelation> items, PaginationRequest paginationRequest);
+
+    default List<fm.mixer.gateway.module.mix.api.v1.model.Mix> toMixList(List<Mix> mixes) {
+        return Objects.isNull(mixes) ? List.of() : mixes.stream().map(this::toMix).toList();
+    }
+
+    @PaginatedMapping
+    @Named("toMixListSearchResult")
+    @Mapping(target = "mixes", source = "items.content")
+    MixList toMixListSearchResult(Page<Mix> items, PaginationRequest paginationRequest);
 }

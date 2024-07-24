@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +20,14 @@ public interface MixRepository extends JpaRepository<Mix, Long> {
     Optional<Mix> findByIdentifierWithTracks(String identifier);
 
     Page<Mix> findAllByUser(User user, Pageable pageable);
+
+    Page<Mix> findAllByTagsNameInOrArtistsIdentifierIn(List<String> tags, List<String> artists, Pageable pageable);
+
+    default Page<Mix> search(List<String> filter, Pageable pageable) {
+        if (!filter.isEmpty()) {
+            return findAllByTagsNameInOrArtistsIdentifierIn(filter, filter, pageable);
+        }
+
+        return findAll(pageable);
+    }
 }
