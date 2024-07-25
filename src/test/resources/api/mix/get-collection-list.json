@@ -38,11 +38,29 @@
       "tags": [],
       "createdDate": "2024-06-04",
       "updatedDate": "2024-06-05"
+    },
+    {
+      "identifier": "cid3",
+      "name": "Search Collection",
+      "avatarUrl": "collectionAvatar3.jpg",
+      "author": {
+        "username": "uid2",
+        "displayName": "Test User 2",
+        "avatarUrl": "userAvatar2.jpg",
+        "profileColor": "#00112A",
+        "active": true
+      },
+      "visibility": "PUBLIC",
+      "reactions": [],
+      "artists": [],
+      "tags": [],
+      "createdDate": "2024-09-04",
+      "updatedDate": "2024-09-05"
     }
   ],
   "metadata": {
     "currentPage": 1,
-    "totalItems": 2,
+    "totalItems": 3,
     "totalPages": 1
   }
 }
