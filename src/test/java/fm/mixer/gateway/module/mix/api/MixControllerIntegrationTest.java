@@ -1,6 +1,7 @@
 package fm.mixer.gateway.module.mix.api;
 
 import fm.mixer.gateway.model.UserReaction;
+import fm.mixer.gateway.module.mix.api.v1.model.MixList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
@@ -56,6 +57,16 @@ class MixControllerIntegrationTest extends ControllerIntegrationTest {
         // Then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertResponse(response, "get-user-uploaded-mix.json", UserUploadedMixes.class);
+    }
+
+    @Test
+    void shouldGetMixList() throws Exception {
+        // When
+        final var response = doGetRequest("/mixes?filter=Rock,uaid1");
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertResponse(response, "get-mix-list.json", MixList.class);
     }
 
     @Test
