@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.mix.service;
 import fm.mixer.gateway.common.model.PaginationRequest;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.model.UserReaction;
+import fm.mixer.gateway.module.mix.api.v1.model.MixList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
@@ -33,6 +34,10 @@ public class MixService {
     private final PlaySessionRepository historyRepository;
     @Qualifier("mixReactionService")
     private final ReactionService<Mix, MixLike> reactionService;
+
+    public MixList getMixList(List<String> filter, PaginationRequest paginationRequest) {
+        return mapper.toMixListSearchResult(repository.search(filter, paginationRequest.pageable()), paginationRequest);
+    }
 
     public SingleMix getSingleMix(String mixId) {
         final var mix = repository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);

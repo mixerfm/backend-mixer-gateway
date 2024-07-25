@@ -80,6 +80,30 @@ class MixMapperUnitTest {
         }
     }
 
+    @Test
+    void shouldMapToMixList() {
+        // Given
+        final var user = Instancio.create(User.class);
+        final var mix = createMix(user);
+
+        try (final var userPrincipal = mockStatic(UserPrincipalUtil.class)) {
+            try (final var config = mockStatic(MixTypeConfig.class)) {
+                config.when(MixTypeConfig::getConfig).thenReturn(Map.of());
+                userPrincipal.when(UserPrincipalUtil::getCurrentActiveUser).thenReturn(Optional.of(user));
+
+                // When
+                final var result = mapper.toMixListSearchResult(
+                    new PageImpl<>(List.of(mix)),
+                    PaginationMapper.toPaginationRequest(1, 1, List.of())
+                );
+
+                // Then
+                assertMix(mix, result.getMixes().getFirst());
+                assertPaginationMetadata(result.getMetadata());
+            }
+        }
+    }
+
     @ParameterizedTest
     @EnumSource(VisibilityType.class)
     void shouldMapToVisibility(VisibilityType given) {

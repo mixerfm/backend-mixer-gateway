@@ -386,6 +386,29 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Generate Search endpoints</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/static/endpoints/search-v1.yaml</inputSpec>
+                            <apiPackage>fm.mixer.gateway.module.search.api.v1</apiPackage>
+                            <modelPackage>fm.mixer.gateway.module.search.api.v1.model</modelPackage>
+                            <globalProperties>
+                                <supportingFiles>ApiUtil.java</supportingFiles>
+                            </globalProperties>
+                            <importMappings>
+                                <importMapping>PaginationMetadata=fm.mixer.gateway.model.PaginationMetadata</importMapping>
+                                <importMapping>UserReaction=fm.mixer.gateway.model.UserReaction</importMapping>
+                            </importMappings>
+                            <configOptions>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <implicitHeaders>true</implicitHeaders>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Generate User endpoints</id>
                         <goals>
                             <goal>generate</goal>

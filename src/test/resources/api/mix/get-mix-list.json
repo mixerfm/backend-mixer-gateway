@@ -1,0 +1,49 @@
+{
+  "mixes": [
+    {
+      "identifier": "mid1",
+      "name": "Test Mix",
+      "avatarUrl": "mixAvatar.jpg",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "numberOfPlays": 5,
+      "numberOfComments": 11,
+      "numberOfLikes": 4,
+      "numberOfTracks": 3,
+      "duration": "PT2M30S",
+      "visibility": "PUBLIC",
+      "type": "GEM",
+      "reactions": [
+        {
+          "type": "LIKE"
+        }
+      ],
+      "nsfw": false,
+      "artists": [
+        {
+          "username": "uaid1",
+          "displayName": "User Artist",
+          "avatarUrl": "userArtist.png",
+          "active": true
+        }
+      ],
+      "tags": [
+        "Rock",
+        "Pop",
+        "Happy"
+      ],
+      "createdDate": "2024-01-15",
+      "updatedDate": "2024-01-17"
+    }
+  ],
+  "metadata": {
+    "currentPage": 1,
+    "totalItems": 1,
+    "totalPages": 1
+  }
+}

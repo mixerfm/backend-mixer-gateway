@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "type": "ARTIST",
+      "items": [
+        {
+          "identifier": "uaid2",
+          "displayName": "Search singer",
+          "avatarUrl": "userArtist2.png"
+        }
+      ]
+    },
+    {
+      "type": "COLLECTION",
+      "items": [
+        {
+          "identifier": "cid3",
+          "displayName": "Search Collection",
+          "avatarUrl": "collectionAvatar3.jpg"
+        }
+      ]
+    },
+    {
+      "type": "MIX",
+      "items": [
+        {
+          "identifier": "mid4",
+          "displayName": "Search Mix",
+          "avatarUrl": "mixAvatar4.jpg"
+        }
+      ]
+    },
+    {
+      "type": "TAG",
+      "items": [
+        {
+          "identifier": "Search",
+          "displayName": "Search"
+        }
+      ]
+    },
+    {
+      "type": "USER",
+      "items": [
+        {
+          "identifier": "uid5",
+          "displayName": "Search User",
+          "avatarUrl": "userAvatar5.jpg"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "currentPage": 1,
+    "totalItems": 1,
+    "totalPages": 1
+  }
+}

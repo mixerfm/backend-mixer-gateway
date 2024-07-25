@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.mix.api;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.MixesApiDelegate;
+import fm.mixer.gateway.module.mix.api.v1.model.MixList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleMix;
 import fm.mixer.gateway.module.mix.api.v1.model.UserLikedMixes;
 import fm.mixer.gateway.module.mix.api.v1.model.UserListenedMixes;
@@ -51,5 +52,10 @@ public class MixController implements MixesApiDelegate {
     @Override
     public ResponseEntity<List<UserReaction>> removeReaction(String mixId) {
         return ResponseEntity.ok(service.removeReaction(mixId));
+    }
+
+    @Override
+    public ResponseEntity<MixList> getMixList(List<String> filter, Integer limit, Integer page, List<String> sort) {
+        return ResponseEntity.ok(service.getMixList(filter, PaginationMapper.toPaginationRequest(limit, page, sort)));
     }
 }

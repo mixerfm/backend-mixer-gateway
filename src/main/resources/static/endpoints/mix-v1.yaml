@@ -6,8 +6,9 @@ info:
     This API allows client to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
     For registered user, this API allows him/her to create new or update/delete existing mix.
     Mix contain a group of tracks which can be played using Player API.
-  version: 0.4.2
+  version: 0.4.3
   x-release-notes:
+    - 0.4.3 Add endpoint for fetching all mixes that meet search parameters.
     - 0.4.2 Add createdDate and updatedDate to mix and collection.
     - 0.4.1 Add number of mix comments, reactions response.
     - 0.4.0 Add reactions endpoint, pagination to get specific collections endpoint and refactor common data models.
@@ -110,6 +111,29 @@ paths:
       responses:
         '200':
           $ref: './components/responses.yaml#/components/responses/ReactionsResponse'
+        default:
+          $ref: './components/responses.yaml#/components/responses/ErrorResponse'
+
+  /mixes:
+    get:
+      summary: Retrieve list of mixes that matches request parameters.
+      description: |
+        Retrieve list of mixes that matches one or combination of more parameters.
+        If user is registered, search results may be more accurate and based on user recommendations.
+      operationId: getMixList
+      tags:
+        - Mixes
+      parameters:
+        # headers
+        - $ref: './components/headers.yaml#/components/parameters/X-Accept-Version'
+        # query parameter
+        - $ref: './components/parameters.yaml#/components/parameters/Filter'
+        - $ref: './components/parameters.yaml#/components/parameters/Limit'
+        - $ref: './components/parameters.yaml#/components/parameters/Page'
+        - $ref: './components/parameters.yaml#/components/parameters/Sort'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMixListResponse'
         default:
           $ref: './components/responses.yaml#/components/responses/ErrorResponse'
 
@@ -282,6 +306,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/SingleCollection'
+
+    GetMixListResponse:
+      description: Get list of mixes response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MixList'
 
     GetSingleMixResponse:
       description: Get single mix response.
