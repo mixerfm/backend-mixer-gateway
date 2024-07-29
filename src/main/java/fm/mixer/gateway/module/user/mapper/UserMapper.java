@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.user.mapper;
 import fm.mixer.gateway.module.user.api.v1.model.Address;
 import fm.mixer.gateway.module.user.api.v1.model.GetUser;
 import fm.mixer.gateway.module.user.api.v1.model.SocialMediaType;
+import fm.mixer.gateway.module.user.api.v1.model.SubscriptionType;
 import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
 import fm.mixer.gateway.module.user.api.v1.model.UserCommon;
 import fm.mixer.gateway.module.user.api.v1.model.UserRelation;
@@ -10,6 +11,7 @@ import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.entity.UserLocation;
 import fm.mixer.gateway.module.user.persistance.entity.model.SocialNetworkType;
 import fm.mixer.gateway.module.user.persistance.entity.model.UserGender;
+import fm.mixer.gateway.module.user.persistance.entity.model.UserSubscriptionType;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -30,6 +32,10 @@ public interface UserMapper {
     @Mapping(target = "relation", source = "relation")
     @Mapping(target = ".", source = "user")
     GetUser toGetUser(User user, UserRelation relation);
+
+    @ValueMapping(target = "FREE_USER", source = "FREE")
+    @ValueMapping(target = "PREMIUM_USER", source = "PREMIUM")
+    SubscriptionType toSubscriptionType(UserSubscriptionType subscriptionType);
 
     @Mapping(target = "location", source = ".")
     Address toAddress(UserLocation address);
@@ -63,6 +69,7 @@ public interface UserMapper {
     @Mapping(target = "socialNetworks", source = "userCommon.socialMedia")
     @Mapping(target = "numberOfFollowers", constant = "0")
     @Mapping(target = "numberOfFollowing", constant = "0")
+    @Mapping(target = "type", constant = "FREE")
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "userCommon")
     @Mapping(target = "id", ignore = true)
@@ -83,6 +90,7 @@ public interface UserMapper {
     @Mapping(target = "address", expression = "java(null)")
     @Mapping(target = "numberOfFollowers", constant = "0")
     @Mapping(target = "numberOfFollowing", constant = "0")
+    @Mapping(target = "type", constant = "FREE")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "identifier", ignore = true)
     @Mapping(target = "socialNetworks", ignore = true)
@@ -97,6 +105,7 @@ public interface UserMapper {
     @Mapping(target = "active", constant = "true")
     @Mapping(target = ".", source = "updateUser")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "type", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "numberOfFollowers", ignore = true)

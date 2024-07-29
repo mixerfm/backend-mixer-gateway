@@ -30,5 +30,6 @@
   "profileColor": "#001122",
   "active": true,
   "relation": "SELF",
+  "type": "FREE_USER",
   "createdDate": "2000-01-14"
 }

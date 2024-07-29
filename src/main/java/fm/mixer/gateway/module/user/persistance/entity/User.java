@@ -1,6 +1,7 @@
 package fm.mixer.gateway.module.user.persistance.entity;
 
 import fm.mixer.gateway.module.user.persistance.entity.model.UserGender;
+import fm.mixer.gateway.module.user.persistance.entity.model.UserSubscriptionType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,6 +54,8 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private Boolean active;
+
+    private UserSubscriptionType type;
 
     private String profileColor;
 
