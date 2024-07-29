@@ -5,7 +5,6 @@ import fm.mixer.gateway.error.exception.UnsupportedClientLocationException;
 import fm.mixer.gateway.module.app.config.AvailabilityConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,9 @@ public class ClientAccessFilter {
 
     private boolean isExcluded(HttpServletRequest request) {
         return config.getExcludedEndpoints().stream()
-            .anyMatch(endpoint -> new RegexRequestMatcher(endpoint, HttpMethod.GET.name()).matches(request));
+            .anyMatch(
+                endpointConfig -> new RegexRequestMatcher(endpointConfig.getPath(), endpointConfig.getMethod().name()).matches(request)
+            );
     }
 
     private boolean isSupportedCountry() {

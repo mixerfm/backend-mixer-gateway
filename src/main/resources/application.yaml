@@ -108,10 +108,14 @@ mixer-gateway:
             - /newsletters/subscription
   availability:
     excluded-endpoints:
-      - /versions
-      - /availability
-      - /actuator/*
-      - /update-subscription
+      - path: /versions
+        method: GET
+      - path: /availability
+        method: GET
+      - path: /actuator/*
+        method: GET
+      - path: /update-subscription
+        method: POST
     supported-countries:
       - HR
   versions:
