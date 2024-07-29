@@ -29,5 +29,6 @@
   "profileColor": "#001122",
   "active": true,
   "relation": "SELF",
+  "type": "FREE_USER",
   "createdDate": "%CURRENT_DATE%"
 }

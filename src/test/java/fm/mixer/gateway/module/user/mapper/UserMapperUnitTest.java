@@ -47,6 +47,7 @@ class UserMapperUnitTest {
         assertThat(result.getGender().name()).isEqualTo(user.getGender().name());
         assertThat(result.getNumberOfFollowers()).isEqualTo(user.getNumberOfFollowers());
         assertThat(result.getNumberOfFollowing()).isEqualTo(user.getNumberOfFollowing());
+        assertThat(result.getType().name()).isEqualTo(user.getType().name() + "_USER");
 
         assertThat(result.getSocialMedia()).allSatisfy(media -> {
             assertThat(media.getUrl()).isEqualTo(socialNetwork.getUrl());
