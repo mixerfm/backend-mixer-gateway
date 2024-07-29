@@ -10,6 +10,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -28,16 +33,19 @@ public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
+    private final BasicHttpConfig basicHttpConfig;
     private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers(antPathRequestMatchers(
-                "/collections/*/reactions", "/comments/*/reactions", "/mixes/*/reactions", "/tracks/*/reactions",
-                "/users", "PUT /users/*", "DELETE /users/*",
-                "/users/*/follow", "/users/*/unfollow", "/users/*/remove-follower", "/users/*/reactions"
-            )).authenticated();
+            authorize
+                .requestMatchers(antPathRequestMatchers("/update-subscription")).hasRole("PAYMENT_CLIENT")
+                .requestMatchers(antPathRequestMatchers(
+                    "/collections/*/reactions", "/comments/*/reactions", "/mixes/*/reactions", "/tracks/*/reactions",
+                    "/users", "PUT /users/*", "DELETE /users/*",
+                    "/users/*/follow", "/users/*/unfollow", "/users/*/remove-follower", "/users/*/reactions"
+                )).authenticated();
             authorize.anyRequest().permitAll();
         });
 
@@ -62,8 +70,30 @@ public class SecurityConfig {
 
             return configuration;
         }));
+        http.httpBasic((httpBasicConfigurer) -> httpBasicConfigurer.authenticationEntryPoint(authenticationEntryPoint));
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService basicHttpClients() {
+        if (basicHttpConfig.isEnabled()) {
+            return new InMemoryUserDetailsManager(basicHttpConfig.getClients().stream()
+                .map(client -> User.builder()
+                    .username(client.getUsername())
+                    .password(passwordEncoder().encode(client.getPassword()))
+                    .roles(client.getRoles().toArray(String[]::new))
+                    .build()
+                )
+                .toList());
+        }
+
+        return new InMemoryUserDetailsManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     private static RequestMatcher[] antPathRequestMatchers(String... patterns) {

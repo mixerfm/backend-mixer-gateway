@@ -27,9 +27,12 @@ services:
     networks:
       - default
     environment:
+      - SERVICE_DATABASE_URL
       - SERVICE_DATABASE_USERNAME
       - SERVICE_DATABASE_PASSWORD
-      - SERVICE_DATABASE_URL
+      - SERVICE_HTTP_BASIC_AUTH_ENABLE
+      - SERVICE_ADAPTY_CLIENT_USERNAME
+      - SERVICE_ADAPTY_CLIENT_PASSWORD
 networks:
   default:
     driver: bridge

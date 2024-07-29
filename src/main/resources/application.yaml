@@ -43,7 +43,15 @@ logbook:
           - GET
 
 mixer-gateway:
-  security.enabled: true
+  security:
+    enabled: true
+    http-basic:
+      enabled: ${SERVICE_HTTP_BASIC_AUTH_ENABLE:false}
+      clients:
+        - username: ${SERVICE_ADAPTY_CLIENT_USERNAME}
+          password: ${SERVICE_ADAPTY_CLIENT_PASSWORD}
+          roles:
+            - PAYMENT_CLIENT
   circuitbreaker:
     timelimiter.timeout-duration: 1m
     ignore-exceptions:
