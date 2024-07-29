@@ -10,8 +10,9 @@ info:
     Examples:
     new user -> Auth API (create account using email, password, Google etc.) -> receive JWT -> User API (create profile).
     old user -> Auth API (login) -> receive JWT -> User API.
-  version: 0.3.3
+  version: 0.3.4
   x-release-notes:
+    - 0.3.4 Add user subscription type.
     - 0.3.3 Add common validation to the user display name.
     - 0.3.2 Add creteDate in user response schema and standardize reactions endpoints.
     - 0.3.1 Expose marketing endpoints for user newsletter subscription.
@@ -390,6 +391,8 @@ components:
               example: false
             relation:
               $ref: '#/components/schemas/UserRelation'
+            type:
+              $ref: '#/components/schemas/SubscriptionType'
             createdDate:
               type: string
               description: Date when user was created.
@@ -600,6 +603,14 @@ components:
           type: string
           format: byte
           example: 'TXkgcGhvdG8='
+
+    SubscriptionType:
+      type: string
+      description: Type of a user, based on subscription products.
+      example: 'PREMIUM_USER'
+      enum:
+        - FREE_USER
+        - PREMIUM_USER
 
     UserRelation:
       type: string
