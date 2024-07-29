@@ -109,9 +109,8 @@ mixer-gateway:
       number-of-likes: 10000
   availability:
     excluded-endpoints:
-      - /versions
-      - /availability
-      - /actuator/*
+      - path: /availability
+        method: GET
     supported-countries:
       - HR
   user-colors:
