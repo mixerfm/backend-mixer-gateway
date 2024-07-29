@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+
 @Slf4j
 @RestController
 public class SubscriptionController {
@@ -14,6 +16,6 @@ public class SubscriptionController {
     public ResponseEntity<Void> updateSubscription(@RequestBody String subscription) {
         log.info("SK_TEMP => {}", subscription);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(URI.create("/users/username")).build();
     }
 }
