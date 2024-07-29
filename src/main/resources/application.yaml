@@ -111,6 +111,7 @@ mixer-gateway:
       - /versions
       - /availability
       - /actuator/*
+      - /update-subscription
     supported-countries:
       - HR
   versions:
