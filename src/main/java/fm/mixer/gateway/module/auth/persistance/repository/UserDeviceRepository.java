@@ -13,6 +13,8 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice, Long> {
 
     List<UserDevice> findAllByUser(User user);
 
+    List<UserDevice> findAllByRegisteredIsFalseAndTokenIsNotNull();
+
     Optional<UserDevice> findByIdentifierAndUser(String identifier, User user);
 
     void deleteAllByUser(User user);

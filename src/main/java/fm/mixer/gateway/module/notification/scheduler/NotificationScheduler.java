@@ -18,11 +18,11 @@ public class NotificationScheduler {
     @Scheduled(fixedDelay = 60000)
     public void sendNotifications() {
         repository.findAllBySentIsFalse().forEach((notification) -> {
-            service.sendNotification(mapper.toMessage(notification));
+            if (service.sendNotification(mapper.toMessage(notification))) {
+                notification.setSent(true);
 
-            notification.setSent(true);
-
-            repository.save(notification);
+                repository.save(notification);
+            }
         });
     }
 }

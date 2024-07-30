@@ -54,6 +54,7 @@ public interface DeviceMapper {
     @Mapping(target = "type", source = "device.type")
     @Mapping(target = "user", source = "user")
     @Mapping(target = "identifier", source = "identifier")
+    @Mapping(target = "registered", constant = "false")
     @Mapping(target = "id", ignore = true)
     void toUserDevice(@MappingTarget UserDevice userDevice, CreateOrUpdateDevice device, User user, String identifier);
 }

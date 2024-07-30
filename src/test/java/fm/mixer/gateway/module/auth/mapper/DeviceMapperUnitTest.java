@@ -72,6 +72,7 @@ class DeviceMapperUnitTest {
 
         // Then
         assertThat(userDevice.getIdentifier()).isEqualTo("test");
+        assertThat(userDevice.isRegistered()).isFalse();
         assertThat(userDevice.getUser()).isEqualTo(user);
         assertThat(userDevice.getName()).isEqualTo(device.getName());
         assertThat(userDevice.getToken()).isEqualTo(device.getToken());
