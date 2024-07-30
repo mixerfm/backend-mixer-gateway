@@ -10,7 +10,6 @@ import fm.mixer.gateway.module.auth.api.v1.model.DeviceList;
 import fm.mixer.gateway.module.auth.mapper.DeviceMapper;
 import fm.mixer.gateway.module.auth.persistance.entity.UserDevice;
 import fm.mixer.gateway.module.auth.persistance.repository.UserDeviceRepository;
-import fm.mixer.gateway.module.notification.service.NotificationService;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.util.RandomIdentifierUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ public class DeviceService {
 
     private final DeviceMapper mapper;
     private final UserDeviceRepository repository;
-    private final NotificationService notificationService;
 
     public DeviceList getDeviceList() {
         return getDeviceList(getCurrentUser());
@@ -34,8 +32,6 @@ public class DeviceService {
 
         mapper.toUserDevice(device, createDevice, user, RandomIdentifierUtil.randomIdentifier());
         repository.save(device);
-
-        notificationService.subscribeToDefaultTopic(device.getToken());
 
         ClientContextHolder.set(
             new ClientContext(
@@ -57,8 +53,6 @@ public class DeviceService {
 
         mapper.toUserDevice(device, updateDevice, user, deviceId);
         repository.save(device);
-
-        notificationService.subscribeToDefaultTopic(device.getToken());
 
         return getDeviceList(user);
     }

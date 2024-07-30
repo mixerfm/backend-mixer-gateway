@@ -38,6 +38,9 @@ public class UserDevice {
     private String token;
 
     @Column(nullable = false)
+    private boolean registered;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private DeviceType type;
 }
