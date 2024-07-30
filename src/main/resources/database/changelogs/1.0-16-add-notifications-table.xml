@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-16-add-notifications-table">
+        <comment>Create User Notifications table</comment>
+        <createTable tableName="user_notification" remarks="User notifications table">
+            <column name="id" type="bigint" autoIncrement="true" remarks="Primary key used for internal references">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="title" type="varchar" remarks="Notification title">
+                <constraints nullable="false"/>
+            </column>
+            <column name="body" type="varchar" remarks="Notification body">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent" type="boolean" remarks="Notification sent flag" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="topic" type="varchar" remarks="Notification topic">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" remarks="Date and time when item was created">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" remarks="Date and time when item was last updated">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
