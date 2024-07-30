@@ -59,6 +59,9 @@ mixer-gateway:
   integration:
     feign:
       TestApi.url: ${USER_SERVICE_URL:http://localhost:8001}
+  messaging:
+    enabled: ${SERVICE_FCM_ENABLE:false}
+    config-file: ${SERVICE_FIREBASE_CONFIG_FILE}
   cors:
     allowed-origins:
       - "https://**.mixer.fm"

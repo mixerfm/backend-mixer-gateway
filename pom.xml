@@ -24,6 +24,7 @@
         <spring-cloud-dependencies.version>2023.0.1</spring-cloud-dependencies.version>
 
         <!-- Dependencies -->
+        <firebase.version>9.3.0</firebase.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
         <jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
         <liquibase.version>4.27.0</liquibase.version>
@@ -130,6 +131,11 @@
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
             <version>${jackson-databind-nullable.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>${firebase.version}</version>
         </dependency>
 
         <!-- Util -->
