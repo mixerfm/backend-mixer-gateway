@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-18-add-disallowed-words-table">
+        <comment>Create Disallowed Word table</comment>
+        <createTable tableName="disallowed_word" remarks="List of disallowed words">
+            <column name="word" type="text" remarks="Disallowed word">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql>
+            create index disallowed_word_search_by_word on disallowed_word USING gin (word gin_trgm_ops);
+        </sql>
+        
+        <loadData tableName="disallowed_word" file="database/changelogs/data/disallowedWords.csv">
+            <column name="word" header="word" type="text"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

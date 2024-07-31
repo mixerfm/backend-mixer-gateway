@@ -15,6 +15,8 @@ import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.repository.MixRepository;
 import fm.mixer.gateway.module.react.service.ReactionService;
 import fm.mixer.gateway.module.user.persistance.entity.User;
+import fm.mixer.gateway.validation.model.SpamVariablePath;
+import fm.mixer.gateway.validation.service.SpamDetectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class CommunityService {
     private final MixRepository mixRepository;
     private final CommentRepository repository;
     private final CommentLikeRepository likeRepository;
+    private final SpamDetectionService spamDetectionService;
     @Qualifier("commentReactionService")
     private final ReactionService<fm.mixer.gateway.module.community.persistance.entity.Comment, CommentLike> reactionService;
 
@@ -42,6 +45,8 @@ public class CommunityService {
 
     @Transactional
     public Comment createComment(String mixId, String content) {
+        spamDetectionService.checkContentForSpam(SpamVariablePath.COMMENT, content);
+
         final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
 
         changeCommentCount(mix, 1);
@@ -57,6 +62,8 @@ public class CommunityService {
 
     @Transactional
     public Comment createReply(String commentId, String content) {
+        spamDetectionService.checkContentForSpam(SpamVariablePath.COMMENT, content);
+
         final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
 
         final var reply = mapper.toCommentEntity(content, getCurrentUser(), comment.getMix());
@@ -70,6 +77,8 @@ public class CommunityService {
     }
 
     public Comment editComment(String commentId, String content) {
+        spamDetectionService.checkContentForSpam(SpamVariablePath.COMMENT, content);
+
         final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
 
         if (!getCurrentUser().getId().equals(comment.getUser().getId())) {
