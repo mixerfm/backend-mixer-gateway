@@ -121,7 +121,7 @@ mixer-gateway:
         method: POST
     supported-countries:
       - HR
-      - UK
+      - GB
   versions:
     clients:
       ANDROID_CLIENT:
