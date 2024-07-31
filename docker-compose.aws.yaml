@@ -17,7 +17,7 @@ services:
     build: "."
     container_name: mixer-gateway
     volumes:
-      - ./deploy-secrets:/tmp
+      - ~/deploy-secrets:/app/config
     ports:
       - "8000:80"
     healthcheck:
