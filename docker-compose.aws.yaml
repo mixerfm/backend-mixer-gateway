@@ -33,6 +33,8 @@ services:
       - SERVICE_HTTP_BASIC_AUTH_ENABLE
       - SERVICE_ADAPTY_CLIENT_USERNAME
       - SERVICE_ADAPTY_CLIENT_PASSWORD
+      - SERVICE_FIREBASE_CONFIG_FILE
+      - SERVICE_FCM_ENABLE
 networks:
   default:
     driver: bridge
