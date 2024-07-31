@@ -9,9 +9,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 @Setter
@@ -20,14 +19,14 @@ import java.io.IOException;
 @ConditionalOnProperty(prefix = "mixer-gateway.messaging", value = "enabled", havingValue = "true")
 public class FirebaseMessagingConfiguration {
 
-    private File configFile;
+    private Resource configFile;
 
     @Bean
     public FirebaseMessaging firebaseMessaging() throws IOException {
         return FirebaseMessaging.getInstance(
             FirebaseApp.initializeApp(
                 FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(new FileInputStream(configFile)))
+                    .setCredentials(GoogleCredentials.fromStream(configFile.getInputStream()))
                     .build()
             )
         );
