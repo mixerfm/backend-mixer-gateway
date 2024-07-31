@@ -1,8 +1,8 @@
 package fm.mixer.gateway.module.notification.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import fm.mixer.gateway.error.exception.ExternalServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,16 +21,22 @@ public class NotificationService {
 
     public boolean sendNotification(Message message) {
         if (messagingClient.isEmpty()) {
+            log.error("Send Notification - No firebase messaging client available");
+
             return false;
         }
 
         try {
             final var response = messagingClient.get().send(message);
 
-            return !response.isEmpty();
+            if (response.isEmpty()) {
+                throw new ExternalServiceException("Failed to send message");
+            }
+
+            return true;
         }
-        catch (FirebaseMessagingException e) {
-            log.error(e.getMessage(), e);
+        catch (Exception e) {
+            log.error("Send Notification - Error while sending, reason: {}", e.getMessage(), e);
 
             return false;
         }
@@ -42,16 +48,22 @@ public class NotificationService {
 
     public boolean subscribeToTopic(String token, String topic) {
         if (messagingClient.isEmpty()) {
+            log.error("Topic subscription - No firebase messaging client available");
+
             return false;
         }
 
         try {
             final var response = messagingClient.get().subscribeToTopic(List.of(token), topic);
 
-            return response.getSuccessCount() == 1 && response.getErrors().isEmpty();
+            if (response.getSuccessCount() != 1 || !response.getErrors().isEmpty()) {
+                throw new ExternalServiceException(String.format("Success count is %d and list of errors are: %s", response.getSuccessCount(), response.getErrors()));
+            }
+
+            return true;
         }
-        catch (FirebaseMessagingException e) {
-            log.error(String.format("Error subscribing device '%s' to topic '%s'.", token, topic), e);
+        catch (Exception e) {
+            log.error(String.format("Error subscribing device '%s' to topic '%s', reason: %s", token, topic, e.getMessage()), e);
 
             return false;
         }
