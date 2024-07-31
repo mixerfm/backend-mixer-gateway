@@ -1,7 +1,12 @@
 package fm.mixer.gateway.error.exception;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class ExternalServiceException extends RuntimeException {
+
+    public ExternalServiceException(String message) {
+        super(message);
+    }
+
+    public ExternalServiceException() {
+        super();
+    }
 }
