@@ -3,6 +3,7 @@ package fm.mixer.gateway.module.community.service;
 import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.common.util.CheckUserPermissionUtil;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.community.api.v1.model.Comment;
@@ -39,6 +40,11 @@ public class CommunityService {
     private final ReactionService<CommentEntity, CommentLike> reactionService;
 
     public CommentList getCommentList(String mixId, PaginationRequest paginationRequest) {
+        final var user = getCurrentUser();
+        final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
+
+        CheckUserPermissionUtil.checkUserPermission(user, mix);
+
         final var commentList = repository.findAllByMixIdentifierAndParentCommentIsNull(mixId, paginationRequest.pageable());
 
         return mapper.toCommentList(commentList, paginationRequest);
@@ -48,14 +54,21 @@ public class CommunityService {
     public Comment createComment(String mixId, String content) {
         spamDetectionService.checkContentForSpam(SpamVariablePath.COMMENT, content);
 
+        final var user = getCurrentUser();
         final var mix = mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new);
+
+        CheckUserPermissionUtil.checkUserPermission(user, mix);
 
         changeCommentCount(mix, 1);
 
-        return mapper.toComment(repository.save(mapper.toCommentEntity(content, getCurrentUser(), mix)));
+        return mapper.toComment(repository.save(mapper.toCommentEntity(content, user, mix)));
     }
 
     public CommentList getReplyList(String commentId, PaginationRequest paginationRequest) {
+        final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
+
+        CheckUserPermissionUtil.checkUserPermission(getCurrentUser(), comment.getMix());
+
         final var replies = repository.findAllByParentCommentIdentifier(commentId, paginationRequest.pageable());
 
         return mapper.toCommentList(replies, paginationRequest);
@@ -65,9 +78,12 @@ public class CommunityService {
     public Comment createReply(String commentId, String content) {
         spamDetectionService.checkContentForSpam(SpamVariablePath.COMMENT, content);
 
+        final var user = getCurrentUser();
         final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
 
-        final var reply = mapper.toCommentEntity(content, getCurrentUser(), comment.getMix());
+        CheckUserPermissionUtil.checkUserPermission(user, comment.getMix());
+
+        final var reply = mapper.toCommentEntity(content, user, comment.getMix());
         reply.setParentComment(comment);
 
         // This will also save comment
@@ -80,11 +96,7 @@ public class CommunityService {
     public Comment editComment(String commentId, String content) {
         spamDetectionService.checkContentForSpam(SpamVariablePath.COMMENT, content);
 
-        final var comment = repository.findByIdentifier(commentId).orElseThrow(ResourceNotFoundException::new);
-
-        if (!getCurrentUser().getId().equals(comment.getUser().getId())) {
-            throw new AccessForbiddenException();
-        }
+        final var comment = getComment(commentId);
 
         comment.setContent(content);
 
@@ -93,11 +105,7 @@ public class CommunityService {
 
     @Transactional
     public void deleteComment(String commentId) {
-        final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
-
-        if (!getCurrentUser().getId().equals(comment.getUser().getId())) {
-            throw new AccessForbiddenException();
-        }
+        final var comment = getComment(commentId);
 
         changeCommentCount(comment.getMix(), -1);
         Optional.ofNullable(comment.getParentComment()).ifPresent(
@@ -114,6 +122,18 @@ public class CommunityService {
 
         likeRepository.deleteAllByItem(comment);
         repository.delete(comment);
+    }
+
+    private CommentEntity getComment(String commentId) {
+        final var user = getCurrentUser();
+        final var comment = repository.findByIdentifierWithMix(commentId).orElseThrow(ResourceNotFoundException::new);
+
+        if (!user.getId().equals(comment.getUser().getId())) {
+            throw new AccessForbiddenException();
+        }
+        CheckUserPermissionUtil.checkUserPermission(user, comment.getMix());
+
+        return comment;
     }
 
     public List<UserReaction> react(final String commentId, final UserReaction.TypeEnum reaction) {
