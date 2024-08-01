@@ -11,7 +11,7 @@ import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.react.persistance.mapper.ReactionMapper;
 import fm.mixer.gateway.module.user.persistance.entity.User;
-import fm.mixer.gateway.util.RandomIdentifierUtil;
+import fm.mixer.gateway.common.util.RandomIdentifierUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
