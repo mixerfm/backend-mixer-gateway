@@ -13,9 +13,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "comment_like")
-public class CommentLike extends ReactionEntity<Comment> {
+public class CommentLike extends ReactionEntity<CommentEntity> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
-    private Comment item;
+    private CommentEntity item;
 }

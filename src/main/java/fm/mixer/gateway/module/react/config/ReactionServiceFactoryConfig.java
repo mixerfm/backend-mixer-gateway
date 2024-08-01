@@ -1,6 +1,6 @@
 package fm.mixer.gateway.module.react.config;
 
-import fm.mixer.gateway.module.community.persistance.entity.Comment;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.community.persistance.repository.CommentLikeRepository;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
@@ -26,7 +26,7 @@ public class ReactionServiceFactoryConfig {
     }
 
     @Bean
-    public ReactionService<Comment, CommentLike> commentReactionService(CommentLikeRepository repository, ReportService reportService) {
+    public ReactionService<CommentEntity, CommentLike> commentReactionService(CommentLikeRepository repository, ReportService reportService) {
         return new ReactionService<>(repository, reportService, ResourceType.COMMENT);
     }
 

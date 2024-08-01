@@ -4,9 +4,10 @@ import fm.mixer.gateway.common.mapper.CreatorCommonMapping;
 import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.module.community.api.v1.model.Comment;
 import fm.mixer.gateway.module.community.api.v1.model.CommentList;
 import fm.mixer.gateway.module.community.api.v1.model.Creator;
-import fm.mixer.gateway.module.community.persistance.entity.Comment;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.react.persistance.mapper.ReactionMapper;
@@ -28,7 +29,7 @@ public interface CommunityMapper {
     @Mapping(target = "reactions", expression = "java(ReactionMapper.toReactions(comment.getReactions()))")
     @Mapping(target = "numberOfLikes", source = "reactions", qualifiedByName = "toNumberOfLikes")
     @Mapping(target = "numberOfDislikes", source = "reactions", qualifiedByName = "toNumberOfDislikes")
-    fm.mixer.gateway.module.community.api.v1.model.Comment toComment(final Comment comment);
+    Comment toComment(final CommentEntity comment);
 
     @Named("toNumberOfLikes")
     default Integer toNumberOfLikes(final Set<CommentLike> reactions) {
@@ -45,7 +46,7 @@ public interface CommunityMapper {
 
     @PaginatedMapping
     @Mapping(target = "comments", source = "items.content")
-    CommentList toCommentList(Page<Comment> items, PaginationRequest paginationRequest);
+    CommentList toCommentList(Page<CommentEntity> items, PaginationRequest paginationRequest);
 
     @Mapping(target = "content", source = "content")
     @Mapping(target = "mix", source = "mix")
@@ -57,5 +58,5 @@ public interface CommunityMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "parentComment", ignore = true)
-    Comment toCommentEntity(String content, User user, Mix mix);
+    CommentEntity toCommentEntity(String content, User user, Mix mix);
 }

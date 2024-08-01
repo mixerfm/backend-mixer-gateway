@@ -26,7 +26,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "comment")
-public class Comment implements ReactionContainerEntity<Comment, CommentLike> {
+public class CommentEntity implements ReactionContainerEntity<CommentEntity, CommentLike> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +48,7 @@ public class Comment implements ReactionContainerEntity<Comment, CommentLike> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id")
-    Comment parentComment;
+    CommentEntity parentComment;
 
     @Column(nullable = false)
     private Integer numberOfReplies = 0;

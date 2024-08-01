@@ -8,6 +8,7 @@ import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.community.api.v1.model.Comment;
 import fm.mixer.gateway.module.community.api.v1.model.CommentList;
 import fm.mixer.gateway.module.community.mapper.CommunityMapper;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.community.persistance.repository.CommentLikeRepository;
 import fm.mixer.gateway.module.community.persistance.repository.CommentRepository;
@@ -35,7 +36,7 @@ public class CommunityService {
     private final CommentLikeRepository likeRepository;
     private final SpamDetectionService spamDetectionService;
     @Qualifier("commentReactionService")
-    private final ReactionService<fm.mixer.gateway.module.community.persistance.entity.Comment, CommentLike> reactionService;
+    private final ReactionService<CommentEntity, CommentLike> reactionService;
 
     public CommentList getCommentList(String mixId, PaginationRequest paginationRequest) {
         final var commentList = repository.findAllByMixIdentifierAndParentCommentIsNull(mixId, paginationRequest.pageable());
@@ -133,7 +134,7 @@ public class CommunityService {
         mixRepository.save(mix);
     }
 
-    private void changeReplyCount(fm.mixer.gateway.module.community.persistance.entity.Comment comment, int byCount) {
+    private void changeReplyCount(CommentEntity comment, int byCount) {
         comment.setNumberOfReplies(comment.getNumberOfReplies() + byCount);
 
         repository.save(comment);
