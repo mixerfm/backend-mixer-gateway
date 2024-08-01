@@ -80,6 +80,9 @@ INSERT INTO user_artist (identifier,name,"type",avatar,user_id,created_at,update
 INSERT INTO user_artist_mix_relation (artist_id,mix_id,"position") VALUES
     (1,1,0);
 
+INSERT INTO user_artist_mix_collection_relation (artist_id,collection_id,"position") VALUES
+    (1,1,0);
+
 -- ALBUM
 INSERT INTO mix_album (identifier,name,release_date) VALUES
     ('aid1','Album 1','1992-12-05');

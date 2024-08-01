@@ -12,8 +12,20 @@
         "active": true
       },
       "visibility": "PUBLIC",
-      "reactions": [],
-      "artists": [],
+      "numberOfLikes": 4,
+      "reactions": [
+        {
+          "type": "LIKE"
+        }
+      ],
+      "artists": [
+        {
+          "username": "uaid1",
+          "displayName": "User Artist",
+          "avatarUrl": "userArtist.png",
+          "active": true
+        }
+      ],
       "tags": [
         "Rock",
         "Pop"
@@ -33,6 +45,7 @@
         "active": true
       },
       "visibility": "PRIVATE",
+      "numberOfLikes": 0,
       "reactions": [],
       "artists": [],
       "tags": [],
@@ -51,6 +64,7 @@
         "active": true
       },
       "visibility": "PUBLIC",
+      "numberOfLikes": 0,
       "reactions": [],
       "artists": [],
       "tags": [],

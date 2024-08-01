@@ -12,8 +12,20 @@
         "active": true
       },
       "visibility": "PUBLIC",
-      "reactions": [],
-      "artists": [],
+      "numberOfLikes": 4,
+      "reactions": [
+        {
+          "type": "LIKE"
+        }
+      ],
+      "artists": [
+        {
+          "username": "uaid1",
+          "displayName": "User Artist",
+          "avatarUrl": "userArtist.png",
+          "active": true
+        }
+      ],
       "mixes": {
         "mixes": [
           {
@@ -83,6 +95,7 @@
         "active": true
       },
       "visibility": "PRIVATE",
+      "numberOfLikes": 0,
       "reactions": [],
       "artists": [],
       "mixes": {
@@ -109,6 +122,7 @@
         "active": true
       },
       "visibility": "PUBLIC",
+      "numberOfLikes": 0,
       "reactions": [],
       "artists": [],
       "mixes": {

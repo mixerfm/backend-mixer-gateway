@@ -6,9 +6,13 @@ import fm.mixer.gateway.model.UserReaction;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.SingleCollection;
 import fm.mixer.gateway.module.mix.mapper.MixMapper;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollection;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollectionLike;
 import fm.mixer.gateway.module.mix.persistance.repository.CollectionRepository;
 import fm.mixer.gateway.module.mix.persistance.repository.MixCollectionRelationRepository;
+import fm.mixer.gateway.module.react.service.ReactionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,8 @@ public class CollectionService {
     private final MixMapper mapper;
     private final CollectionRepository repository;
     private final MixCollectionRelationRepository mixRepository;
+    @Qualifier("mixCollectionReactionService")
+    private final ReactionService<MixCollection, MixCollectionLike> reactionService;
 
     public CollectionList getCollectionList(PaginationRequest collectionPagination, PaginationRequest mixPagination) {
         final var collections = repository.findAll(collectionPagination.pageable());
@@ -58,14 +64,13 @@ public class CollectionService {
 
     public List<UserReaction> react(final String collectionId, final UserReaction.TypeEnum reaction) {
         final var collection = repository.findByIdentifier(collectionId).orElseThrow(ResourceNotFoundException::new);
-        // TODO implement
-        return List.of();
+
+        return reactionService.react(collection, reaction);
     }
 
     public List<UserReaction> removeReaction(final String collectionId) {
         final var collection = repository.findByIdentifier(collectionId).orElseThrow(ResourceNotFoundException::new);
 
-        // TODO implement
-        return List.of();
+        return reactionService.removeReaction(collection);
     }
 }

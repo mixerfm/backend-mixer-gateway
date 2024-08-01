@@ -79,7 +79,7 @@ public abstract class ReactionMapper {
 
     public static List<UserReaction.TypeEnum> toAllowedUserReactions(ResourceType resourceType) {
         return switch (resourceType) {
-            case COMMENT, COLLECTIONS, MIX -> List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE);
+            case COMMENT, COLLECTION, MIX -> List.of(UserReaction.TypeEnum.LIKE, UserReaction.TypeEnum.DISLIKE);
             case TRACK -> List.of(
                 UserReaction.TypeEnum.LIKE,
                 UserReaction.TypeEnum.DISLIKE,

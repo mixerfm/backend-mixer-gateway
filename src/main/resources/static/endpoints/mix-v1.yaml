@@ -6,8 +6,9 @@ info:
     This API allows client to fetch specific mix or category of mixes (e.g. uploaded, liked or listened mixes). 
     For registered user, this API allows him/her to create new or update/delete existing mix.
     Mix contain a group of tracks which can be played using Player API.
-  version: 0.4.3
+  version: 0.4.4
   x-release-notes:
+    - 0.4.4 Add number of likes to collections schema.
     - 0.4.3 Add endpoint for fetching all mixes that meet search parameters.
     - 0.4.2 Add createdDate and updatedDate to mix and collection.
     - 0.4.1 Add number of mix comments, reactions response.
@@ -475,6 +476,7 @@ components:
         - name
         - author
         - visibility
+        - numberOfLikes
         - tags
         - artists
         - createdDate
@@ -494,6 +496,10 @@ components:
           $ref: './components/responses.yaml#/components/schemas/Creator'
         visibility:
           $ref: '#/components/schemas/Visibility'
+        numberOfLikes:
+          type: integer
+          description: Total number of collection likes.
+          minimum: 0
         reactions:
           $ref: './components/responses.yaml#/components/schemas/UserReactions'
         artists:
