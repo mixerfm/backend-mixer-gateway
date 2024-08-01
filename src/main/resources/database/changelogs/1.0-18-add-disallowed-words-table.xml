@@ -10,6 +10,9 @@
             </column>
         </createTable>
         <sql>
+            CREATE EXTENSION IF NOT EXISTS pg_trgm;
+        </sql>
+        <sql>
             create index disallowed_word_search_by_word on disallowed_word USING gin (word gin_trgm_ops);
         </sql>
         
