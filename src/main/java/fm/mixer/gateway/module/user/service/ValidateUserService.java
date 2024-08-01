@@ -3,16 +3,21 @@ package fm.mixer.gateway.module.user.service;
 import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.error.exception.BadRequestException;
+import fm.mixer.gateway.module.user.api.v1.model.Address;
 import fm.mixer.gateway.module.user.api.v1.model.CreateUser;
 import fm.mixer.gateway.module.user.api.v1.model.UpdateUser;
+import fm.mixer.gateway.module.user.api.v1.model.UserCommon;
 import fm.mixer.gateway.module.user.config.UserProfileColorConfig;
 import fm.mixer.gateway.module.user.persistance.entity.User;
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
+import fm.mixer.gateway.validation.model.SpamVariablePath;
+import fm.mixer.gateway.validation.service.SpamDetectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class ValidateUserService {
 
     private final UserRepository repository;
     private final UserProfileColorConfig colorConfig;
+    private final SpamDetectionService spamDetectionService;
 
     public void validateUpdateUserInput(final UpdateUser updateUser, final User user) {
         // Check if user is equal to currently active user
@@ -40,6 +46,7 @@ public class ValidateUserService {
 
         validateDateOfBirth(updateUser.getDateOfBirth());
         validateProfileColor(updateUser.getProfileColor());
+        checkForSpam(updateUser);
     }
 
     public void validateCreateUserInput(CreateUser createUser) {
@@ -55,6 +62,7 @@ public class ValidateUserService {
 
         validateDateOfBirth(createUser.getDateOfBirth());
         validateProfileColor(createUser.getProfileColor());
+        checkForSpam(createUser);
     }
 
     private void validateDateOfBirth(LocalDate dateOfBirth) {
@@ -74,5 +82,15 @@ public class ValidateUserService {
         if (currentActiveUser.isEmpty() || !currentActiveUser.get().getId().equals(user.getId())) {
             throw new AccessForbiddenException();
         }
+    }
+
+    public void checkForSpam(UserCommon user) {
+        spamDetectionService.checkContentForSpam(SpamVariablePath.DISPLAY_NAME, user.getDisplayName());
+
+        Optional.ofNullable(user.getAddress()).map(Address::getCity)
+            .ifPresent(city -> spamDetectionService.checkContentForSpam(SpamVariablePath.CITY, city));
+
+        Optional.ofNullable(user.getBiography())
+            .ifPresent(biography -> spamDetectionService.checkContentForSpam(SpamVariablePath.BIOGRAPHY, biography));
     }
 }
