@@ -4,6 +4,7 @@ import fm.mixer.gateway.common.mapper.CreatorCommonMapping;
 import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.common.model.SortField;
 import fm.mixer.gateway.module.mix.api.v1.model.CollectionList;
 import fm.mixer.gateway.module.mix.api.v1.model.Creator;
 import fm.mixer.gateway.module.mix.api.v1.model.MixList;
@@ -21,8 +22,12 @@ import fm.mixer.gateway.module.mix.config.MixTypeConfig;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.mix.persistance.entity.MixCollection;
 import fm.mixer.gateway.module.mix.persistance.entity.MixCollectionRelation;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollectionRelation_;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollection_;
 import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
+import fm.mixer.gateway.module.mix.persistance.entity.MixLike_;
 import fm.mixer.gateway.module.mix.persistance.entity.MixTag;
+import fm.mixer.gateway.module.mix.persistance.entity.Mix_;
 import fm.mixer.gateway.module.mix.persistance.entity.model.VisibilityType;
 import fm.mixer.gateway.module.player.persistance.entity.PlaySession;
 import fm.mixer.gateway.module.react.persistance.mapper.ReactionMapper;
@@ -136,4 +141,39 @@ public interface MixMapper {
     @Named("toMixListSearchResult")
     @Mapping(target = "mixes", source = "items.content")
     MixList toMixListSearchResult(Page<Mix> items, PaginationRequest paginationRequest);
+
+    static Map<SortField, String> toMixColumnMapping() {
+        return Map.of(
+            SortField.NAME, Mix_.NAME,
+            SortField.DATE, Mix_.CREATED_AT,
+            SortField.POPULARITY, Mix_.PLAY_COUNT
+            // SortField.TREND - popularity by day
+        );
+    }
+
+    default Map<SortField, String> toMixLikeColumnMapping() {
+        return Map.of(
+            SortField.NAME, String.join(".", MixLike_.ITEM, Mix_.NAME),
+            SortField.DATE, MixLike_.UPDATED_AT,
+            SortField.POPULARITY, String.join(".", MixLike_.ITEM, Mix_.PLAY_COUNT)
+        );
+    }
+
+    static Map<SortField, String> toCollectionColumnMapping() {
+        return Map.of(
+            SortField.NAME, MixCollection_.NAME,
+            SortField.DATE, MixCollection_.CREATED_AT,
+            SortField.POPULARITY, MixCollection_.NUMBER_OF_REACTIONS
+            // SortField.TREND - popularity by day
+        );
+    }
+
+    default Map<SortField, String> toCollectionMixColumnMapping() {
+        return Map.of(
+            SortField.NAME, String.join(".", MixCollectionRelation_.MIX, Mix_.NAME),
+            SortField.DATE, String.join(".", MixCollectionRelation_.MIX, MixCollection_.CREATED_AT),
+            SortField.POPULARITY, String.join(".", MixCollectionRelation_.MIX, MixCollection_.NUMBER_OF_REACTIONS)
+            // SortField.TREND - popularity by day
+        );
+    }
 }

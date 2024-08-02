@@ -16,6 +16,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,6 +52,9 @@ public class MixCollection implements ReactionContainerEntity<MixCollection, Mix
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     private Set<MixCollectionLike> reactions = new HashSet<>();
 
+    @Column(nullable = false)
+    private Integer numberOfReactions = 0;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -81,4 +86,10 @@ public class MixCollection implements ReactionContainerEntity<MixCollection, Mix
     )
     @OrderColumn(name = "position")
     private List<UserArtist> artists;
+
+    @PreUpdate
+    @PrePersist
+    private void updateNumberOfReactions() {
+        numberOfReactions = reactions.size();
+    }
 }

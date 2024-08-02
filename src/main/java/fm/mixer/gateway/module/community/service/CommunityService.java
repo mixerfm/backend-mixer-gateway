@@ -45,7 +45,9 @@ public class CommunityService {
 
         CheckUserPermissionUtil.checkUserPermission(user, mix);
 
-        final var commentList = repository.findAllByMixIdentifierAndParentCommentIsNull(mixId, paginationRequest.pageable());
+        final var commentList = repository.findAllByMixIdentifierAndParentCommentIsNull(
+            mixId, paginationRequest.toPageable(mapper.toColumnMapping())
+        );
 
         return mapper.toCommentList(commentList, paginationRequest);
     }
@@ -69,7 +71,9 @@ public class CommunityService {
 
         CheckUserPermissionUtil.checkUserPermission(getCurrentUser(), comment.getMix());
 
-        final var replies = repository.findAllByParentCommentIdentifier(commentId, paginationRequest.pageable());
+        final var replies = repository.findAllByParentCommentIdentifier(
+            commentId, paginationRequest.toPageable(mapper.toColumnMapping())
+        );
 
         return mapper.toCommentList(replies, paginationRequest);
     }
@@ -149,13 +153,13 @@ public class CommunityService {
     }
 
     private void changeCommentCount(Mix mix, int byCount) {
-        mix.setNumberOfComments(mix.getNumberOfComments() + byCount);
+        mix.setNumberOfComments(Math.max(mix.getNumberOfComments() + byCount, 0));
 
         mixRepository.save(mix);
     }
 
     private void changeReplyCount(CommentEntity comment, int byCount) {
-        comment.setNumberOfReplies(comment.getNumberOfReplies() + byCount);
+        comment.setNumberOfReplies(Math.max(comment.getNumberOfReplies() + byCount, 0));
 
         repository.save(comment);
     }

@@ -22,13 +22,17 @@ public class UserCommunityService {
     private final UserFollowerRepository repository;
 
     public GetUserList getFollowerList(String username, PaginationRequest paginationRequest) {
-        final var theyFollowsUser = repository.findByFollowsUserIdentifier(username, paginationRequest.pageable());
+        final var theyFollowsUser = repository.findByFollowsUserIdentifier(
+            username, paginationRequest.toPageable(mapper.toFollowerColumnMapping())
+        );
 
         return mapper.toUserFollowerList(theyFollowsUser, paginationRequest);
     }
 
     public GetUserList getFollowingList(String username, PaginationRequest paginationRequest) {
-        final var userFollowsThem = repository.findByUserIdentifier(username, paginationRequest.pageable());
+        final var userFollowsThem = repository.findByUserIdentifier(
+            username, paginationRequest.toPageable(mapper.toFollowingColumnMapping())
+        );
 
         return mapper.toUserFollowingList(userFollowsThem, paginationRequest);
     }

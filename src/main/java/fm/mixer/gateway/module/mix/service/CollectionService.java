@@ -29,13 +29,15 @@ public class CollectionService {
     private final ReactionService<MixCollection, MixCollectionLike> reactionService;
 
     public CollectionList getCollectionList(PaginationRequest collectionPagination, PaginationRequest mixPagination) {
-        final var collections = repository.findAll(collectionPagination.pageable());
+        final var collections = repository.findAll(collectionPagination.toPageable(MixMapper.toCollectionColumnMapping()));
         final var collectionList = mapper.toCollectionList(collections, collectionPagination);
 
         // This fetch/logic is not optimized, so we might consider it to hardcode a max number of mixes (constant)
         if (Objects.nonNull(mixPagination)) {
             collections.forEach(collection -> {
-                final var mixes = mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.pageable());
+                final var mixes = mixRepository.findByCollectionIdOrderByPosition(
+                    collection.getId(), mixPagination.toPageable(mapper.toCollectionMixColumnMapping())
+                );
 
                 collectionList.getCollections().stream().filter(c -> c.getIdentifier().equals(collection.getIdentifier()))
                     .findFirst().ifPresent(c -> c.setMixes(mapper.toMixList(mixes, mixPagination)));
@@ -51,9 +53,9 @@ public class CollectionService {
 
         if (Objects.nonNull(mixPagination)) {
             final var mixes = filter.isEmpty() ?
-                mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.pageable()) :
+                mixRepository.findByCollectionIdOrderByPosition(collection.getId(), mixPagination.toPageable(mapper.toCollectionMixColumnMapping())) :
                 mixRepository.findByCollectionIdAndMixTagsNameInOrderByPosition(
-                    collection.getId(), filter, mixPagination.pageable()
+                    collection.getId(), filter, mixPagination.toPageable(mapper.toCollectionMixColumnMapping())
                 );
 
             singleCollection.setMixes(mapper.toMixList(mixes, mixPagination));

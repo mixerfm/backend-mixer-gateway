@@ -1,6 +1,60 @@
 {
   "collections": [
     {
+      "identifier": "cid3",
+      "name": "Search Collection",
+      "avatarUrl": "collectionAvatar3.jpg",
+      "author": {
+        "username": "uid2",
+        "displayName": "Test User 2",
+        "avatarUrl": "userAvatar2.jpg",
+        "profileColor": "#00112A",
+        "active": true
+      },
+      "visibility": "PUBLIC",
+      "numberOfLikes": 0,
+      "reactions": [],
+      "artists": [],
+      "mixes": {
+        "mixes": [],
+        "metadata": {
+          "currentPage": 0,
+          "totalItems": 0,
+          "totalPages": 0
+        }
+      },
+      "tags": [],
+      "createdDate": "2024-09-04",
+      "updatedDate": "2024-09-05"
+    },
+    {
+      "identifier": "cid2",
+      "name": "Test Collection 2",
+      "avatarUrl": "collectionAvatar2.jpg",
+      "author": {
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
+        "active": true
+      },
+      "visibility": "PRIVATE",
+      "numberOfLikes": 0,
+      "reactions": [],
+      "artists": [],
+      "mixes": {
+        "mixes": [],
+        "metadata": {
+          "currentPage": 0,
+          "totalItems": 0,
+          "totalPages": 0
+        }
+      },
+      "tags": [],
+      "createdDate": "2024-06-04",
+      "updatedDate": "2024-06-05"
+    },
+    {
       "identifier": "cid1",
       "name": "Test Collection 1",
       "avatarUrl": "collectionAvatar.jpg",
@@ -82,60 +136,6 @@
       ],
       "createdDate": "2024-06-03",
       "updatedDate": "2024-06-06"
-    },
-    {
-      "identifier": "cid2",
-      "name": "Test Collection 2",
-      "avatarUrl": "collectionAvatar2.jpg",
-      "author": {
-        "username": "uid1",
-        "displayName": "Test User",
-        "avatarUrl": "userAvatar.jpg",
-        "profileColor": "#001122",
-        "active": true
-      },
-      "visibility": "PRIVATE",
-      "numberOfLikes": 0,
-      "reactions": [],
-      "artists": [],
-      "mixes": {
-        "mixes": [],
-        "metadata": {
-          "currentPage": 0,
-          "totalItems": 0,
-          "totalPages": 0
-        }
-      },
-      "tags": [],
-      "createdDate": "2024-06-04",
-      "updatedDate": "2024-06-05"
-    },
-    {
-      "identifier": "cid3",
-      "name": "Search Collection",
-      "avatarUrl": "collectionAvatar3.jpg",
-      "author": {
-        "username": "uid2",
-        "displayName": "Test User 2",
-        "avatarUrl": "userAvatar2.jpg",
-        "profileColor": "#00112A",
-        "active": true
-      },
-      "visibility": "PUBLIC",
-      "numberOfLikes": 0,
-      "reactions": [],
-      "artists": [],
-      "mixes": {
-        "mixes": [],
-        "metadata": {
-          "currentPage": 0,
-          "totalItems": 0,
-          "totalPages": 0
-        }
-      },
-      "tags": [],
-      "createdDate": "2024-09-04",
-      "updatedDate": "2024-09-05"
     }
   ],
   "metadata": {
