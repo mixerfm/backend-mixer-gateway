@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,6 +66,8 @@ public class PlayerService {
         final var listenedTracks = trackRepository.findAllById(
             allTracks.subList(0, allTracks.indexOf(session.get().getTrack().getId()) + 1)
         );
+        // SQL database does not respect the order of items in "IN" operator, e.g. id IN (1,2,3,4) won't return ordered list by id
+        listenedTracks.sort(Comparator.comparing(item -> allTracks.indexOf(item.getId())));
 
         return mapper.toTrackListObject(listenedTracks);
     }
