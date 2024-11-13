@@ -5,6 +5,7 @@ import fm.mixer.gateway.module.mix.mapper.MixMapper;
 import fm.mixer.gateway.module.search.api.v1.model.SearchItemResultGroupList;
 import fm.mixer.gateway.module.search.api.v1.model.SearchItemResultGroupType;
 import fm.mixer.gateway.module.search.api.v1.model.SearchItemResultList;
+import fm.mixer.gateway.module.search.integration.client.MusicBrainzApiClient;
 import fm.mixer.gateway.module.search.mapper.SearchMapper;
 import fm.mixer.gateway.module.search.persistance.repository.SearchArtistRepository;
 import fm.mixer.gateway.module.search.persistance.repository.SearchCollectionRepository;
@@ -25,6 +26,7 @@ public class SearchService {
     private final SearchMixRepository mixRepository;
     private final SearchTagRepository tagRepository;
     private final SearchUserRepository userRepository;
+    private final MusicBrainzApiClient artistsApiClient;
     private final SearchArtistRepository artistRepository;
     private final SearchCollectionRepository collectionRepository;
 
