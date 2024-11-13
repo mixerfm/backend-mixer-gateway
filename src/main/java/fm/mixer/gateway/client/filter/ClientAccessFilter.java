@@ -1,7 +1,6 @@
 package fm.mixer.gateway.client.filter;
 
 import fm.mixer.gateway.client.holder.ClientContextHolder;
-import fm.mixer.gateway.error.exception.UnsupportedClientLocationException;
 import fm.mixer.gateway.module.app.config.AvailabilityConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class ClientAccessFilter {
             return;
         }
 
-        throw new UnsupportedClientLocationException();
+        //throw new UnsupportedClientLocationException();
     }
 
     private boolean isExcluded(HttpServletRequest request) {
