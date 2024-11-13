@@ -36,7 +36,7 @@ public class ApplicationService {
         log.info("Current client context: {}", clientContext);
 
         return Map.of(
-            FeatureType.APPLICATION, availabilityConfig.getSupportedCountries().contains(clientContext.countryCode())
+            FeatureType.APPLICATION, true //availabilityConfig.getSupportedCountries().contains(clientContext.countryCode())
         );
     }
 }
