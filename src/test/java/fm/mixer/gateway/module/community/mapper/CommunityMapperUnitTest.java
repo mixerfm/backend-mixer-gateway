@@ -3,7 +3,7 @@ package fm.mixer.gateway.module.community.mapper;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.model.UserReaction;
-import fm.mixer.gateway.module.community.persistance.entity.Comment;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.react.persistance.entity.model.ReactionType;
@@ -28,7 +28,7 @@ class CommunityMapperUnitTest {
     @Test
     void shouldMapToComment() {
         // given
-        final var comment = Instancio.create(Comment.class);
+        final var comment = Instancio.create(CommentEntity.class);
         final var commentLike = comment.getReactions().stream().findFirst().orElseThrow();
         commentLike.setValue(true);
         commentLike.setType(ReactionType.LIKE);
@@ -64,7 +64,7 @@ class CommunityMapperUnitTest {
     @Test
     void shouldMapToCommentList() {
         // Given
-        final var items = Instancio.createList(Comment.class);
+        final var items = Instancio.createList(CommentEntity.class);
         final var paginationRequest = PaginationMapper.toPaginationRequest(1, 2, List.of());
 
         try (final var user = mockStatic(UserPrincipalUtil.class)) {

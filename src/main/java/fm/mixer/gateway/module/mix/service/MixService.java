@@ -36,7 +36,7 @@ public class MixService {
     private final ReactionService<Mix, MixLike> reactionService;
 
     public MixList getMixList(List<String> filter, PaginationRequest paginationRequest) {
-        return mapper.toMixListSearchResult(repository.search(filter, paginationRequest.pageable()), paginationRequest);
+        return mapper.toMixListSearchResult(repository.search(filter, paginationRequest.toPageable(MixMapper.toMixColumnMapping())), paginationRequest);
     }
 
     public SingleMix getSingleMix(String mixId) {
@@ -47,14 +47,16 @@ public class MixService {
 
     public UserLikedMixes getUserLikedMixes(String username, PaginationRequest pagination) {
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
-        final var likedMixes = likeRepository.findByUserAndTypeAndValueIsTrue(user, ReactionType.LIKE, pagination.pageable());
+        final var likedMixes = likeRepository.findByUserAndTypeAndValueIsTrue(
+            user, ReactionType.LIKE, pagination.toPageable(mapper.toMixLikeColumnMapping())
+        );
 
         return mapper.toUserLikedMixes(likedMixes, pagination);
     }
 
     public UserListenedMixes getUserMixesHistory(String username, PaginationRequest pagination) {
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
-        final var listenedMixes = historyRepository.findByUser(user, pagination.pageable());
+        final var listenedMixes = historyRepository.findByUser(user, pagination.toPageable(MixMapper.toMixColumnMapping()));
 
         return mapper.toUserListenedMixes(listenedMixes, pagination);
     }
@@ -62,7 +64,7 @@ public class MixService {
     public UserUploadedMixes getUserUploadedMixes(String username, PaginationRequest pagination) {
         final var user = userRepository.findByIdentifierAndActiveIsTrue(username).orElseThrow(ResourceNotFoundException::new);
 
-        return mapper.toUserUploadedMixes(repository.findAllByUser(user, pagination.pageable()), pagination);
+        return mapper.toUserUploadedMixes(repository.findAllByUser(user, pagination.toPageable(MixMapper.toMixColumnMapping())), pagination);
     }
 
     public List<UserReaction> react(final String mixId, final UserReaction.TypeEnum reaction) {

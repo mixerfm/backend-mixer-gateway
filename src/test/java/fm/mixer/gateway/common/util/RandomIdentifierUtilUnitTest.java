@@ -1,4 +1,4 @@
-package fm.mixer.gateway.util;
+package fm.mixer.gateway.common.util;
 
 import fm.mixer.gateway.test.UnitTest;
 import org.assertj.core.data.Percentage;

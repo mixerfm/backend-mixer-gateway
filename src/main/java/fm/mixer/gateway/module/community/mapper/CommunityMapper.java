@@ -4,19 +4,24 @@ import fm.mixer.gateway.common.mapper.CreatorCommonMapping;
 import fm.mixer.gateway.common.mapper.PaginatedMapping;
 import fm.mixer.gateway.common.mapper.PaginationMapper;
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.common.model.SortField;
+import fm.mixer.gateway.common.util.RandomIdentifierUtil;
+import fm.mixer.gateway.module.community.api.v1.model.Comment;
 import fm.mixer.gateway.module.community.api.v1.model.CommentList;
 import fm.mixer.gateway.module.community.api.v1.model.Creator;
-import fm.mixer.gateway.module.community.persistance.entity.Comment;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity_;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
 import fm.mixer.gateway.module.react.persistance.mapper.ReactionMapper;
 import fm.mixer.gateway.module.user.persistance.entity.User;
-import fm.mixer.gateway.util.RandomIdentifierUtil;
+import fm.mixer.gateway.module.user.persistance.entity.User_;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
 import java.util.Set;
 
 @Mapper(imports = {RandomIdentifierUtil.class, PaginationMapper.class, ReactionMapper.class})
@@ -28,7 +33,7 @@ public interface CommunityMapper {
     @Mapping(target = "reactions", expression = "java(ReactionMapper.toReactions(comment.getReactions()))")
     @Mapping(target = "numberOfLikes", source = "reactions", qualifiedByName = "toNumberOfLikes")
     @Mapping(target = "numberOfDislikes", source = "reactions", qualifiedByName = "toNumberOfDislikes")
-    fm.mixer.gateway.module.community.api.v1.model.Comment toComment(final Comment comment);
+    Comment toComment(final CommentEntity comment);
 
     @Named("toNumberOfLikes")
     default Integer toNumberOfLikes(final Set<CommentLike> reactions) {
@@ -45,7 +50,7 @@ public interface CommunityMapper {
 
     @PaginatedMapping
     @Mapping(target = "comments", source = "items.content")
-    CommentList toCommentList(Page<Comment> items, PaginationRequest paginationRequest);
+    CommentList toCommentList(Page<CommentEntity> items, PaginationRequest paginationRequest);
 
     @Mapping(target = "content", source = "content")
     @Mapping(target = "mix", source = "mix")
@@ -57,5 +62,14 @@ public interface CommunityMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "parentComment", ignore = true)
-    Comment toCommentEntity(String content, User user, Mix mix);
+    CommentEntity toCommentEntity(String content, User user, Mix mix);
+
+    default Map<SortField, String> toColumnMapping() {
+        return Map.of(
+            SortField.NAME, String.join(".", CommentEntity_.USER, User_.NAME),
+            SortField.DATE, CommentEntity_.CREATED_AT,
+            SortField.POPULARITY, CommentEntity_.NUMBER_OF_REACTIONS
+            // SortField.TREND - receiving most reactions in last N times
+        );
+    }
 }

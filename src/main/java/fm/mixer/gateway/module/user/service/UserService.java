@@ -16,7 +16,7 @@ import fm.mixer.gateway.module.user.persistance.repository.UserFollowerRepositor
 import fm.mixer.gateway.module.user.persistance.repository.UserRepository;
 import fm.mixer.gateway.module.user.util.RandomProfileColorUtil;
 import fm.mixer.gateway.module.user.util.UserRelationUtil;
-import fm.mixer.gateway.util.RandomIdentifierUtil;
+import fm.mixer.gateway.common.util.RandomIdentifierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

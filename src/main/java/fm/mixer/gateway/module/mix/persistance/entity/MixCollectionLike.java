@@ -1,4 +1,4 @@
-package fm.mixer.gateway.module.community.persistance.entity;
+package fm.mixer.gateway.module.mix.persistance.entity;
 
 import fm.mixer.gateway.module.react.persistance.entity.ReactionEntity;
 import jakarta.persistence.Entity;
@@ -12,10 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "comment_like")
-public class CommentLike extends ReactionEntity<CommentEntity> {
+@Table(name = "mix_collection_like")
+public class MixCollectionLike extends ReactionEntity<MixCollection> {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id", nullable = false)
-    private CommentEntity item;
+    @JoinColumn(name = "mix_collection_id", nullable = false)
+    private MixCollection item;
 }

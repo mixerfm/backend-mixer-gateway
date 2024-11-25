@@ -1,10 +1,13 @@
 package fm.mixer.gateway.module.react.config;
 
-import fm.mixer.gateway.module.community.persistance.entity.Comment;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
 import fm.mixer.gateway.module.community.persistance.entity.CommentLike;
 import fm.mixer.gateway.module.community.persistance.repository.CommentLikeRepository;
 import fm.mixer.gateway.module.mix.persistance.entity.Mix;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollection;
+import fm.mixer.gateway.module.mix.persistance.entity.MixCollectionLike;
 import fm.mixer.gateway.module.mix.persistance.entity.MixLike;
+import fm.mixer.gateway.module.mix.persistance.repository.CollectionLikeRepository;
 import fm.mixer.gateway.module.mix.persistance.repository.MixLikeRepository;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrack;
 import fm.mixer.gateway.module.player.persistance.entity.MixTrackLike;
@@ -26,7 +29,12 @@ public class ReactionServiceFactoryConfig {
     }
 
     @Bean
-    public ReactionService<Comment, CommentLike> commentReactionService(CommentLikeRepository repository, ReportService reportService) {
+    public ReactionService<MixCollection, MixCollectionLike> mixCollectionReactionService(CollectionLikeRepository repository, ReportService reportService) {
+        return new ReactionService<>(repository, reportService, ResourceType.COLLECTION);
+    }
+
+    @Bean
+    public ReactionService<CommentEntity, CommentLike> commentReactionService(CommentLikeRepository repository, ReportService reportService) {
         return new ReactionService<>(repository, reportService, ResourceType.COMMENT);
     }
 

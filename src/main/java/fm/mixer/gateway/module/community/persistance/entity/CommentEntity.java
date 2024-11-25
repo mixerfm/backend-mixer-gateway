@@ -12,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +28,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "comment")
-public class Comment implements ReactionContainerEntity<Comment, CommentLike> {
+public class CommentEntity implements ReactionContainerEntity<CommentEntity, CommentLike> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,13 +50,16 @@ public class Comment implements ReactionContainerEntity<Comment, CommentLike> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id")
-    Comment parentComment;
+    CommentEntity parentComment;
 
     @Column(nullable = false)
     private Integer numberOfReplies = 0;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     private Set<CommentLike> reactions = new HashSet<>();
+
+    @Column(nullable = false)
+    private Integer numberOfReactions = 0;
 
     @CreationTimestamp
     @Column(nullable = false)
@@ -63,4 +68,10 @@ public class Comment implements ReactionContainerEntity<Comment, CommentLike> {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @PreUpdate
+    @PrePersist
+    private void updateNumberOfReactions() {
+        numberOfReactions = reactions.size();
+    }
 }

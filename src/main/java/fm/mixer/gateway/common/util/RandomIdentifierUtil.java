@@ -1,4 +1,4 @@
-package fm.mixer.gateway.util;
+package fm.mixer.gateway.common.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

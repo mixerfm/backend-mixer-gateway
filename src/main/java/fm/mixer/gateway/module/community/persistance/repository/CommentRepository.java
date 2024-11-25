@@ -1,6 +1,6 @@
 package fm.mixer.gateway.module.community.persistance.repository;
 
-import fm.mixer.gateway.module.community.persistance.entity.Comment;
+import fm.mixer.gateway.module.community.persistance.entity.CommentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
-    Optional<Comment> findByIdentifier(String identifier);
+    Optional<CommentEntity> findByIdentifier(String identifier);
 
-    @Query("from Comment c join fetch c.mix left join fetch c.parentComment where c.identifier = :identifier")
-    Optional<Comment> findByIdentifierWithMix(String identifier);
+    @Query("from CommentEntity c join fetch c.mix left join fetch c.parentComment where c.identifier = :identifier")
+    Optional<CommentEntity> findByIdentifierWithMix(String identifier);
 
-    Page<Comment> findAllByMixIdentifierAndParentCommentIsNull(String mixId, Pageable pageable);
+    Page<CommentEntity> findAllByMixIdentifierAndParentCommentIsNull(String mixId, Pageable pageable);
 
-    Page<Comment> findAllByParentCommentIdentifier(String parentCommentIdentifier, Pageable pageable);
+    Page<CommentEntity> findAllByParentCommentIdentifier(String parentCommentIdentifier, Pageable pageable);
 
-    List<Comment> findAllByParentComment(Comment parent);
+    List<CommentEntity> findAllByParentComment(CommentEntity parent);
 }

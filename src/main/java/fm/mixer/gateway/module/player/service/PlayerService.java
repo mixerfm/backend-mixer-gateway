@@ -2,6 +2,7 @@ package fm.mixer.gateway.module.player.service;
 
 import fm.mixer.gateway.auth.exception.AccessForbiddenException;
 import fm.mixer.gateway.auth.util.UserPrincipalUtil;
+import fm.mixer.gateway.common.util.CheckUserPermissionUtil;
 import fm.mixer.gateway.error.exception.BadRequestException;
 import fm.mixer.gateway.error.exception.ResourceNotFoundException;
 import fm.mixer.gateway.model.UserReaction;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,12 +45,17 @@ public class PlayerService {
         final var user = getCurrentUser();
         final var session = repository.getCurrentActiveSessionForUser(user).orElseThrow(ResourceNotFoundException::new);
 
+        CheckUserPermissionUtil.checkUserPermission(user, session.getMix());
+
         return mapper.toSession(session);
     }
 
     public TrackList getTrackList(String mixId) {
         final var user = getCurrentUser();
         final var session = repository.findByUserAndMixIdentifier(user, mixId);
+        final var mix = session.map(PlaySession::getMix).orElse(mixRepository.findByIdentifier(mixId).orElseThrow(ResourceNotFoundException::new));
+
+        CheckUserPermissionUtil.checkUserPermission(user, mix);
 
         // User did not play this mix
         if (session.isEmpty()) {
@@ -59,6 +66,8 @@ public class PlayerService {
         final var listenedTracks = trackRepository.findAllById(
             allTracks.subList(0, allTracks.indexOf(session.get().getTrack().getId()) + 1)
         );
+        // SQL database does not respect the order of items in "IN" operator, e.g. id IN (1,2,3,4) won't return ordered list by id
+        listenedTracks.sort(Comparator.comparing(item -> allTracks.indexOf(item.getId())));
 
         return mapper.toTrackListObject(listenedTracks);
     }
@@ -69,11 +78,17 @@ public class PlayerService {
 
         // There is an active session
         if (!session.getShuffle() && Objects.nonNull(session.getMix()) && session.getMix().getIdentifier().equals(mixId)) {
+            // User might have premium mix in session after premium expired
+            CheckUserPermissionUtil.checkUserPermission(user, session.getMix());
+
             return mapper.toTrack(session.getTrack());
         }
 
         // User is first time playing this mix or mix must be shuffled
         final var mix = mixRepository.findByIdentifierWithTracks(mixId).orElseThrow(ResourceNotFoundException::new);
+
+        // Check if user can play this mix
+        CheckUserPermissionUtil.checkUserPermission(user, mix);
 
         mapper.toPlaySessionEntity(session, user, mix, mix.getTracks().getFirst());
         session.setTracks(mapper.toMixTracksString(mix.getTracks()));
@@ -96,6 +111,8 @@ public class PlayerService {
         final var user = getCurrentUser();
         final var session = getCurrentPlaySession(user, mixId);
         final var tracks = Arrays.stream(session.getTracks().split(mapper.TRACK_DELIMITER)).map(Long::valueOf).toList();
+
+        CheckUserPermissionUtil.checkUserPermission(user, session.getMix());
 
         // Increase track play or skip count
         if (isSkip) {

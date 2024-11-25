@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-20-add-support-for-sort">
+        <comment>Add columns that help sort the results</comment>
+        <addColumn tableName="comment">
+            <column name="number_of_reactions" type="int" defaultValueNumeric="0" remarks="Number of comment reactions">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="mix_collection">
+            <column name="number_of_reactions" type="int" defaultValueNumeric="0" remarks="Number of collection reactions">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

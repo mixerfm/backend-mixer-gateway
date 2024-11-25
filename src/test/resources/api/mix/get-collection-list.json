@@ -1,25 +1,23 @@
 {
   "collections": [
     {
-      "identifier": "cid1",
-      "name": "Test Collection 1",
-      "avatarUrl": "collectionAvatar.jpg",
+      "identifier": "cid3",
+      "name": "Search Collection",
+      "avatarUrl": "collectionAvatar3.jpg",
       "author": {
-        "username": "uid1",
-        "displayName": "Test User",
-        "avatarUrl": "userAvatar.jpg",
-        "profileColor": "#001122",
+        "username": "uid2",
+        "displayName": "Test User 2",
+        "avatarUrl": "userAvatar2.jpg",
+        "profileColor": "#00112A",
         "active": true
       },
       "visibility": "PUBLIC",
+      "numberOfLikes": 0,
       "reactions": [],
       "artists": [],
-      "tags": [
-        "Rock",
-        "Pop"
-      ],
-      "createdDate": "2024-06-03",
-      "updatedDate": "2024-06-06"
+      "tags": [],
+      "createdDate": "2024-09-04",
+      "updatedDate": "2024-09-05"
     },
     {
       "identifier": "cid2",
@@ -33,6 +31,7 @@
         "active": true
       },
       "visibility": "PRIVATE",
+      "numberOfLikes": 0,
       "reactions": [],
       "artists": [],
       "tags": [],
@@ -40,22 +39,37 @@
       "updatedDate": "2024-06-05"
     },
     {
-      "identifier": "cid3",
-      "name": "Search Collection",
-      "avatarUrl": "collectionAvatar3.jpg",
+      "identifier": "cid1",
+      "name": "Test Collection 1",
+      "avatarUrl": "collectionAvatar.jpg",
       "author": {
-        "username": "uid2",
-        "displayName": "Test User 2",
-        "avatarUrl": "userAvatar2.jpg",
-        "profileColor": "#00112A",
+        "username": "uid1",
+        "displayName": "Test User",
+        "avatarUrl": "userAvatar.jpg",
+        "profileColor": "#001122",
         "active": true
       },
       "visibility": "PUBLIC",
-      "reactions": [],
-      "artists": [],
-      "tags": [],
-      "createdDate": "2024-09-04",
-      "updatedDate": "2024-09-05"
+      "numberOfLikes": 4,
+      "reactions": [
+        {
+          "type": "LIKE"
+        }
+      ],
+      "artists": [
+        {
+          "username": "uaid1",
+          "displayName": "User Artist",
+          "avatarUrl": "userArtist.png",
+          "active": true
+        }
+      ],
+      "tags": [
+        "Rock",
+        "Pop"
+      ],
+      "createdDate": "2024-06-03",
+      "updatedDate": "2024-06-06"
     }
   ],
   "metadata": {

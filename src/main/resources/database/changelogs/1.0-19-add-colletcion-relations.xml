@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+    <changeSet author="skurelic" id="1.0-19-add-colletcion-relations">
+        <comment>Create and update collection relations</comment>
+        <createTable tableName="user_artist_mix_collection_relation" remarks="Relation between artist and collection">
+            <column name="artist_id" type="bigint" remarks="Reference to user_artist table">
+                <constraints foreignKeyName="user_artist_mix_collection_relation_artist_foreign_key" references="user_artist(id)"/>
+            </column>
+            <column name="collection_id" type="bigint" remarks="Reference to mix table">
+                <constraints foreignKeyName="user_artist_mix_collection_relation_collection_foreign_key" references="mix_collection(id)"/>
+            </column>
+            <column name="position" type="smallint" remarks="Position of the artist in the collection">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="user_artist_mix_collection_relation" columnNames="artist_id,collection_id"/>
+    </changeSet>
+</databaseChangeLog>

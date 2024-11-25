@@ -1,9 +1,11 @@
 package fm.mixer.gateway.module.search.service;
 
 import fm.mixer.gateway.common.model.PaginationRequest;
+import fm.mixer.gateway.module.mix.mapper.MixMapper;
 import fm.mixer.gateway.module.search.api.v1.model.SearchItemResultGroupList;
 import fm.mixer.gateway.module.search.api.v1.model.SearchItemResultGroupType;
 import fm.mixer.gateway.module.search.api.v1.model.SearchItemResultList;
+import fm.mixer.gateway.module.search.integration.client.MusicBrainzApiClient;
 import fm.mixer.gateway.module.search.mapper.SearchMapper;
 import fm.mixer.gateway.module.search.persistance.repository.SearchArtistRepository;
 import fm.mixer.gateway.module.search.persistance.repository.SearchCollectionRepository;
@@ -24,6 +26,7 @@ public class SearchService {
     private final SearchMixRepository mixRepository;
     private final SearchTagRepository tagRepository;
     private final SearchUserRepository userRepository;
+    private final MusicBrainzApiClient artistsApiClient;
     private final SearchArtistRepository artistRepository;
     private final SearchCollectionRepository collectionRepository;
 
@@ -39,35 +42,35 @@ public class SearchService {
 
     public SearchItemResultList searchArtist(String query, PaginationRequest paginationRequest) {
         return mapper.toSearchItemResultListFromArtist(
-            artistRepository.search(query, paginationRequest.pageable()),
+            artistRepository.search(query, paginationRequest.toPageable(mapper.toArtistColumnMapping())),
             paginationRequest
         );
     }
 
     public SearchItemResultList searchCollection(String query, PaginationRequest paginationRequest) {
         return mapper.toSearchItemResultListFromCollection(
-            collectionRepository.search(query, paginationRequest.pageable()),
+            collectionRepository.search(query, paginationRequest.toPageable(MixMapper.toCollectionColumnMapping())),
             paginationRequest
         );
     }
 
     public SearchItemResultList searchMix(String query, PaginationRequest paginationRequest) {
         return mapper.toSearchItemResultListFromMix(
-            mixRepository.search(query, paginationRequest.pageable()),
+            mixRepository.search(query, paginationRequest.toPageable(MixMapper.toMixColumnMapping())),
             paginationRequest
         );
     }
 
     public SearchItemResultList searchTag(String query, PaginationRequest paginationRequest) {
         return mapper.toSearchItemResultListFromTag(
-            tagRepository.search(query, paginationRequest.pageable()),
+            tagRepository.search(query, paginationRequest.toPageable(mapper.toTagColumnMapping())),
             paginationRequest
         );
     }
 
     public SearchItemResultList searchUser(String query, PaginationRequest paginationRequest) {
         return mapper.toSearchItemResultListFromUser(
-            userRepository.search(query, paginationRequest.pageable()),
+            userRepository.search(query, paginationRequest.toPageable(mapper.toUserColumnMapping())),
             paginationRequest
         );
     }

@@ -11,7 +11,7 @@ import fm.mixer.gateway.module.auth.mapper.DeviceMapper;
 import fm.mixer.gateway.module.auth.persistance.entity.UserDevice;
 import fm.mixer.gateway.module.auth.persistance.repository.UserDeviceRepository;
 import fm.mixer.gateway.module.user.persistance.entity.User;
-import fm.mixer.gateway.util.RandomIdentifierUtil;
+import fm.mixer.gateway.common.util.RandomIdentifierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
